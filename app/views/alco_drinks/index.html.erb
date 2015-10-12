@@ -1,0 +1,35 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Alco Drinks</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Price</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Url</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @alco_drinks.each do |alco_drink| %>
+      <tr>
+        <td><%= alco_drink.title %></td>
+        <td><%= alco_drink.price %></td>
+        <td><%= alco_drink.type %></td>
+        <td><%= alco_drink.size %></td>
+        <td><%= alco_drink.url %></td>
+        <td><%= link_to 'Show', alco_drink %></td>
+        <td><%= link_to 'Edit', edit_alco_drink_path(alco_drink) %></td>
+        <td><%= link_to 'Destroy', alco_drink, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Alco drink', new_alco_drink_path %>

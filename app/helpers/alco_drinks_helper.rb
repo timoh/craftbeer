@@ -1,0 +1,2 @@
+module AlcoDrinksHelper
+end

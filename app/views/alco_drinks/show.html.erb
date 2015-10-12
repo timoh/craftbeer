@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @alco_drink.title %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @alco_drink.price %>
+</p>
+
+<p>
+  <strong>Type:</strong>
+  <%= @alco_drink.type %>
+</p>
+
+<p>
+  <strong>Size:</strong>
+  <%= @alco_drink.size %>
+</p>
+
+<p>
+  <strong>Url:</strong>
+  <%= @alco_drink.url %>
+</p>
+
+<%= link_to 'Edit', edit_alco_drink_path(@alco_drink) %> |
+<%= link_to 'Back', alco_drinks_path %>
