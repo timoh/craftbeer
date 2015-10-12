@@ -26,8 +26,8 @@ class Review
       a.title = row["Otsikko"]
       a.url = row["url"]
       a.score = row["Arvio"]
-      a.company = row["Panimo"]
-      a.type = row["Tyyppi"]
+      a.company = row["Panimo"]["text"]
+      a.type = row["Tyyppi"]["type"]
 
       a.save # will fail if duplicate URL or title!
     end
