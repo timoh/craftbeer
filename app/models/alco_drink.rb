@@ -14,13 +14,11 @@ class AlcoDrink
     require 'rest-client'
     require 'json'
     response = RestClient.get(Settings[:apis][:alco_drink_path].to_s)
-    j = JSON.parse(response)
+    j = JSON.parse(response)['results']['collection1']
   end
 
   def AlcoDrink.store_kimono(hash) # takes .get_kimono result and tries to store into DB
-    arr = hash['results']['collection1']
-
-    arr.each do |row|
+    hash.each do |row|
       # ["Otsikko", "Hinta", "Tyyppi", "Koko", "index", "url"]
 
       a = AlcoDrink.new
