@@ -7,6 +7,7 @@ class Review
   field :company, type: String
   field :type, type: String
 
+  belongs_to :alco_drink
 
   def Review.get_kimono
     require 'rest-client'

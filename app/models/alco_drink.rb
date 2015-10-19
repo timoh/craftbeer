@@ -6,9 +6,15 @@ class AlcoDrink
   field :type, type: String
   field :size, type: Float
   field :url, type: String
+  field :alko_id, type: String
 
   validates :url, uniqueness: true
   validates :title, uniqueness: true
+  validates :alko_id, uniqueness: true
+  validates :alko_id, presence: true
+
+  has_many :alco_avails
+  has_one :review
 
   def AlcoDrink.get_kimono
     require 'rest-client'
@@ -29,9 +35,21 @@ class AlcoDrink
       a.size = row["Koko"]
       a.url = row["url"]
 
+      # alko_id needs to be parsed from the url
+      a.alko_id = /[0-9]+/.match(row["url"])
+
+      a.review = Review.where(name: a.title)
+
       a.save # will fail if duplicate URL or title!
     end
+  end
 
+  def AlcoDrink.get_all_avails
+    AlcoDrink.all.each do |drink_row|
+      drink_id = drink_row.alko_id
+      avails = AlcoAvail.get_for_prod(drink_id, "Helsinki")
+      AlcoAvail.store_avails(drink_id, "Helsinki", avails)
+    end
   end
 
 end
