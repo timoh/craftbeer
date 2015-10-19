@@ -65,7 +65,7 @@ class AlcoDrink
       best_score = 0.00
 
       Review.all.each do |row|
-        if matchable.match(row.title) > 0.75
+        if matchable.match(row.title) > 0.85
           if matchable.match(row.title) > best_score
             best_score = matchable.match(row.title)
             best_candidate = row
@@ -81,6 +81,9 @@ class AlcoDrink
         drink_row.save!
         puts "Drink review saved for "+best_candidate.title+"!"
       else
+        drink_row.review = nil
+        drink_row.best_rev_candidate_score = 0.0
+        drink_row.save!
         puts "No review found for "+drink_row.title+"!"
       end
     end
