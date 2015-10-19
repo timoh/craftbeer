@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem "config"
-
+gem "amatch"
 gem 'rails', '4.2.4'
 gem 'mongoid', '~> 5.0.0'
 gem 'rest-client'

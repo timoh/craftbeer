@@ -7,6 +7,7 @@ class AlcoDrink
   field :size, type: Float
   field :url, type: String
   field :alko_id, type: String
+  field :best_rev_candidate_score, type: Float
 
   validates :url, uniqueness: true
   validates :title, uniqueness: true
@@ -49,6 +50,39 @@ class AlcoDrink
       drink_id = drink_row.alko_id
       avails = AlcoAvail.get_for_prod(drink_id, "Helsinki")
       AlcoAvail.store_avails(drink_id, "Helsinki", avails)
+    end
+  end
+
+  def AlcoDrink.set_reviews
+    AlcoDrink.all.each do |drink_row|
+      require 'amatch'
+      include Amatch
+      # fuzzy matching
+
+      matchable = JaroWinkler.new(drink_row.title)
+
+      best_candidate = nil
+      best_score = 0.00
+
+      Review.all.each do |row|
+        if matchable.match(row.title) > 0.75
+          if matchable.match(row.title) > best_score
+            best_score = matchable.match(row.title)
+            best_candidate = row
+          end
+        end
+      end
+
+      drink_row.review = best_candidate
+      drink_row.best_rev_candidate_score = best_score
+
+      if best_candidate
+        drink_row.review = best_candidate
+        drink_row.save!
+        puts "Drink review saved for "+best_candidate.title+"!"
+      else
+        puts "No review found for "+drink_row.title+"!"
+      end
     end
   end
 
