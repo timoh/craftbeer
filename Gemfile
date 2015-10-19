@@ -40,6 +40,9 @@ group :development, :test do
 end
 
 group :development do
+  gem 'awesome_print', :require => 'ap'
+  gem 'pry-rails', :group => :development
+  # gem 'jazz_hands' # --> does not work with Ruby 2 due to PRY Debugger
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console', '~> 2.0'
 
