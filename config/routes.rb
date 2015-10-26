@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
-  get 'beer/show'
-
+  get 'beer/:id' => 'alco_drinks#show'
   get 'home/index'
 
   resources :reviews

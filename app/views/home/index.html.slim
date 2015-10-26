@@ -18,7 +18,7 @@ table.table.table-striped.table-bordered
     - @drinks.each do |drink|
       tr
         td
-          = drink.title
+          = link_to drink.title, drink
         td
           - if drink.review
             - if drink.review.score > 0
