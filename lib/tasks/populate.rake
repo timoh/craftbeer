@@ -1,0 +1,47 @@
+namespace :populate do
+
+
+  desc "Populate the database with Olutopas.info data"
+  task olutopas: :environment do
+    Review.store_kimono(Review.get_kimono)
+    puts "Olutopas data successfully populated!"
+  end
+
+  desc "Populate the DB with Alko product data"
+  task alko_product: :environment do
+    AlcoDrink.store_kimono(AlcoDrink.get_kimono)
+    puts "Alko product data successfully populated!"
+  end
+
+  desc "Populate the DB with Alko availability data"
+  task alko_avail: :environment do
+    AlcoDrink.get_all_avails
+    puts "Alko availability data successfully populated!"
+  end
+
+  desc "Match the reviews of Olutopas.info with Alko data"
+  task fuzzymatch: :environment do
+    AlcoDrink.set_reviews
+    puts "Olutopas data matched successfully with Alko data!"
+  end
+
+  desc "Purge whole DB"
+  task purge_db: :environment do
+    AlcoAvail.delete_all
+    AlcoDrink.delete_all
+    AlcoLocation.delete_all
+    Review.delete_all
+    puts "DB now purged!"
+  end
+
+  desc "Empty DB collections and do all population tasks sequentially"
+  task whole_shebang: :environment do
+    Rake::Task["populate:purge_db"].invoke
+    Rake::Task["populate:olutopas"].invoke
+    Rake::Task["populate:alko_product"].invoke
+    Rake::Task["populate:alko_avail"].invoke
+    Rake::Task["populate:fuzzymatch"].invoke
+    puts "Whole shebang complete!"
+  end
+
+end
