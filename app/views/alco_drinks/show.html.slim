@@ -1,0 +1,24 @@
+p#notice =notice
+
+=image_tag('/pics/productpic_'+@alco_drink.alko_id+'.png', class: "img-responsive", size: "75")
+p
+  strong Title:&nbsp;
+  = @alco_drink.title
+p
+  strong
+    | Price:&nbsp;
+  = @alco_drink.price
+p
+  strong
+    | Type:&nbsp;
+  = @alco_drink.type
+p
+  strong
+    | Size:&nbsp;
+  = @alco_drink.size
+p
+  strong
+    | Url:&nbsp;
+  = @alco_drink.url
+= link_to 'Edit', edit_alco_drink_path(@alco_drink)
+= link_to 'Back', alco_drinks_path
