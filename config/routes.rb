@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'beer/show'
+
   get 'home/index'
 
   resources :reviews
