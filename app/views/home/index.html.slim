@@ -1,0 +1,42 @@
+h1 Drinks
+table
+  thead
+    th
+      | Drink title
+    th
+      | Review title
+    th
+      | Match score
+    th
+      | Review score
+    th
+      | Size
+    th
+      | Price
+    th
+      | Max availability in Alko
+  tbody
+    - @drinks.each do |drink|
+      tr
+        td
+          = drink.title
+        td
+          - if drink.review
+            - if drink.review.score > 0
+              = drink.review.title
+        td
+          - if drink.review
+            - if drink.review.score > 0
+              = number_with_precision(drink.best_rev_candidate_score, :precision => 2)
+        td
+          - if drink.review
+            - if drink.review.score > 0
+              = number_with_precision(drink.review.score, :precision => 0)
+
+
+        td
+          = number_with_precision(drink.size, :precision => 2)
+        td
+          = number_with_precision(drink.price, :precision => 2)
+        td
+          = drink.alco_avails.max(:amount)
