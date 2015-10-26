@@ -31,9 +31,9 @@ class AlcoDrink
       a = AlcoDrink.new
 
       a.title = row["Otsikko"]
-      a.price = row["Hinta"]
+      a.price = row["Hinta"].gsub!(',','.').to_f if row["Hinta"].is_a?(String)
       a.type = row["Tyyppi"]
-      a.size = row["Koko"]
+      a.size = row["Koko"].gsub!(',','.').to_f if row["Koko"].is_a?(String)
       a.url = row["url"]
 
       # alko_id needs to be parsed from the url
