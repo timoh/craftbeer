@@ -1,0 +1,48 @@
+<%- model_class = AlcoDrink -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:title) %></th>
+      <th><%= model_class.human_attribute_name(:price) %></th>
+      <th><%= model_class.human_attribute_name(:type) %></th>
+      <th><%= model_class.human_attribute_name(:size) %></th>
+      <th><%= model_class.human_attribute_name(:url) %></th>
+      <th><%= model_class.human_attribute_name(:alko_id) %></th>
+      <th><%= model_class.human_attribute_name(:best_rev_candidate_score) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @alco_drinks.each do |alco_drink| %>
+      <tr>
+        <td><%= link_to alco_drink.id, alco_drink_path(alco_drink) %></td>
+        <td><%= alco_drink.title %></td>
+        <td><%= alco_drink.price %></td>
+        <td><%= alco_drink.type %></td>
+        <td><%= alco_drink.size %></td>
+        <td><%= alco_drink.url %></td>
+        <td><%= alco_drink.alko_id %></td>
+        <td><%= alco_drink.best_rev_candidate_score %></td>
+        <td><%=l alco_drink.created_at %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_alco_drink_path(alco_drink), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      alco_drink_path(alco_drink),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_alco_drink_path,
+            :class => 'btn btn-primary' %>

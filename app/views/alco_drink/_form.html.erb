@@ -1,0 +1,73 @@
+<%= form_for @alco_drink, :html => { :class => "form-horizontal alco_drink" } do |f| %>
+
+    <% if @alco_drink.errors.any? %>
+    <div id="error_expl" class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title"><%= pluralize(@alco_drink.errors.count, "error") %> prohibited this alco_drink from being saved:</h3>
+      </div>
+      <div class="panel-body">
+        <ul>
+        <% @alco_drink.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="control-group">
+    <%= f.label :title, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :title, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:title]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :price, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :price, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:price]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :type, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :type, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:type]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :size, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :size, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:size]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :url, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :url, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:url]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :alko_id, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :alko_id, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:alko_id]) %>
+  </div>
+  <div class="control-group">
+    <%= f.label :best_rev_candidate_score, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :best_rev_candidate_score, :class => 'form-control' %>
+    </div>
+    <%= error_span(@alco_drink[:best_rev_candidate_score]) %>
+  </div>
+
+
+  <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+            alco_drinks_path, :class => 'btn btn-default' %>
+
+<% end %>
