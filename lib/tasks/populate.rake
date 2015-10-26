@@ -44,4 +44,10 @@ namespace :populate do
     puts "Whole shebang complete!"
   end
 
+  desc "Get big images from CDN"
+  task pics: :environment do
+    AlcoDrink.get_all_pics
+    puts "All pics fetched"
+  end
+
 end

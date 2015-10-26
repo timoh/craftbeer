@@ -24,6 +24,33 @@ class AlcoDrink
     j = JSON.parse(response)['results']['collection1']
   end
 
+  def get_pic
+    pic_id = self.alko_id
+    from_uri = 'http://cdn.alko.fi/ProductImages/Scaled/'+pic_id+'/zoom.jpg'
+    to_path = 'public/pics/productpic_'+pic_id+'.png'
+    require 'open-uri'
+    open(to_path, 'wb') do |file|
+      file << open(from_uri).read
+    end
+  end
+
+  def AlcoDrink.get_all_pics
+    AlcoDrink.all.each do |drink|
+      unless File.exist?('public/pics/productpic_'+drink.alko_id+'.png')
+        puts 'Getting pic for '+drink.title
+        begin
+          drink.get_pic
+        rescue
+          puts 'No pic found'
+        end
+        puts 'Done.'
+      else
+        puts 'Pic exists for '+drink.title
+      end
+    end
+
+  end
+
   def AlcoDrink.store_kimono(hash) # takes .get_kimono result and tries to store into DB
     hash.each do |row|
       # ["Otsikko", "Hinta", "Tyyppi", "Koko", "index", "url"]
