@@ -1,10 +1,10 @@
 namespace :populate do
 
 
-  desc "Populate the database with Olutopas.info data"
-  task olutopas: :environment do
+  desc "Populate the database with review data"
+  task review_data: :environment do
     Review.store_kimono(Review.get_kimono)
-    puts "Olutopas data successfully populated!"
+    puts "Review data successfully populated!"
   end
 
   desc "Populate the DB with Alko product data"
@@ -19,10 +19,10 @@ namespace :populate do
     puts "Alko availability data successfully populated!"
   end
 
-  desc "Match the reviews of Olutopas.info with Alko data"
+  desc "Match the reviews with Alko data"
   task fuzzymatch: :environment do
     AlcoDrink.set_reviews
-    puts "Olutopas data matched successfully with Alko data!"
+    puts "Review data matched successfully with Alko data!"
   end
 
   desc "Purge whole DB"
@@ -37,7 +37,7 @@ namespace :populate do
   desc "Empty DB collections and do all population tasks sequentially"
   task whole_shebang: :environment do
     Rake::Task["populate:purge_db"].invoke
-    Rake::Task["populate:olutopas"].invoke
+    Rake::Task["populate:review_data"].invoke
     Rake::Task["populate:alko_product"].invoke
     Rake::Task["populate:alko_avail"].invoke
     Rake::Task["populate:fuzzymatch"].invoke
