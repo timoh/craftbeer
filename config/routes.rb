@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
+  get '/' => 'home#index'
+
+  # this migth be totally useless
   get 'beer/:id' => 'alco_drinks#show'
-  get 'home/index'
+
+  get 'alco_drinks/broad/:id' => 'alco_drinks#show_broad_json'
 
   resources :reviews
   resources :alco_drinks

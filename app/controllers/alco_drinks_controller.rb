@@ -1,5 +1,5 @@
 class AlcoDrinksController < ApplicationController
-  before_action :set_alco_drink, only: [:show, :edit, :update, :destroy]
+  before_action :set_alco_drink, only: [:show, :edit, :update, :destroy, :show_broad_json]
 
   # GET /alco_drinks
   # GET /alco_drinks.json
@@ -10,6 +10,10 @@ class AlcoDrinksController < ApplicationController
   # GET /alco_drinks/1
   # GET /alco_drinks/1.json
   def show
+  end
+
+  def show_broad_json
+    render :json => @alco_drink.to_json(:include => [:alco_avails, :review])
   end
 
   # GET /alco_drinks/new
