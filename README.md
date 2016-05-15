@@ -6,6 +6,13 @@
 Just started this project.
 Data collected earlier already, available in external API.
 
+## Usage in development mode
+
+1. bundle install
+2. npm install
+3. rails s
+4. npm start
+
 ## Roadmap
 
 1. Ingest data from ext. api

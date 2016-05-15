@@ -13,6 +13,7 @@
 /log/*
 !/log/.keep
 /tmp
-
+/dump
+/node_modules
 /public/pics
 config/settings.local.yml
