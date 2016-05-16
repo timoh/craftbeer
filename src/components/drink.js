@@ -25,13 +25,6 @@ export default class Drink extends React.Component {
         })
     }
   }
-  componentDidMount() {
-    this.interval = setInterval(() => this.loadDrinkFromApi(), 5000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
 
   render() {
     return(

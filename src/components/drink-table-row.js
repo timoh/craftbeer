@@ -20,7 +20,7 @@ export default class DrinkTableRow extends React.Component {
               {this.props.drink.best_rev_candidate_score.toFixed(2)}
             </td>
             <td>
-              33
+              {this.props.drink.score}
             </td>
             <td>
               {this.props.drink.size.toFixed(2)}
@@ -29,7 +29,7 @@ export default class DrinkTableRow extends React.Component {
               {this.props.drink.price.toFixed(2)}
             </td>
             <td>
-              0
+              {this.props.drink.maxAvailability}
             </td>
         </tr>
     )
