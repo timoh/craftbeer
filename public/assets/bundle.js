@@ -25190,9 +25190,7 @@ var DrinkTable = function (_React$Component) {
         dataType: 'json',
         success: function (data) {
           this.setState({ drinks: data });
-          this.state.drinks.map(function (drink) {
-            this.loadAdditionalDataForDrink(drink);
-          }.bind(this));
+          this.addAdditionalDataForDrinks();
         }.bind(this)
       });
     }
@@ -25204,32 +25202,23 @@ var DrinkTable = function (_React$Component) {
       }).indexOf(drink._id.$oid);
     }
   }, {
-    key: 'loadAdditionalDataForDrink',
-    value: function loadAdditionalDataForDrink(drink) {
-      var id = drink._id.$oid;
-      $.ajax({
-        method: 'GET',
-        url: 'alco_drinks/broad/' + id,
-        dataType: 'json',
-        success: function (data) {
-          this.updateDrink(data);
-        }.bind(this)
-      });
-    }
-  }, {
-    key: 'updateDrink',
-    value: function updateDrink(drinkData) {
-      if (drinkData.review != undefined) {
-        drinkData.score = drinkData.review.score;
-      } else {
-        drinkData.score = '';
-      }
-      drinkData.maxAvailability = this.calculateMaxAvailability(drinkData.alco_avails);
-      var index = this.getDrinkIndex(drinkData);
-      if (index != -1) {
-        var updatedDrinks = (0, _reactAddonsUpdate2.default)(this.state.drinks, { $splice: [[index, 1, drinkData]] });
-        this.setState({ drinks: updatedDrinks });
-      }
+    key: 'addAdditionalDataForDrinks',
+    value: function addAdditionalDataForDrinks() {
+      var drinks = this.state.drinks;
+      var updatedDrinks;
+      drinks.map(function (drink) {
+        if (drink.review != undefined) {
+          drink.score = drink.review.score;
+        } else {
+          drink.score = '';
+        }
+        drink.maxAvailability = this.calculateMaxAvailability(drink.alco_avails);
+        var index = this.getDrinkIndex(drink);
+        if (index != -1) {
+          updatedDrinks = (0, _reactAddonsUpdate2.default)(drinks, { $splice: [[index, 1, drink]] });
+        }
+      }.bind(this));
+      this.setState({ drinks: updatedDrinks });
     }
   }, {
     key: 'calculateMaxAvailability',
