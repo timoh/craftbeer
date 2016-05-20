@@ -25042,7 +25042,7 @@ var app = _react2.default.createElement(
 
 _reactDom2.default.render(app, document.getElementById('craftbeer-app'));
 
-},{"./layout/layout":238,"./pages/drinkpage":239,"./pages/indexpage":240,"react":230,"react-dom":3,"react-router":33}],232:[function(require,module,exports){
+},{"./layout/layout":240,"./pages/drinkpage":241,"./pages/indexpage":242,"react":230,"react-dom":3,"react-router":33}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25297,7 +25297,7 @@ var DrinkTable = function (_React$Component) {
 
 exports.default = DrinkTable;
 
-},{"../components/drink-table-row":232,"../components/table-header":237,"react":230,"react-addons-update":2}],234:[function(require,module,exports){
+},{"../components/drink-table-row":232,"../components/table-header":239,"react":230,"react-addons-update":2}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25558,6 +25558,232 @@ var Menu = function (_React$Component) {
 exports.default = Menu;
 
 },{"react":230}],237:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SearchButton = function (_React$Component) {
+  _inherits(SearchButton, _React$Component);
+
+  function SearchButton() {
+    _classCallCheck(this, SearchButton);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchButton).apply(this, arguments));
+  }
+
+  _createClass(SearchButton, [{
+    key: "render",
+    value: function render() {
+      return _react2.default.createElement(
+        "div",
+        null,
+        _react2.default.createElement(
+          "button",
+          { type: "button", className: "btn btn-primary btn-middle" },
+          "Katso 7 Alkoa"
+        )
+      );
+    }
+  }]);
+
+  return SearchButton;
+}(_react2.default.Component);
+
+exports.default = SearchButton;
+
+},{"react":230}],238:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function maxmin(pos, min, max) {
+  if (pos < min) {
+    return min;
+  }
+  if (pos > max) {
+    return max;
+  }
+  return pos;
+}
+
+var Slider = function (_React$Component) {
+  _inherits(Slider, _React$Component);
+
+  function Slider(props) {
+    _classCallCheck(this, Slider);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Slider).call(this, props));
+
+    _this.handleSliderMouseDown = function (e) {
+      _this.onChange(_this.position(e));
+    };
+
+    _this.handleDrag = function (e) {
+      _this.onChange(_this.position(e));
+    };
+
+    _this.handleDragEnd = function () {
+      document.removeEventListener('mousemove', _this.handleDrag);
+      document.removeEventListener('mouseup', _this.handleDragEnd);
+    };
+
+    _this.handleKnobMouseDown = function () {
+      document.addEventListener('mousemove', _this.handleDrag);
+      document.addEventListener('mouseup', _this.handleDragEnd);
+    };
+
+    _this.handleNoop = function (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    };
+
+    _this.handleTouchMove = function (e) {
+      _this.handleDrag(e);
+    };
+
+    _this.getPositionFromValue = function (value) {
+      var limit = _this.state.limit;
+      var _this$props = _this.props;
+      var min = _this$props.min;
+      var max = _this$props.max;
+
+      var percentage = (value - min) / (max - min);
+      var pos = Math.round(percentage * limit);
+      return pos;
+    };
+
+    _this.getValueFromPosition = function (pos) {
+      var limit = _this.state.limit;
+      var _this$props2 = _this.props;
+      var min = _this$props2.min;
+      var max = _this$props2.max;
+      var step = _this$props2.step;
+
+      var percentage = maxmin(pos, 0, limit) / (limit || 1);
+      var valToMultiply = Math.round(percentage * (max - min) / step);
+      var value = step * valToMultiply + min * 1;
+      return value;
+    };
+
+    _this.position = function (e) {
+      var grab = _this.state.grab;
+
+      var node = (0, _reactDom.findDOMNode)(_this.refs.slider);
+      var coordinate = !e.touches ? e['clientX'] : e.touches[0]['clientX'];
+      var direction = node.getBoundingClientRect()['left'];
+      var pos = coordinate - direction - grab;
+      var value = _this.getValueFromPosition(pos);
+      return value;
+    };
+
+    _this.coordinates = function (pos) {
+      var grab = _this.state.grab;
+
+      var value = _this.getValueFromPosition(pos);
+      var handlePos = _this.getPositionFromValue(value);
+      var fillPos = handlePos + grab;
+      return {
+        fill: fillPos,
+        handle: handlePos
+      };
+    };
+
+    _this.state = {
+      limit: null,
+      grab: null,
+      value: null
+    };
+    return _this;
+  }
+
+  // Add window resize event listener here
+
+
+  _createClass(Slider, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var sliderPos = (0, _reactDom.findDOMNode)(this.refs.slider)['offsetWidth'];
+      var handlePos = (0, _reactDom.findDOMNode)(this.refs.handle)['offsetWidth'];
+      this.setState({
+        limit: sliderPos - handlePos,
+        grab: handlePos / 2,
+        value: 5000
+      });
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(changedValue) {
+      this.setState({
+        value: changedValue
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var value = this.state.value;
+      var position = this.getPositionFromValue(value);
+      var coords = this.coordinates(position);
+      var fillStyle = { 'width': coords.fill + 'px' };
+      var handleStyle = { 'left': coords.handle + 'px' };
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          'div',
+          { ref: 'slider', className: 'rangeslider rangeslider-horizontal', onMouseDown: this.handleSliderMouseDown,
+            onClick: this.handleNoop },
+          _react2.default.createElement('div', { ref: 'fill', className: 'rangeslider__fill', style: fillStyle }),
+          _react2.default.createElement('div', { ref: 'handle', className: 'rangeslider__handle', onMouseDown: this.handleKnobMouseDown, onTouchMove: this.handleTouchMove, onClick: this.handleNoop, style: handleStyle })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'value' },
+          this.state.value
+        )
+      );
+    }
+  }]);
+
+  return Slider;
+}(_react2.default.Component);
+
+exports.default = Slider;
+
+},{"react":230,"react-dom":3}],239:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25674,7 +25900,7 @@ var TableHeader = function (_React$Component) {
 
 exports.default = TableHeader;
 
-},{"react":230}],238:[function(require,module,exports){
+},{"react":230}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25730,7 +25956,7 @@ var Layout = function (_React$Component) {
 
 exports.default = Layout;
 
-},{"../components/header":235,"../components/menu":236,"react":230}],239:[function(require,module,exports){
+},{"../components/header":235,"../components/menu":236,"react":230}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25791,7 +26017,7 @@ var DrinkPage = function (_React$Component) {
 
 exports.default = DrinkPage;
 
-},{"../components/drink":234,"react":230,"react-router":33}],240:[function(require,module,exports){
+},{"../components/drink":234,"react":230,"react-router":33}],242:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25807,6 +26033,14 @@ var _react2 = _interopRequireDefault(_react);
 var _drinkTable = require('../components/drink-table');
 
 var _drinkTable2 = _interopRequireDefault(_drinkTable);
+
+var _slider = require('../components/slider');
+
+var _slider2 = _interopRequireDefault(_slider);
+
+var _searchButton = require('../components/search-button');
+
+var _searchButton2 = _interopRequireDefault(_searchButton);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25834,7 +26068,9 @@ var IndexPage = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { className: 'container' },
-          _react2.default.createElement(_drinkTable2.default, null)
+          _react2.default.createElement(_slider2.default, { min: '0', max: '10000', step: '100' }),
+          _react2.default.createElement(_drinkTable2.default, null),
+          _react2.default.createElement(_searchButton2.default, null)
         )
       );
     }
@@ -25845,5 +26081,5 @@ var IndexPage = function (_React$Component) {
 
 exports.default = IndexPage;
 
-},{"../components/drink-table":233,"react":230}]},{},[231])
+},{"../components/drink-table":233,"../components/search-button":237,"../components/slider":238,"react":230}]},{},[231])
 //# sourceMappingURL=bundle.js.map

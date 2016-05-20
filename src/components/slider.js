@@ -1,0 +1,123 @@
+import React from 'react';
+import { findDOMNode } from 'react-dom';
+
+function maxmin(pos, min, max) {
+	if (pos < min) { return min; }
+	if (pos > max) { return max; }
+	return pos;
+}
+
+export default class Slider extends React.Component {
+  constructor(props){
+    super(props);
+    this.state= {
+      limit: null,
+      grab: null,
+      value: null
+    }
+  }
+
+  // Add window resize event listener here
+  componentDidMount() {
+    const sliderPos = findDOMNode(this.refs.slider)['offsetWidth'];
+    const handlePos = findDOMNode(this.refs.handle)['offsetWidth'];
+    this.setState({
+      limit: sliderPos - handlePos,
+      grab: handlePos / 2,
+      value: 5000
+    });
+  }
+
+  handleSliderMouseDown = (e) => {
+  	this.onChange(this.position(e));
+  }
+
+  handleDrag = (e) => {
+  	this.onChange(this.position(e));
+  }
+
+  handleDragEnd = () => {
+    document.removeEventListener('mousemove', this.handleDrag);
+    document.removeEventListener('mouseup', this.handleDragEnd);
+  }
+
+  handleKnobMouseDown = () => {
+    document.addEventListener('mousemove', this.handleDrag);
+    document.addEventListener('mouseup', this.handleDragEnd);
+  }
+
+  handleNoop = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+  }
+
+  handleTouchMove = (e) => {
+    this.handleDrag(e);
+  }
+
+  onChange(changedValue) {
+    this.setState({
+			value: changedValue
+		});
+  }
+
+  getPositionFromValue = (value) => {
+    const { limit } = this.state;
+    const { min, max } = this.props;
+    const percentage = (value - min) / (max - min);
+    const pos = Math.round(percentage * limit);
+    return pos;
+  }
+
+  getValueFromPosition = (pos) => {
+  	const { limit } = this.state;
+	  const { min, max, step } = this.props;
+  	const percentage = (maxmin(pos, 0, limit) / (limit || 1));
+    const valToMultiply = Math.round(percentage * (max - min) / step);
+    const value = step * valToMultiply + min*1;
+  	return value;
+  }
+
+  position = (e) => {
+  	const { grab } = this.state;
+  	const node = findDOMNode(this.refs.slider);
+  	const coordinate = !e.touches
+			? e['clientX']
+			: e.touches[0]['clientX'];
+  	const direction = node.getBoundingClientRect()['left'];
+  	const pos = coordinate - direction - grab;
+  	const value = this.getValueFromPosition(pos);
+  	return value;
+  }
+
+  coordinates = (pos) => {
+  	const { grab } = this.state;
+  	const value = this.getValueFromPosition(pos);
+  	const handlePos = this.getPositionFromValue(value);
+  	const fillPos = handlePos + grab;
+  	return {
+  		fill: fillPos,
+  		handle: handlePos,
+  	};
+  }
+
+  render() {
+    const value = this.state.value;
+    const position = this.getPositionFromValue(value);
+    const coords = this.coordinates(position);
+    const fillStyle = {'width': `${coords.fill}px`};
+    const handleStyle = {'left': `${coords.handle}px`};
+    return(
+        <div>
+          <div ref="slider"className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
+	  		onClick={this.handleNoop}>
+            <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
+            <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown}	onTouchMove={this.handleTouchMove} onClick={this.handleNoop} style={handleStyle} />
+          </div>
+          <div className="value">
+            {this.state.value}
+          </div>
+        </div>
+    )
+  }
+}
