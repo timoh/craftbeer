@@ -17,14 +17,13 @@ export default class Slider extends React.Component {
     }
   }
 
-  // Add window resize event listener here
   componentDidMount() {
     const sliderPos = findDOMNode(this.refs.slider)['offsetWidth'];
     const handlePos = findDOMNode(this.refs.handle)['offsetWidth'];
     this.setState({
       limit: sliderPos - handlePos,
       grab: handlePos / 2,
-      value: 5000
+      value: 1000
     });
   }
 
@@ -101,6 +100,10 @@ export default class Slider extends React.Component {
   	};
   }
 
+	valueToKilometers(value) {
+		return value / 1000 + " km"
+	}
+
   render() {
     const value = this.state.value;
     const position = this.getPositionFromValue(value);
@@ -109,14 +112,23 @@ export default class Slider extends React.Component {
     const handleStyle = {'left': `${coords.handle}px`};
     return(
         <div>
-          <div ref="slider"className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
+					<div className="h4 text-center">Maximum distance to nearest Alko store</div>
+          <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
 	  		onClick={this.handleNoop}>
             <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
             <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown}	onTouchMove={this.handleTouchMove} onClick={this.handleNoop} style={handleStyle} />
           </div>
-          <div className="value">
-            {this.state.value}
-          </div>
+					<div className="row limit">
+						<div className="col-md-5 min">
+							{this.valueToKilometers(this.props.min)}
+						</div>
+						<div className="col-md-2 value">
+	            {this.valueToKilometers(this.state.value)}
+	          </div>
+						<div className="col-md-5 max">
+							{this.valueToKilometers(this.props.max)}
+						</div>
+					</div>
         </div>
     )
   }

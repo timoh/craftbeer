@@ -1,7 +1,7 @@
 import React from 'react';
 import update from 'react-addons-update';
 import DrinkTableRow from '../components/drink-table-row';
-import TableHeader from '../components/table-header';
+import TableHeaders from '../components/table-headers';
 export default class DrinkTable extends React.Component {
 
   	constructor() {
@@ -65,22 +65,22 @@ export default class DrinkTable extends React.Component {
     }
 
 
-    sort(field){
+    sort(field,newSortOrder){
       var sortedDrinks = this.state.drinks;
-      sortedDrinks.sort(this.handleSort(field));
+      sortedDrinks.sort(this.handleSort(field,newSortOrder));
       this.setState({
         drinks: sortedDrinks
       });
     }
-    handleSort(field) {
+    handleSort(field,sortOrder) {
       if (field=='price' || field =='size') {
-        return this.sortBy(field,false,parseFloat);
+        return this.sortBy(field,sortOrder,parseFloat);
       } else if (field=='best_rev_candidate_score'){
-        return this.sortBy(field,true,parseFloat);
+        return this.sortBy(field,sortOrder,parseFloat);
       } else if (field=='maxAvailability' || field=='score') {
-        return this.sortBy(field,true,parseInt);
+        return this.sortBy(field,sortOrder,parseInt);
       } else {
-        return this.sortBy(field,false, function(a){return a.toUpperCase()});
+        return this.sortBy(field,sortOrder, function(a){return a.toUpperCase()});
       }
     }
 
@@ -101,7 +101,7 @@ export default class DrinkTable extends React.Component {
   render() {
     return(
         <table className= "table table-striped table-bordered">
-          <TableHeader sort={this.sort.bind(this)} />
+          <TableHeaders sort={this.sort.bind(this)} />
           <tbody>
             { this.state.drinks.map(function(drink){
               return (
