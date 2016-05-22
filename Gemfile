@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+# ruby version is determined in the .ruby-version file
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem "config"
@@ -9,6 +9,15 @@ gem 'mongoid', '~> 5.0.0'
 gem 'rest-client'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
+
+# gem "nokogiri"
+# gem "mechanize"
+# gem "watir"
+
+# for geolocation stuff
+gem 'mongoid-geospatial'
+# used for distance calculations
+gem 'georuby'
 
 gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS

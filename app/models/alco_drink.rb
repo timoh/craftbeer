@@ -38,11 +38,11 @@ class AlcoDrink
     AlcoDrink.all.each do |drink|
       unless File.exist?('public/pics/productpic_'+drink.alko_id+'.png')
         puts 'Getting pic for '+drink.title
-        begin
+        #begin
           drink.get_pic
-        rescue
-          puts 'No pic found'
-        end
+        #rescue
+          #puts 'No pic found'
+        #end
         puts 'Done.'
       else
         puts 'Pic exists for '+drink.title

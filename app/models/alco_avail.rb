@@ -35,6 +35,11 @@ class AlcoAvail
 
       loc_obj = AlcoLocation.find_or_create_by(loc_name: res_loc["StoreName"])
       loc_obj.city = city
+
+      # also add the store_link at this point, so that it can be used for
+      # getting the address of the store later
+      loc_obj.store_link = res_loc["StoreLink"]
+
       loc_obj.save!
 
       av.alco_location = loc_obj
