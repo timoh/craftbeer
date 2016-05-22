@@ -3,6 +3,8 @@ import update from 'react-addons-update';
 import DrinkTableRow from '../components/drink-table-row';
 import TableHeaders from '../components/table-headers';
 import TableButton from '../components/table-button';
+import CurrentLocation from '../current-location';
+
 export default class DrinkTable extends React.Component {
 
   	constructor() {
@@ -12,13 +14,20 @@ export default class DrinkTable extends React.Component {
   		};
   	}
     componentWillMount() {
-  		this.loadDrinksFromApi();
+  		this.loadLocation(this.loadDrinksFromApi.bind(this));
     }
 
-    loadDrinksFromApi() {
+    loadLocation(callback) {
+      var currentLoc = new CurrentLocation();
+      currentLoc.getLocation(callback);
+    }
+
+    loadDrinksFromApi(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
       $.ajax({
           method: 'GET',
-              url: '/home/index',
+              url: '/home/distanced?lat='+latitude+'&lng='+longitude,
               dataType: 'json',
               success: function(data) {
                 this.setState({drinks: data});
@@ -30,27 +39,27 @@ export default class DrinkTable extends React.Component {
     addAdditionalDataForDrinks(){
       var drinks = this.state.drinks;
       var updatedDrinks;
-      drinks.map(function(drink,arrayIndex) {
+      drinks.map(function(drinkData,arrayIndex) {
         var score;
-        if(drink.review!==undefined) {
-          score=drink.review.score;
+        if(drinkData.reviews!==undefined) {
+          score=drinkData.reviews.score;
         } else {
           score ='';
         }
-        var maxAvailability = this.calculateMaxAvailability(drink.alco_avails);
+        var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         var stocked = this.isStocked(maxAvailability);
-        var updatedDrink = update(drink, {$merge: {score: score, maxAvailability: maxAvailability, stocked: stocked, visible:true}});
-        updatedDrinks = this.handleArrayUpdate(arrayIndex,drink,updatedDrink,drinks,updatedDrinks);
+        var updatedDrink = update(drinkData, {$merge: {score: score, maxAvailability: maxAvailability, stocked: stocked, visible:true}});
+        updatedDrinks = this.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,drinks,updatedDrinks);
       }.bind(this));
       this.setState({drinks: updatedDrinks});
     }
 
-    calculateMaxAvailability(alco_avails) {
+    calculateMaxAvailability(availsData) {
       var maxAvailability = 0;
-      if (alco_avails !==undefined) {
-          alco_avails.map(function(alco_avail){
-          if(alco_avail.amount > maxAvailability) {
-            maxAvailability = alco_avail.amount;
+      if (availsData !== undefined) {
+          availsData.map(function(availData){
+          if(availData.avail.amount > maxAvailability) {
+            maxAvailability = availData.avail.amount;
           }
         });
       }
@@ -131,15 +140,15 @@ export default class DrinkTable extends React.Component {
     render() {
       return(
           <div>
-            <TableButton toggleNonStocked={this.toggleNonStocked.bind(this)}/>
+            <TableButton toggleNonStocked={this.toggleNonStocked.bind(this)} />
             <table className= "table table-striped table-bordered">
               <TableHeaders sort={this.sort.bind(this)} />
               <tbody>
-                { this.state.drinks.map(function(drink){
-                  if(drink.visible) {
+                { this.state.drinks.map(function(drinkData){
+                  if(drinkData.visible) {
                     return (
-                      <DrinkTableRow key={ drink._id.$oid }
-                      drink={ drink }/>
+                      <DrinkTableRow key={ drinkData.drink._id.$oid }
+                      drinkData={ drinkData }/>
                     )
                   }
                 }, this)}

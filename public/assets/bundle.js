@@ -25042,7 +25042,7 @@ var app = _react2.default.createElement(
 
 _reactDom2.default.render(app, document.getElementById('craftbeer-app'));
 
-},{"./layout/layout":242,"./pages/drinkpage":243,"./pages/indexpage":244,"react":230,"react-dom":3,"react-router":33}],232:[function(require,module,exports){
+},{"./layout/layout":243,"./pages/drinkpage":244,"./pages/indexpage":245,"react":230,"react-dom":3,"react-router":33}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25085,39 +25085,39 @@ var DrinkTableRow = function (_React$Component) {
           null,
           _react2.default.createElement(
             _reactRouter.Link,
-            { to: '/alco_drinks/' + this.props.drink._id.$oid },
-            this.props.drink.title
+            { to: '/alco_drinks/' + this.props.drinkData.drink._id.$oid },
+            this.props.drinkData.drink.title
           )
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drink.title
+          this.props.drinkData.drink.title
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drink.best_rev_candidate_score.toFixed(2)
+          this.props.drinkData.drink.best_rev_candidate_score.toFixed(2)
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drink.score
+          this.props.drinkData.score
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drink.size.toFixed(2)
+          this.props.drinkData.drink.size.toFixed(2)
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drink.price.toFixed(2)
+          this.props.drinkData.drink.price.toFixed(2)
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drink.maxAvailability
+          this.props.drinkData.maxAvailability
         )
       );
     }
@@ -25157,6 +25157,10 @@ var _tableButton = require('../components/table-button');
 
 var _tableButton2 = _interopRequireDefault(_tableButton);
 
+var _currentLocation = require('../current-location');
+
+var _currentLocation2 = _interopRequireDefault(_currentLocation);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25182,14 +25186,22 @@ var DrinkTable = function (_React$Component) {
   _createClass(DrinkTable, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      this.loadDrinksFromApi();
+      this.loadLocation(this.loadDrinksFromApi.bind(this));
+    }
+  }, {
+    key: 'loadLocation',
+    value: function loadLocation(callback) {
+      var currentLoc = new _currentLocation2.default();
+      currentLoc.getLocation(callback);
     }
   }, {
     key: 'loadDrinksFromApi',
-    value: function loadDrinksFromApi() {
+    value: function loadDrinksFromApi(position) {
+      var latitude = position.coords.latitude;
+      var longitude = position.coords.longitude;
       $.ajax({
         method: 'GET',
-        url: '/home/index',
+        url: '/home/distanced?lat=' + latitude + '&lng=' + longitude,
         dataType: 'json',
         success: function (data) {
           this.setState({ drinks: data });
@@ -25202,28 +25214,28 @@ var DrinkTable = function (_React$Component) {
     value: function addAdditionalDataForDrinks() {
       var drinks = this.state.drinks;
       var updatedDrinks;
-      drinks.map(function (drink, arrayIndex) {
+      drinks.map(function (drinkData, arrayIndex) {
         var score;
-        if (drink.review !== undefined) {
-          score = drink.review.score;
+        if (drinkData.reviews !== undefined) {
+          score = drinkData.reviews.score;
         } else {
           score = '';
         }
-        var maxAvailability = this.calculateMaxAvailability(drink.alco_avails);
+        var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         var stocked = this.isStocked(maxAvailability);
-        var updatedDrink = (0, _reactAddonsUpdate2.default)(drink, { $merge: { score: score, maxAvailability: maxAvailability, stocked: stocked, visible: true } });
-        updatedDrinks = this.handleArrayUpdate(arrayIndex, drink, updatedDrink, drinks, updatedDrinks);
+        var updatedDrink = (0, _reactAddonsUpdate2.default)(drinkData, { $merge: { score: score, maxAvailability: maxAvailability, stocked: stocked, visible: true } });
+        updatedDrinks = this.handleArrayUpdate(arrayIndex, drinkData, updatedDrink, drinks, updatedDrinks);
       }.bind(this));
       this.setState({ drinks: updatedDrinks });
     }
   }, {
     key: 'calculateMaxAvailability',
-    value: function calculateMaxAvailability(alco_avails) {
+    value: function calculateMaxAvailability(availsData) {
       var maxAvailability = 0;
-      if (alco_avails !== undefined) {
-        alco_avails.map(function (alco_avail) {
-          if (alco_avail.amount > maxAvailability) {
-            maxAvailability = alco_avail.amount;
+      if (availsData !== undefined) {
+        availsData.map(function (availData) {
+          if (availData.avail.amount > maxAvailability) {
+            maxAvailability = availData.avail.amount;
           }
         });
       }
@@ -25324,10 +25336,10 @@ var DrinkTable = function (_React$Component) {
           _react2.default.createElement(
             'tbody',
             null,
-            this.state.drinks.map(function (drink) {
-              if (drink.visible) {
-                return _react2.default.createElement(_drinkTableRow2.default, { key: drink._id.$oid,
-                  drink: drink });
+            this.state.drinks.map(function (drinkData) {
+              if (drinkData.visible) {
+                return _react2.default.createElement(_drinkTableRow2.default, { key: drinkData.drink._id.$oid,
+                  drinkData: drinkData });
               }
             }, this)
           )
@@ -25341,7 +25353,7 @@ var DrinkTable = function (_React$Component) {
 
 exports.default = DrinkTable;
 
-},{"../components/drink-table-row":232,"../components/table-button":239,"../components/table-headers":241,"react":230,"react-addons-update":2}],234:[function(require,module,exports){
+},{"../components/drink-table-row":232,"../components/table-button":239,"../components/table-headers":241,"../current-location":242,"react":230,"react-addons-update":2}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26087,6 +26099,38 @@ var TableHeaders = function (_React$Component) {
 exports.default = TableHeaders;
 
 },{"../components/table-header":240,"react":230}],242:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CurrentLocation = function () {
+    function CurrentLocation() {
+        _classCallCheck(this, CurrentLocation);
+    }
+
+    _createClass(CurrentLocation, [{
+        key: "getLocation",
+        value: function getLocation(callback) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(callback);
+            } else {
+                return;
+            }
+        }
+    }]);
+
+    return CurrentLocation;
+}();
+
+exports.default = CurrentLocation;
+
+},{}],243:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26142,7 +26186,7 @@ var Layout = function (_React$Component) {
 
 exports.default = Layout;
 
-},{"../components/header":235,"../components/menu":236,"react":230}],243:[function(require,module,exports){
+},{"../components/header":235,"../components/menu":236,"react":230}],244:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26215,7 +26259,7 @@ var DrinkPage = function (_React$Component) {
 
 exports.default = DrinkPage;
 
-},{"../components/drink":234,"react":230,"react-router":33}],244:[function(require,module,exports){
+},{"../components/drink":234,"react":230,"react-router":33}],245:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26266,7 +26310,15 @@ var IndexPage = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { className: 'container' },
-          _react2.default.createElement(_slider2.default, { min: '0', max: '10000', step: '100' }),
+          _react2.default.createElement(
+            'div',
+            { className: 'row' },
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-12' },
+              _react2.default.createElement(_slider2.default, { min: '0', max: '10000', step: '100' })
+            )
+          ),
           _react2.default.createElement(_drinkTable2.default, null),
           _react2.default.createElement(_searchButton2.default, null)
         )
