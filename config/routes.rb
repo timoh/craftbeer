@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   get '/' => 'home#index'
   get '/home/index' => 'home#index'
+
+  # usage: /home/distanced?lat=10.0&lng=11.2
+  # latitude & longitude
   get '/home/distanced' => 'home#all_with_distance'
 
   # this migth be totally useless
