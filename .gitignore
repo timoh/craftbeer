@@ -18,7 +18,4 @@
 /public/pics
 config/settings.local.yml
 npm-debug.log
-bin/rails
-bin/rake
-bin/spring
 Gemfile.lock
