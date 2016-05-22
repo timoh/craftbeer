@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   get '/' => 'home#index'
   get '/home/index' => 'home#index'
 
-  # usage: /home/distanced?lat=10.0&lng=11.2
+  # usage: /home/distanced?lat=60.1688202&lng=24.9337834
   # latitude & longitude
   get '/home/distanced' => 'home#all_with_distance'
 
