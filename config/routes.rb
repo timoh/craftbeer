@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   get '/' => 'home#index'
   get '/home/index' => 'home#index'
+  get '/home/distanced' => 'home#all_with_distance'
 
   # this migth be totally useless
   get 'beer/:id' => 'alco_drinks#show'
