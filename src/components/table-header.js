@@ -4,10 +4,17 @@ export default class TableHeader extends React.Component {
 
   constructor(props) {
     super(props);
+    // first click will also toggle sort order
+    this.state = {
+      sortOrder: !props.header.initialSortOrder
+    };
   }
 
   handleOnClick(){
-    this.props.onClick(this.props.header.field,this.props.header.key);
+    this.setState({
+      sortOrder: !this.state.sortOrder
+    });
+    this.props.onClick(this.props.header.field,this.state.sortOrder);
   }
 
   render() {

@@ -5,9 +5,15 @@ export default class DrinkPage extends React.Component {
   render() {
     return(
       <section id="content">
-        <Link to="/">Show all drinks</Link>
         <div className="container">
-          <Drink id={this.props.params.id} />
+          <div className="row">
+            <div className="col-md-12 margin-bottom">
+              <Link to="/" className="indexlink">Show all drinks</Link>
+            </div>
+          </div>
+          <div className="row">
+            <Drink id={this.props.params.id} />
+          </div>
         </div>
       </section>
     )

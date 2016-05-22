@@ -14,7 +14,7 @@ export default class Slider extends React.Component {
       limit: null,
       grab: null,
       value: null
-    }
+    };
   }
 
   componentDidMount() {
@@ -112,13 +112,14 @@ export default class Slider extends React.Component {
     const handleStyle = {'left': `${coords.handle}px`};
     return(
         <div>
-					<div className="h4 text-center">Maximum distance to nearest Alko store</div>
+
+					<div className="h4 text-center unselectable">Maximum distance to Alko store</div>
           <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
 	  		onClick={this.handleNoop}>
             <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
             <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown}	onTouchMove={this.handleTouchMove} onClick={this.handleNoop} style={handleStyle} />
           </div>
-					<div className="row limit">
+					<div className="row unselectable">
 						<div className="col-md-5 min">
 							{this.valueToKilometers(this.props.min)}
 						</div>

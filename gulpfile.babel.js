@@ -15,6 +15,7 @@ const sync = browserSync.create();
 watchify.args.debug = true;
 var bundler = browserify('src/app.js', watchify.args);
 
+
 // Babel transform
 bundler.transform(babelify.configure({
   sourceMapRelative: 'src'
