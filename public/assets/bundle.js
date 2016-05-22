@@ -25254,25 +25254,42 @@ var DrinkTable = function (_React$Component) {
     key: 'handleSort',
     value: function handleSort(field, sortOrder) {
       if (field == 'price' || field == 'size') {
-        return this.sortBy(field, sortOrder, parseFloat);
+        return this.sortBy(field, sortOrder, parseFloat, true);
       } else if (field == 'best_rev_candidate_score') {
-        return this.sortBy(field, sortOrder, parseFloat);
+        return this.sortBy(field, sortOrder, parseFloat, true);
       } else if (field == 'maxAvailability' || field == 'score') {
-        return this.sortBy(field, sortOrder, parseInt);
+        return this.sortBy(field, sortOrder, parseInt, false);
       } else {
         return this.sortBy(field, sortOrder, function (a) {
           return a.toUpperCase();
-        });
+        }, true);
       }
     }
   }, {
     key: 'sortBy',
-    value: function sortBy(field, reverse, primer) {
-      var key = primer ? function (x) {
-        return primer(x[field]);
-      } : function (x) {
-        return x[field];
-      };
+    value: function sortBy(field, reverse, primer, isDrinkField) {
+      var key;
+      if (primer) {
+        if (isDrinkField) {
+          key = function key(x) {
+            return primer(x.drink[field]);
+          };
+        } else {
+          key = function key(x) {
+            return primer(x[field]);
+          };
+        }
+      } else {
+        if (isDrinkField) {
+          key = function key(x) {
+            return x.drink[field];
+          };
+        } else {
+          key = function key(x) {
+            return x[field];
+          };
+        }
+      }
 
       reverse = !reverse ? 1 : -1;
 
