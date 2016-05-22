@@ -25042,7 +25042,7 @@ var app = _react2.default.createElement(
 
 _reactDom2.default.render(app, document.getElementById('craftbeer-app'));
 
-},{"./layout/layout":241,"./pages/drinkpage":242,"./pages/indexpage":243,"react":230,"react-dom":3,"react-router":33}],232:[function(require,module,exports){
+},{"./layout/layout":242,"./pages/drinkpage":243,"./pages/indexpage":244,"react":230,"react-dom":3,"react-router":33}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25153,6 +25153,10 @@ var _tableHeaders = require('../components/table-headers');
 
 var _tableHeaders2 = _interopRequireDefault(_tableHeaders);
 
+var _tableButton = require('../components/table-button');
+
+var _tableButton2 = _interopRequireDefault(_tableButton);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -25183,7 +25187,6 @@ var DrinkTable = function (_React$Component) {
   }, {
     key: 'loadDrinksFromApi',
     value: function loadDrinksFromApi() {
-
       $.ajax({
         method: 'GET',
         url: '/home/index',
@@ -25195,28 +25198,21 @@ var DrinkTable = function (_React$Component) {
       });
     }
   }, {
-    key: 'getDrinkIndex',
-    value: function getDrinkIndex(drink) {
-      return this.state.drinks.map(function (drinkInState) {
-        return drinkInState._id.$oid;
-      }).indexOf(drink._id.$oid);
-    }
-  }, {
     key: 'addAdditionalDataForDrinks',
     value: function addAdditionalDataForDrinks() {
       var drinks = this.state.drinks;
       var updatedDrinks;
-      drinks.map(function (drink) {
-        if (drink.review != undefined) {
-          drink.score = drink.review.score;
+      drinks.map(function (drink, arrayIndex) {
+        var score;
+        if (drink.review !== undefined) {
+          score = drink.review.score;
         } else {
-          drink.score = '';
+          score = '';
         }
-        drink.maxAvailability = this.calculateMaxAvailability(drink.alco_avails);
-        var index = this.getDrinkIndex(drink);
-        if (index != -1) {
-          updatedDrinks = (0, _reactAddonsUpdate2.default)(drinks, { $splice: [[index, 1, drink]] });
-        }
+        var maxAvailability = this.calculateMaxAvailability(drink.alco_avails);
+        var stocked = this.isStocked(maxAvailability);
+        var updatedDrink = (0, _reactAddonsUpdate2.default)(drink, { $merge: { score: score, maxAvailability: maxAvailability, stocked: stocked, visible: true } });
+        updatedDrinks = this.handleArrayUpdate(arrayIndex, drink, updatedDrink, drinks, updatedDrinks);
       }.bind(this));
       this.setState({ drinks: updatedDrinks });
     }
@@ -25224,7 +25220,7 @@ var DrinkTable = function (_React$Component) {
     key: 'calculateMaxAvailability',
     value: function calculateMaxAvailability(alco_avails) {
       var maxAvailability = 0;
-      if (alco_avails != undefined) {
+      if (alco_avails !== undefined) {
         alco_avails.map(function (alco_avail) {
           if (alco_avail.amount > maxAvailability) {
             maxAvailability = alco_avail.amount;
@@ -25260,7 +25256,6 @@ var DrinkTable = function (_React$Component) {
   }, {
     key: 'sortBy',
     value: function sortBy(field, reverse, primer) {
-
       var key = primer ? function (x) {
         return primer(x[field]);
       } : function (x) {
@@ -25274,19 +25269,68 @@ var DrinkTable = function (_React$Component) {
       };
     }
   }, {
+    key: 'toggleNonStocked',
+    value: function toggleNonStocked(showNonStocked) {
+      var drinks = this.state.drinks;
+      var updatedDrinks;
+      drinks.map(function (drink, arrayIndex) {
+        var visible;
+        if (showNonStocked && !drink.visible) {
+          visible = true;
+        } else {
+          if (drink.stocked) {
+            visible = true;
+          } else {
+            visible = false;
+          }
+        }
+        var updatedDrink = (0, _reactAddonsUpdate2.default)(drink, { $merge: { visible: visible } });
+        updatedDrinks = this.handleArrayUpdate(arrayIndex, drink, updatedDrink, drinks, updatedDrinks);
+      }.bind(this));
+      this.setState({
+        drinks: updatedDrinks
+      });
+    }
+  }, {
+    key: 'handleArrayUpdate',
+    value: function handleArrayUpdate(arrayIndex, originalDrink, updatedDrink, originalDrinks, updatedDrinks) {
+      var index = originalDrinks.indexOf(originalDrink);
+      if (index != -1) {
+        var arrayToUpdate;
+        if (arrayIndex === 0) {
+          arrayToUpdate = originalDrinks;
+        } else {
+          arrayToUpdate = updatedDrinks;
+        }
+        return (0, _reactAddonsUpdate2.default)(arrayToUpdate, { $splice: [[index, 1, updatedDrink]] });
+      }
+    }
+  }, {
+    key: 'isStocked',
+    value: function isStocked(maxAvailability) {
+      return maxAvailability > 0;
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        'table',
-        { className: 'table table-striped table-bordered' },
-        _react2.default.createElement(_tableHeaders2.default, { sort: this.sort.bind(this) }),
+        'div',
+        null,
+        _react2.default.createElement(_tableButton2.default, { toggleNonStocked: this.toggleNonStocked.bind(this) }),
         _react2.default.createElement(
-          'tbody',
-          null,
-          this.state.drinks.map(function (drink) {
-            return _react2.default.createElement(_drinkTableRow2.default, { key: drink._id.$oid,
-              drink: drink });
-          }, this)
+          'table',
+          { className: 'table table-striped table-bordered' },
+          _react2.default.createElement(_tableHeaders2.default, { sort: this.sort.bind(this) }),
+          _react2.default.createElement(
+            'tbody',
+            null,
+            this.state.drinks.map(function (drink) {
+              if (drink.visible) {
+                return _react2.default.createElement(_drinkTableRow2.default, { key: drink._id.$oid,
+                  drink: drink });
+              }
+            }, this)
+          )
         )
       );
     }
@@ -25297,7 +25341,7 @@ var DrinkTable = function (_React$Component) {
 
 exports.default = DrinkTable;
 
-},{"../components/drink-table-row":232,"../components/table-headers":240,"react":230,"react-addons-update":2}],234:[function(require,module,exports){
+},{"../components/drink-table-row":232,"../components/table-button":239,"../components/table-headers":241,"react":230,"react-addons-update":2}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25596,7 +25640,7 @@ var SearchButton = function (_React$Component) {
         _react2.default.createElement(
           "button",
           { type: "button", className: "btn btn-primary btn-lg btn-middle" },
-          "Katso 7 Alkoa"
+          "Show 7 Alko stores"
         )
       );
     }
@@ -25766,8 +25810,8 @@ var Slider = function (_React$Component) {
         null,
         _react2.default.createElement(
           'div',
-          { className: 'h4 text-center' },
-          'Maximum distance to nearest Alko store'
+          { className: 'h4 text-center unselectable' },
+          'Maximum distance to Alko store'
         ),
         _react2.default.createElement(
           'div',
@@ -25778,7 +25822,7 @@ var Slider = function (_React$Component) {
         ),
         _react2.default.createElement(
           'div',
-          { className: 'row limit' },
+          { className: 'row unselectable' },
           _react2.default.createElement(
             'div',
             { className: 'col-md-5 min' },
@@ -25825,19 +25869,100 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var TableButton = function (_React$Component) {
+  _inherits(TableButton, _React$Component);
+
+  function TableButton(props) {
+    _classCallCheck(this, TableButton);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TableButton).call(this, props));
+
+    _this.state = {
+      showNonStocked: true
+    };
+    return _this;
+  }
+
+  _createClass(TableButton, [{
+    key: "handleClick",
+    value: function handleClick() {
+      var newValue = !this.state.showNonStocked;
+      this.setState({
+        showNonStocked: newValue
+      });
+      this.props.toggleNonStocked(newValue);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var actionText;
+      if (this.state.showNonStocked) {
+        actionText = "Hide";
+      } else {
+        actionText = "Show";
+      }
+      return _react2.default.createElement(
+        "div",
+        null,
+        _react2.default.createElement(
+          "button",
+          { type: "button", className: "btn btn-primary margin-bottom", onClick: this.handleClick.bind(this) },
+          actionText,
+          " non-stocked drinks"
+        )
+      );
+    }
+  }]);
+
+  return TableButton;
+}(_react2.default.Component);
+
+exports.default = TableButton;
+
+},{"react":230}],240:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 var TableHeader = function (_React$Component) {
   _inherits(TableHeader, _React$Component);
 
   function TableHeader(props) {
     _classCallCheck(this, TableHeader);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(TableHeader).call(this, props));
+    // first click will also toggle sort order
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TableHeader).call(this, props));
+
+    _this.state = {
+      sortOrder: !props.header.initialSortOrder
+    };
+    return _this;
   }
 
   _createClass(TableHeader, [{
     key: "handleOnClick",
     value: function handleOnClick() {
-      this.props.onClick(this.props.header.field, this.props.header.key);
+      this.setState({
+        sortOrder: !this.state.sortOrder
+      });
+      this.props.onClick(this.props.header.field, this.state.sortOrder);
     }
   }, {
     key: "render",
@@ -25859,7 +25984,7 @@ var TableHeader = function (_React$Component) {
 
 exports.default = TableHeader;
 
-},{"react":230}],240:[function(require,module,exports){
+},{"react":230}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25875,10 +26000,6 @@ var _react2 = _interopRequireDefault(_react);
 var _tableHeader = require('../components/table-header');
 
 var _tableHeader2 = _interopRequireDefault(_tableHeader);
-
-var _reactAddonsUpdate = require('react-addons-update');
-
-var _reactAddonsUpdate2 = _interopRequireDefault(_reactAddonsUpdate);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -25897,42 +26018,41 @@ var TableHeaders = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(TableHeaders).call(this, props));
 
     _this.state = {
-      //first click toggles sortOrder to correct initial sort order. not the best implementation perhaps...
       headers: [{
         key: "drink_title",
         name: "Drink title",
         field: "title",
-        sortOrder: true
+        initialSortOrder: false
       }, {
         key: "review_title",
         name: "Review title",
         field: "title",
-        sortOrder: true
+        initialSortOrder: false
       }, {
         key: "match_score",
         name: "Match score",
         field: "best_rev_candidate_score",
-        sortOrder: false
+        initialSortOrder: true
       }, {
         key: "review_score",
         name: "Review score",
         field: "score",
-        sortOrder: false
+        initialSortOrder: true
       }, {
         key: "size",
         name: "Size",
         field: "size",
-        sortOrder: true
+        initialSortOrder: false
       }, {
         key: "price",
         name: "Price",
         field: "price",
-        sortOrder: true
+        initialSortOrder: false
       }, {
         key: "max_availability",
         name: "Max availability in Alko",
         field: "maxAvailability",
-        sortOrder: false
+        initialSortOrder: true
       }]
     };
     _this.handleOnClick = _this.handleOnClick.bind(_this);
@@ -25940,29 +26060,8 @@ var TableHeaders = function (_React$Component) {
   }
 
   _createClass(TableHeaders, [{
-    key: 'toggleSortOrder',
-    value: function toggleSortOrder(key) {
-      var index = this.getHeaderIndex(key);
-      var headers = this.state.headers;
-      var header = this.state.headers[index];
-      header.sortOrder = !header.sortOrder;
-      var updatedHeaders = (0, _reactAddonsUpdate2.default)(headers, { $splice: [[index, 1, header]] });
-      this.setState({
-        headers: updatedHeaders
-      });
-      return header.sortOrder;
-    }
-  }, {
-    key: 'getHeaderIndex',
-    value: function getHeaderIndex(key) {
-      return this.state.headers.map(function (headerInState) {
-        return headerInState.key;
-      }).indexOf(key);
-    }
-  }, {
     key: 'handleOnClick',
-    value: function handleOnClick(field, key) {
-      var newSortOrder = this.toggleSortOrder(key);
+    value: function handleOnClick(field, newSortOrder) {
       this.props.sort(field, newSortOrder);
     }
   }, {
@@ -25987,7 +26086,7 @@ var TableHeaders = function (_React$Component) {
 
 exports.default = TableHeaders;
 
-},{"../components/table-header":239,"react":230,"react-addons-update":2}],241:[function(require,module,exports){
+},{"../components/table-header":240,"react":230}],242:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26043,7 +26142,7 @@ var Layout = function (_React$Component) {
 
 exports.default = Layout;
 
-},{"../components/header":235,"../components/menu":236,"react":230}],242:[function(require,module,exports){
+},{"../components/header":235,"../components/menu":236,"react":230}],243:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26086,14 +26185,26 @@ var DrinkPage = function (_React$Component) {
         'section',
         { id: 'content' },
         _react2.default.createElement(
-          _reactRouter.Link,
-          { to: '/' },
-          'Show all drinks'
-        ),
-        _react2.default.createElement(
           'div',
           { className: 'container' },
-          _react2.default.createElement(_drink2.default, { id: this.props.params.id })
+          _react2.default.createElement(
+            'div',
+            { className: 'row' },
+            _react2.default.createElement(
+              'div',
+              { className: 'col-md-12 margin-bottom' },
+              _react2.default.createElement(
+                _reactRouter.Link,
+                { to: '/', className: 'indexlink' },
+                'Show all drinks'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: 'row' },
+            _react2.default.createElement(_drink2.default, { id: this.props.params.id })
+          )
         )
       );
     }
@@ -26104,7 +26215,7 @@ var DrinkPage = function (_React$Component) {
 
 exports.default = DrinkPage;
 
-},{"../components/drink":234,"react":230,"react-router":33}],243:[function(require,module,exports){
+},{"../components/drink":234,"react":230,"react-router":33}],244:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

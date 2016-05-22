@@ -20,9 +20,9 @@ export default class Drink extends React.Component {
             url: '/alco_drinks/' + id,
             dataType: 'json',
             success: function(data) {
-              this.setState({drink: data})
+              this.setState({drink: data});
             }.bind(this)
-        })
+        });
     }
   }
 
