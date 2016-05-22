@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'beer/:id' => 'alco_drinks#show'
 
   get 'alco_drinks/broad/:id' => 'alco_drinks#show_broad_json'
+  get 'alco_drinks/broader/:id' => 'alco_drinks#show_broader_json'
 
   resources :reviews
   resources :alco_drinks

@@ -15,7 +15,8 @@ class AlcoLocation
   field :address, type: String
   field :postal_code, type: String
 
-  # requires Geospatial Gem
+  # requires Geospatial Gem; note that it returns in format [lng, lat]
+  # (not other way around)
   field :location, type: Point
 
   validates :loc_name, uniqueness: true
@@ -24,7 +25,7 @@ class AlcoLocation
   has_many :alco_avails
 
   def get_distance_to_point(lat=60.1688202, lng=24.9337834)
-    # Urho Kekkosen Katu = 60.1688202, 24.9337834
+    # Urho Kekkosen Katu = [60.1688202, 24.9337834]
 
     current_location = GeoRuby::SimpleFeatures::Point.from_x_y_z(lat, lng, nil)
     store_location = GeoRuby::SimpleFeatures::Point.from_x_y_z(self.location[1], self.location[0], nil)

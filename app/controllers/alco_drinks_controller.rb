@@ -16,6 +16,16 @@ class AlcoDrinksController < ApplicationController
     render :json => @alco_drink.to_json(:include => [:alco_avails, :review])
   end
 
+  def show_broader_json
+    require 'json'
+    drink = AlcoDrink.find(params[:id])
+    # current_location = [params[:lat], params[:lng]]
+    avails = JSON.parse(drink.alco_avails.to_json(:include => [:alco_location]))
+    review = drink.review
+
+    render :json => {:drink => drink, :avails => avails, :review => review}
+  end
+
   # GET /alco_drinks/new
   def new
     @alco_drink = AlcoDrink.new
