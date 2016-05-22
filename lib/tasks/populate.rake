@@ -19,6 +19,12 @@ namespace :populate do
     puts "Alko availability data successfully populated!"
   end
 
+  desc "Populate the DB with Alko location data"
+  task alko_locs: :environment do
+    AlcoLocation.populate_location_data
+    puts "Alko location data successfully populated!"
+  end
+
   desc "Match the reviews with Alko data"
   task fuzzymatch: :environment do
     AlcoDrink.set_reviews
