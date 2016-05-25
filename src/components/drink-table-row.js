@@ -7,6 +7,8 @@ export default class DrinkTableRow extends React.Component {
     super(props);
   }
 
+
+
   render() {
     return(
         <tr>
@@ -30,6 +32,12 @@ export default class DrinkTableRow extends React.Component {
             </td>
             <td>
               {this.props.drinkData.maxAvailability}
+            </td>
+            <td>
+              {this.props.drinkData.noOfNearbyStoresWithAvailability}
+            </td>
+            <td>
+              {this.props.drinkData.noOfStoresMatchingDistanceCondition}
             </td>
         </tr>
     )

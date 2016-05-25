@@ -12,8 +12,7 @@ export default class Slider extends React.Component {
     super(props);
     this.state= {
       limit: null,
-      grab: null,
-      value: null
+      grab: null
     };
   }
 
@@ -55,9 +54,7 @@ export default class Slider extends React.Component {
   }
 
   onChange(changedValue) {
-    this.setState({
-			value: changedValue
-		});
+    this.props.onChange(changedValue);
   }
 
   getPositionFromValue = (value) => {
@@ -105,7 +102,7 @@ export default class Slider extends React.Component {
 	}
 
   render() {
-    const value = this.state.value;
+    const value = this.props.value;
     const position = this.getPositionFromValue(value);
     const coords = this.coordinates(position);
     const fillStyle = {'width': `${coords.fill}px`};
@@ -124,7 +121,7 @@ export default class Slider extends React.Component {
 							{this.valueToKilometers(this.props.min)}
 						</div>
 						<div className="col-md-2 value">
-	            {this.valueToKilometers(this.state.value)}
+	            {this.valueToKilometers(this.props.value)}
 	          </div>
 						<div className="col-md-5 max">
 							{this.valueToKilometers(this.props.max)}
