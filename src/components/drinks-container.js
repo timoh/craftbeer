@@ -92,30 +92,6 @@ export default class DrinksContainer extends React.Component {
       return [noOfStoresMatchingDistanceCondition,noOfNearbyStoresWithAvailability];
     }
 
-    countStoresMatchingDistanceCondition(availsData) {
-      var noOfStores = 0;
-      if (availsData !== undefined) {
-          availsData.map(function(availData){
-          if(availData.matchesDistanceCondition) {
-            noOfStores++;
-          }
-        });
-      }
-      return noOfStores;
-    }
-
-    calculateNoOfStoresWithAvailability(availsData) {
-      var noOfStores = 0;
-      if (availsData !== undefined) {
-          availsData.map(function(availData){
-          if(availData.matchesDistanceCondition && availData.avail.amount > 0) {
-            noOfStores++;
-          }
-        });
-      }
-      return noOfStores;
-    }
-
     calculateMaxAvailability(availsData) {
       var maxAvailability = 0;
       if (availsData !== undefined) {
