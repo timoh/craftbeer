@@ -25075,8 +25075,58 @@ var DrinkTableRow = function (_React$Component) {
   }
 
   _createClass(DrinkTableRow, [{
+    key: 'calculateTopNearestStores',
+    value: function calculateTopNearestStores(availabilityCondition) {
+      var avails = [];
+
+      if (this.props.drinkData.avails !== undefined) {
+        this.props.drinkData.avails.map(function (availData) {
+          if (availabilityCondition) {
+            if (availData.matchesDistanceCondition && availData.avail.amount > 0) {
+              avails.push(availData);
+            }
+          } else {
+            if (availData.matchesDistanceCondition) {
+              avails.push(availData);
+            }
+          }
+        });
+      }
+      avails.sort(function (a, b) {
+        return a.distance_in_m - b.distance_in_m;
+      });
+
+      var size = avails.length;
+      if (size == 2) {
+        return avails.slice(0, 2);
+      } else if (size >= 3) {
+        return avails.slice(0, 3);
+      } else {
+        return avails;
+      }
+    }
+  }, {
+    key: 'topNearestStores',
+    value: function topNearestStores(availabilityCondition) {
+      var storesString = "";
+      var stores = this.calculateTopNearestStores(availabilityCondition);
+      if (stores.length > 0) {
+        stores.map(function (store) {
+          storesString += "Name: " + store.location.loc_name + "\n";
+          storesString += "Address: " + store.location.address + "\n";
+          storesString += "Distance: " + (store.distance_in_m / 1000).toFixed(2) + " km\n";
+          storesString += "Amount: " + store.avail.amount + " pcs\n\n";
+        });
+      } else {
+        storesString = "No stores match the filters.";
+      }
+      return storesString;
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var storesWithAvailability = this.topNearestStores(true);
+      var nearbyStores = this.topNearestStores(false);
       return _react2.default.createElement(
         'tr',
         null,
@@ -25122,12 +25172,40 @@ var DrinkTableRow = function (_React$Component) {
         _react2.default.createElement(
           'td',
           null,
-          this.props.drinkData.noOfNearbyStoresWithAvailability
+          _react2.default.createElement(
+            'div',
+            { className: 'tableCell' },
+            _react2.default.createElement(
+              'a',
+              { href: '#' },
+              this.props.drinkData.noOfNearbyStoresWithAvailability,
+              ' '
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'popup' },
+              storesWithAvailability
+            )
+          )
         ),
         _react2.default.createElement(
           'td',
           null,
-          this.props.drinkData.noOfStoresMatchingDistanceCondition
+          _react2.default.createElement(
+            'div',
+            { className: 'tableCell' },
+            _react2.default.createElement(
+              'a',
+              { href: '#' },
+              this.props.drinkData.noOfStoresMatchingDistanceCondition,
+              ' '
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'popup' },
+              nearbyStores
+            )
+          )
         )
       );
     }
@@ -25425,32 +25503,6 @@ var DrinksContainer = function (_React$Component) {
       return [noOfStoresMatchingDistanceCondition, noOfNearbyStoresWithAvailability];
     }
   }, {
-    key: 'countStoresMatchingDistanceCondition',
-    value: function countStoresMatchingDistanceCondition(availsData) {
-      var noOfStores = 0;
-      if (availsData !== undefined) {
-        availsData.map(function (availData) {
-          if (availData.matchesDistanceCondition) {
-            noOfStores++;
-          }
-        });
-      }
-      return noOfStores;
-    }
-  }, {
-    key: 'calculateNoOfStoresWithAvailability',
-    value: function calculateNoOfStoresWithAvailability(availsData) {
-      var noOfStores = 0;
-      if (availsData !== undefined) {
-        availsData.map(function (availData) {
-          if (availData.matchesDistanceCondition && availData.avail.amount > 0) {
-            noOfStores++;
-          }
-        });
-      }
-      return noOfStores;
-    }
-  }, {
     key: 'calculateMaxAvailability',
     value: function calculateMaxAvailability(availsData) {
       var maxAvailability = 0;
@@ -25560,7 +25612,6 @@ var DrinksContainer = function (_React$Component) {
         maxDistance: newValue
       });
       this.updatesAfterMaxDistanceChange();
-      console.log(this.state.drinks);
     }
   }, {
     key: 'render',

@@ -191,7 +191,6 @@ export default class DrinksContainer extends React.Component {
         maxDistance: newValue
       });
       this.updatesAfterMaxDistanceChange();
-      console.log(this.state.drinks);
     }
 
     render() {

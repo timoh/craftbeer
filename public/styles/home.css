@@ -78,6 +78,28 @@ body {
     position: absolute;
 }
 
+
+.tableCell:hover {
+    cursor:pointer
+}
+
+.popup {
+    display:none;
+}
+
+.tableCell:hover .popup {
+    display:block;
+    position:relative;
+    border-style:solid;
+    border-width:medium;
+    background-color: white;
+    width:auto;
+    height:auto;
+    top:-20px;
+    left:40px;
+    white-space: pre;
+}
+
 p {
     font-size: 20px;
 }

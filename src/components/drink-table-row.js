@@ -8,8 +8,55 @@ export default class DrinkTableRow extends React.Component {
   }
 
 
+  calculateTopNearestStores(availabilityCondition) {
+    var avails = [];
+
+    if(this.props.drinkData.avails !== undefined) {
+      this.props.drinkData.avails.map(function(availData) {
+        if(availabilityCondition) {
+          if(availData.matchesDistanceCondition && availData.avail.amount > 0) {
+            avails.push(availData);
+          }
+        } else {
+          if(availData.matchesDistanceCondition) {
+            avails.push(availData);
+          }
+        }
+      });
+    }
+    avails.sort(function(a,b) {
+      return a.distance_in_m - b.distance_in_m;
+    });
+
+    const size = avails.length;
+    if (size == 2) {
+      return avails.slice(0,2);
+    } else if (size >= 3) {
+      return avails.slice(0,3);
+    } else {
+      return avails;
+    }
+  }
+
+  topNearestStores(availabilityCondition) {
+    var storesString = "";
+    var stores = this.calculateTopNearestStores(availabilityCondition);
+    if(stores.length>0) {
+      stores.map(function(store) {
+          storesString += "Name: " + store.location.loc_name + "\n";
+          storesString += "Address: " + store.location.address + "\n";
+          storesString += "Distance: " + (store.distance_in_m/1000).toFixed(2) +" km\n";
+          storesString += "Amount: " + store.avail.amount + " pcs\n\n";
+      });
+    } else {
+      storesString ="No stores match the filters.";
+    }
+    return storesString;
+  }
 
   render() {
+    var storesWithAvailability = this.topNearestStores(true);
+    var nearbyStores = this.topNearestStores(false);
     return(
         <tr>
             <td>
@@ -34,10 +81,16 @@ export default class DrinkTableRow extends React.Component {
               {this.props.drinkData.maxAvailability}
             </td>
             <td>
-              {this.props.drinkData.noOfNearbyStoresWithAvailability}
+              <div className="tableCell">
+                <a href="#">{this.props.drinkData.noOfNearbyStoresWithAvailability} </a>
+                    <div className="popup">{storesWithAvailability}</div>
+              </div>
             </td>
             <td>
-              {this.props.drinkData.noOfStoresMatchingDistanceCondition}
+            <div className="tableCell">
+              <a href="#">{this.props.drinkData.noOfStoresMatchingDistanceCondition} </a>
+                  <div className="popup">{nearbyStores}</div>
+            </div>
             </td>
         </tr>
     )
