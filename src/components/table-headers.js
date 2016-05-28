@@ -86,6 +86,9 @@ export default class TableHeaders extends React.Component {
     return(
       <thead>
         <tr>
+          <th>
+            Select the drinks that you find interesting:
+          </th>
           {this.state.headers.map(function (header) {
               return (
                 <TableHeader onClick={this.handleOnClick} key={header.key} header={header} />

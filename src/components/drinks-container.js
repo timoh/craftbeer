@@ -49,11 +49,19 @@ export default class DrinksContainer extends React.Component {
         } else {
           score ='';
         }
-        var storesData = this.updateMatchesDistanceCondition(drinkData.avails);
-        var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
-        var stocked = this.isStocked(maxAvailability);
-        var updatedDrink = update(drinkData, {$merge: {score: score, maxAvailability: maxAvailability, stocked: stocked, visible:true,
-          noOfStoresMatchingDistanceCondition:storesData[0], noOfNearbyStoresWithAvailability: storesData[1] }});
+        const storesData = this.updateMatchesDistanceCondition(drinkData.avails);
+        const maxAvailability = this.calculateMaxAvailability(drinkData.avails);
+        const stocked = this.isStocked(maxAvailability);
+        const updatedDrink = update(drinkData, {$merge: {
+            score: score,
+            maxAvailability: maxAvailability,
+            stocked: stocked,
+            visible: true,
+            noOfStoresMatchingDistanceCondition: storesData[0].length,
+            noOfNearbyStoresWithAvailability: storesData[1].length,
+            nearbyStoresWithAvailability: storesData[1],
+            selected: false
+          }});
         updatedDrinks = this.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,drinks,updatedDrinks);
       }.bind(this));
       this.setState({drinks: updatedDrinks});
@@ -66,30 +74,35 @@ export default class DrinksContainer extends React.Component {
         var storesData = this.updateMatchesDistanceCondition(drinkData.avails);
         var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         var stocked = this.isStocked(maxAvailability);
-        var updatedDrink = update(drinkData, {$merge: {maxAvailability: maxAvailability, stocked: stocked,noOfStoresMatchingDistanceCondition:storesData[0],
-          noOfNearbyStoresWithAvailability: storesData[1]}});
+        var updatedDrink = update(drinkData, {$merge: {
+            maxAvailability: maxAvailability,
+            stocked: stocked,
+            noOfStoresMatchingDistanceCondition: storesData[0].length,
+            noOfNearbyStoresWithAvailability: storesData[1].length,
+            nearbyStoresWithAvailability: storesData[1]
+          }});
         updatedDrinks = this.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,drinks,updatedDrinks);
       }.bind(this));
       this.setState({drinks: updatedDrinks});
     }
 
     updateMatchesDistanceCondition(availsData) {
-      var noOfStoresMatchingDistanceCondition = 0;
-      var noOfNearbyStoresWithAvailability = 0;
+      const storesMatchingDistanceCondition = [];
+      const nearbyStoresWithAvailability = [];
       const maxDistance = this.state.maxDistance;
       if(availsData !== undefined) {
         availsData.map(function(availData){
           availData.matchesDistanceCondition = availData.distance_in_m <= maxDistance;
           if(availData.matchesDistanceCondition) {
-              noOfStoresMatchingDistanceCondition++;
+              storesMatchingDistanceCondition.push(availData);
               if(availData.avail.amount > 0) {
-                noOfNearbyStoresWithAvailability++;
+                nearbyStoresWithAvailability.push(availData);
               }
           }
         });
       }
 
-      return [noOfStoresMatchingDistanceCondition,noOfNearbyStoresWithAvailability];
+      return [storesMatchingDistanceCondition,nearbyStoresWithAvailability];
     }
 
     calculateMaxAvailability(availsData) {
@@ -193,7 +206,67 @@ export default class DrinksContainer extends React.Component {
       this.updatesAfterMaxDistanceChange();
     }
 
+    handleChecked(sourceComponent) {
+      const index = this.state.drinks.indexOf(sourceComponent.props.drinkData);
+      const drinkInState = this.state.drinks[index];
+      const currentSelected = drinkInState.selected;
+      const updatedDrink = update(drinkInState,{$merge: {selected:!currentSelected}});
+      const updatedDrinks = update(this.state.drinks, { $splice: [[index,1,updatedDrink]] });
+      this.setState({
+        drinks: updatedDrinks
+      });
+    }
+
+    getSelectedDrinks() {
+      const selectedDrinks = [];
+      this.state.drinks.map(function(drinkData) {
+        if(drinkData.selected) {
+          selectedDrinks.push(drinkData);
+        }
+      });
+      return selectedDrinks;
+    }
+
+    calculateNoOfStoresWithSelectedDrinks() {
+      const storesMatchingConditions = {};
+      const selectedDrinks = this.getSelectedDrinks();
+      selectedDrinks.map(function(drinkData,index) {
+        if(drinkData.nearbyStoresWithAvailability !== undefined) {
+          //if the 1st drink, add all stores.
+          if(index === 0) {
+              drinkData.nearbyStoresWithAvailability.map(function(storeInArray) {
+                storesMatchingConditions[storeInArray.store._id.$oid] = storeInArray;
+              });
+          } else {
+              // loop the already added stores and check if they are present in the stores with availability for other drinks. If not, remove them.
+              // principle: the resulting number of stores cannot increase once the stores for 1st drink have been added.
+              const keysToRemove = [];
+              const keysForStoresWithAvailability = [];
+              drinkData.nearbyStoresWithAvailability.map(function(storeInArray) {
+                keysForStoresWithAvailability.push(storeInArray.store._id.$oid);
+              });
+              Object.keys(storesMatchingConditions).map(function(key) {
+                  if(keysForStoresWithAvailability.indexOf(key) ==-1) {
+                    keysToRemove.push(key);
+                  }
+              });
+              keysToRemove.map(function(keyToRemove){
+                  delete storesMatchingConditions[keyToRemove];
+              });
+            }
+          }
+        });
+      const keys = Object.keys(storesMatchingConditions);
+      if (keys === undefined) {
+        return 0;
+      } else {
+        return keys.length;
+      }
+    }
+
     render() {
+      const numberOfStoresWithSelectedDrinks = this.calculateNoOfStoresWithSelectedDrinks();
+      const noOfSelectedDrinks = this.getSelectedDrinks().length;
       return(
           <div>
             <div className="row">
@@ -210,14 +283,14 @@ export default class DrinksContainer extends React.Component {
                     if(drinkData.visible) {
                       return (
                         <DrinkTableRow key={ drinkData.drink._id.$oid }
-                        drinkData={ drinkData }/>
+                        drinkData={ drinkData } handleChecked = {this.handleChecked.bind(this)} />
                       )
                     }
                   }, this)}
                 </tbody>
               </table>
             </div>
-            <SearchButton />
+            <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
           </div>
       )
     }

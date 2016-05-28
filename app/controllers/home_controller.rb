@@ -21,7 +21,7 @@ class HomeController < ApplicationController
 
       drink.alco_avails.each do |avail|
         avails_a.append({:avail => avail,
-                         :location => avail.alco_location,
+                         :store => avail.alco_location,
                          :distance_in_m => avail.alco_location.get_distance_to_point(params[:lat].to_f,
                                                                                 params[:lng].to_f)})
       end

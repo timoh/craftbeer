@@ -25111,16 +25111,21 @@ var DrinkTableRow = function (_React$Component) {
       var storesString = "";
       var stores = this.calculateTopNearestStores(availabilityCondition);
       if (stores.length > 0) {
-        stores.map(function (store) {
-          storesString += "Name: " + store.location.loc_name + "\n";
-          storesString += "Address: " + store.location.address + "\n";
-          storesString += "Distance: " + (store.distance_in_m / 1000).toFixed(2) + " km\n";
-          storesString += "Amount: " + store.avail.amount + " pcs\n\n";
+        stores.map(function (storeInArray) {
+          storesString += "Name: " + storeInArray.store.loc_name + "\n";
+          storesString += "Address: " + storeInArray.store.address + "\n";
+          storesString += "Distance: " + (storeInArray.distance_in_m / 1000).toFixed(2) + " km\n";
+          storesString += "Amount: " + storeInArray.avail.amount + " pcs\n\n";
         });
       } else {
         storesString = "No stores match the filters.";
       }
       return storesString;
+    }
+  }, {
+    key: 'handleChecked',
+    value: function handleChecked() {
+      this.props.handleChecked(this);
     }
   }, {
     key: 'render',
@@ -25130,6 +25135,11 @@ var DrinkTableRow = function (_React$Component) {
       return _react2.default.createElement(
         'tr',
         null,
+        _react2.default.createElement(
+          'td',
+          { className: 'centered' },
+          _react2.default.createElement('input', { type: 'checkbox', checked: this.props.drinkData.selected, className: 'checkbox-large', onChange: this.handleChecked.bind(this) })
+        ),
         _react2.default.createElement(
           'td',
           null,
@@ -25461,8 +25471,16 @@ var DrinksContainer = function (_React$Component) {
         var storesData = this.updateMatchesDistanceCondition(drinkData.avails);
         var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         var stocked = this.isStocked(maxAvailability);
-        var updatedDrink = (0, _reactAddonsUpdate2.default)(drinkData, { $merge: { score: score, maxAvailability: maxAvailability, stocked: stocked, visible: true,
-            noOfStoresMatchingDistanceCondition: storesData[0], noOfNearbyStoresWithAvailability: storesData[1] } });
+        var updatedDrink = (0, _reactAddonsUpdate2.default)(drinkData, { $merge: {
+            score: score,
+            maxAvailability: maxAvailability,
+            stocked: stocked,
+            visible: true,
+            noOfStoresMatchingDistanceCondition: storesData[0].length,
+            noOfNearbyStoresWithAvailability: storesData[1].length,
+            nearbyStoresWithAvailability: storesData[1],
+            selected: false
+          } });
         updatedDrinks = this.handleArrayUpdate(arrayIndex, drinkData, updatedDrink, drinks, updatedDrinks);
       }.bind(this));
       this.setState({ drinks: updatedDrinks });
@@ -25476,8 +25494,13 @@ var DrinksContainer = function (_React$Component) {
         var storesData = this.updateMatchesDistanceCondition(drinkData.avails);
         var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         var stocked = this.isStocked(maxAvailability);
-        var updatedDrink = (0, _reactAddonsUpdate2.default)(drinkData, { $merge: { maxAvailability: maxAvailability, stocked: stocked, noOfStoresMatchingDistanceCondition: storesData[0],
-            noOfNearbyStoresWithAvailability: storesData[1] } });
+        var updatedDrink = (0, _reactAddonsUpdate2.default)(drinkData, { $merge: {
+            maxAvailability: maxAvailability,
+            stocked: stocked,
+            noOfStoresMatchingDistanceCondition: storesData[0].length,
+            noOfNearbyStoresWithAvailability: storesData[1].length,
+            nearbyStoresWithAvailability: storesData[1]
+          } });
         updatedDrinks = this.handleArrayUpdate(arrayIndex, drinkData, updatedDrink, drinks, updatedDrinks);
       }.bind(this));
       this.setState({ drinks: updatedDrinks });
@@ -25485,22 +25508,22 @@ var DrinksContainer = function (_React$Component) {
   }, {
     key: 'updateMatchesDistanceCondition',
     value: function updateMatchesDistanceCondition(availsData) {
-      var noOfStoresMatchingDistanceCondition = 0;
-      var noOfNearbyStoresWithAvailability = 0;
+      var storesMatchingDistanceCondition = [];
+      var nearbyStoresWithAvailability = [];
       var maxDistance = this.state.maxDistance;
       if (availsData !== undefined) {
         availsData.map(function (availData) {
           availData.matchesDistanceCondition = availData.distance_in_m <= maxDistance;
           if (availData.matchesDistanceCondition) {
-            noOfStoresMatchingDistanceCondition++;
+            storesMatchingDistanceCondition.push(availData);
             if (availData.avail.amount > 0) {
-              noOfNearbyStoresWithAvailability++;
+              nearbyStoresWithAvailability.push(availData);
             }
           }
         });
       }
 
-      return [noOfStoresMatchingDistanceCondition, noOfNearbyStoresWithAvailability];
+      return [storesMatchingDistanceCondition, nearbyStoresWithAvailability];
     }
   }, {
     key: 'calculateMaxAvailability',
@@ -25614,8 +25637,73 @@ var DrinksContainer = function (_React$Component) {
       this.updatesAfterMaxDistanceChange();
     }
   }, {
+    key: 'handleChecked',
+    value: function handleChecked(sourceComponent) {
+      var index = this.state.drinks.indexOf(sourceComponent.props.drinkData);
+      var drinkInState = this.state.drinks[index];
+      var currentSelected = drinkInState.selected;
+      var updatedDrink = (0, _reactAddonsUpdate2.default)(drinkInState, { $merge: { selected: !currentSelected } });
+      var updatedDrinks = (0, _reactAddonsUpdate2.default)(this.state.drinks, { $splice: [[index, 1, updatedDrink]] });
+      this.setState({
+        drinks: updatedDrinks
+      });
+    }
+  }, {
+    key: 'getSelectedDrinks',
+    value: function getSelectedDrinks() {
+      var selectedDrinks = [];
+      this.state.drinks.map(function (drinkData) {
+        if (drinkData.selected) {
+          selectedDrinks.push(drinkData);
+        }
+      });
+      return selectedDrinks;
+    }
+  }, {
+    key: 'calculateNoOfStoresWithSelectedDrinks',
+    value: function calculateNoOfStoresWithSelectedDrinks() {
+      var storesMatchingConditions = {};
+      var selectedDrinks = this.getSelectedDrinks();
+      selectedDrinks.map(function (drinkData, index) {
+        if (drinkData.nearbyStoresWithAvailability !== undefined) {
+          //if the 1st drink, add all stores.
+          if (index === 0) {
+            drinkData.nearbyStoresWithAvailability.map(function (storeInArray) {
+              storesMatchingConditions[storeInArray.store._id.$oid] = storeInArray;
+            });
+          } else {
+            (function () {
+              // loop the already added stores and check if they are present in the stores with availability for other drinks. If not, remove them.
+              // principle: the resulting number of stores cannot increase once the stores for 1st drink have been added.
+              var keysToRemove = [];
+              var keysForStoresWithAvailability = [];
+              drinkData.nearbyStoresWithAvailability.map(function (storeInArray) {
+                keysForStoresWithAvailability.push(storeInArray.store._id.$oid);
+              });
+              Object.keys(storesMatchingConditions).map(function (key) {
+                if (keysForStoresWithAvailability.indexOf(key) == -1) {
+                  keysToRemove.push(key);
+                }
+              });
+              keysToRemove.map(function (keyToRemove) {
+                delete storesMatchingConditions[keyToRemove];
+              });
+            })();
+          }
+        }
+      });
+      var keys = Object.keys(storesMatchingConditions);
+      if (keys === undefined) {
+        return 0;
+      } else {
+        return keys.length;
+      }
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var numberOfStoresWithSelectedDrinks = this.calculateNoOfStoresWithSelectedDrinks();
+      var noOfSelectedDrinks = this.getSelectedDrinks().length;
       return _react2.default.createElement(
         'div',
         null,
@@ -25642,13 +25730,13 @@ var DrinksContainer = function (_React$Component) {
               this.state.drinks.map(function (drinkData) {
                 if (drinkData.visible) {
                   return _react2.default.createElement(_drinkTableRow2.default, { key: drinkData.drink._id.$oid,
-                    drinkData: drinkData });
+                    drinkData: drinkData, handleChecked: this.handleChecked.bind(this) });
                 }
               }, this)
             )
           )
         ),
-        _react2.default.createElement(_searchButton2.default, null)
+        _react2.default.createElement(_searchButton2.default, { noOfSelectedDrinks: noOfSelectedDrinks, noOfStoresWithSelectedDrinks: numberOfStoresWithSelectedDrinks })
       );
     }
   }]);
@@ -25802,23 +25890,57 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var SearchButton = function (_React$Component) {
   _inherits(SearchButton, _React$Component);
 
-  function SearchButton() {
+  function SearchButton(props) {
     _classCallCheck(this, SearchButton);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchButton).apply(this, arguments));
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(SearchButton).call(this, props));
   }
 
   _createClass(SearchButton, [{
     key: "render",
     value: function render() {
+      var content = void 0;
+      var noOfStoresWithSelectedDrinks = this.props.noOfStoresWithSelectedDrinks;
+      var noOfSelectedDrinks = this.props.noOfSelectedDrinks;
+      if (noOfSelectedDrinks === 0) {
+        content = _react2.default.createElement(
+          "div",
+          { className: "h4 centered" },
+          "Select drinks first."
+        );
+      } else {
+        if (noOfStoresWithSelectedDrinks === 0) {
+          content = _react2.default.createElement(
+            "div",
+            { className: "h4 centered" },
+            "Found no Alko stores with all selected drinks in stock."
+          );
+        } else {
+          var storesText = "";
+          if (noOfStoresWithSelectedDrinks == 1) {
+            storesText = "store";
+          } else {
+            storesText = "stores";
+          }
+          content = _react2.default.createElement(
+            "div",
+            null,
+            _react2.default.createElement(
+              "button",
+              { type: "button", className: "btn btn-primary btn-lg btn-middle" },
+              "Show ",
+              noOfStoresWithSelectedDrinks,
+              " Alko ",
+              storesText
+            )
+          );
+        }
+      }
+
       return _react2.default.createElement(
         "div",
         null,
-        _react2.default.createElement(
-          "button",
-          { type: "button", className: "btn btn-primary btn-lg btn-middle" },
-          "Show 7 Alko stores"
-        )
+        content
       );
     }
   }]);
@@ -26265,6 +26387,11 @@ var TableHeaders = function (_React$Component) {
         _react2.default.createElement(
           'tr',
           null,
+          _react2.default.createElement(
+            'th',
+            null,
+            'Select the drinks that you find interesting:'
+          ),
           this.state.headers.map(function (header) {
             return _react2.default.createElement(_tableHeader2.default, { onClick: this.handleOnClick, key: header.key, header: header });
           }.bind(this))

@@ -42,11 +42,11 @@ export default class DrinkTableRow extends React.Component {
     var storesString = "";
     var stores = this.calculateTopNearestStores(availabilityCondition);
     if(stores.length>0) {
-      stores.map(function(store) {
-          storesString += "Name: " + store.location.loc_name + "\n";
-          storesString += "Address: " + store.location.address + "\n";
-          storesString += "Distance: " + (store.distance_in_m/1000).toFixed(2) +" km\n";
-          storesString += "Amount: " + store.avail.amount + " pcs\n\n";
+      stores.map(function(storeInArray) {
+          storesString += "Name: " + storeInArray.store.loc_name + "\n";
+          storesString += "Address: " + storeInArray.store.address + "\n";
+          storesString += "Distance: " + (storeInArray.distance_in_m/1000).toFixed(2) +" km\n";
+          storesString += "Amount: " + storeInArray.avail.amount + " pcs\n\n";
       });
     } else {
       storesString ="No stores match the filters.";
@@ -54,11 +54,18 @@ export default class DrinkTableRow extends React.Component {
     return storesString;
   }
 
+  handleChecked() {
+      this.props.handleChecked(this);
+  }
+
   render() {
-    var storesWithAvailability = this.topNearestStores(true);
-    var nearbyStores = this.topNearestStores(false);
+    const storesWithAvailability = this.topNearestStores(true);
+    const nearbyStores = this.topNearestStores(false);
     return(
         <tr>
+            <td className="centered">
+                <input type="checkbox" checked={this.props.drinkData.selected} className="checkbox-large" onChange={this.handleChecked.bind(this)} />
+            </td>
             <td>
               <Link to={`/alco_drinks/${this.props.drinkData.drink._id.$oid}`}>{this.props.drinkData.drink.title}</Link>
             </td>
