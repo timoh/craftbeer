@@ -19,6 +19,15 @@ body {
     border-radius: 10px;
 }
 
+.loader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 9999;
+}
+
 .rangeslider {
     margin: 20px 0;
     position: relative;
@@ -104,9 +113,12 @@ body {
   text-align: center;
 }
 
-.checkbox-large {
-  height:20px;
-  width:20px;
+
+.custom-checkbox {
+  /* this doesn't work on Chrome with 100% zoom, but works with 90% zoom. I have no idea why. */
+  height: 30px;
+  width: 30px;
+  padding: 10px;
 }
 
 p {

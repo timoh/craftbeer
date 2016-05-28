@@ -64,7 +64,7 @@ export default class DrinkTableRow extends React.Component {
     return(
         <tr>
             <td className="centered">
-                <input type="checkbox" checked={this.props.drinkData.selected} className="checkbox-large" onChange={this.handleChecked.bind(this)} />
+                <input type="checkbox" className="custom-checkbox" checked={this.props.drinkData.selected} onChange={this.handleChecked.bind(this)} />
             </td>
             <td>
               <Link to={`/alco_drinks/${this.props.drinkData.drink._id.$oid}`}>{this.props.drinkData.drink.title}</Link>

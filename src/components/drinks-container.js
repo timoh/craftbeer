@@ -1,5 +1,6 @@
 import React from 'react';
 import update from 'react-addons-update';
+import Loader from 'react-loader';
 import DrinkTableRow from '../components/drink-table-row';
 import TableHeaders from '../components/table-headers';
 import TableButton from '../components/table-button';
@@ -13,7 +14,8 @@ export default class DrinksContainer extends React.Component {
   		super();
   		this.state = {
   			drinks: [],
-        maxDistance: 2000
+        maxDistance: 2000,
+        loaded: false
   		};
   	}
     componentWillMount() {
@@ -33,7 +35,7 @@ export default class DrinksContainer extends React.Component {
               url: '/home/distanced?lat='+latitude+'&lng='+longitude,
               dataType: 'json',
               success: function(data) {
-                this.setState({drinks: data});
+                this.setState({drinks: data, loaded: true });
                 this.addAdditionalDataForDrinks();
               }.bind(this)
       });
@@ -44,7 +46,7 @@ export default class DrinksContainer extends React.Component {
       var updatedDrinks;
       drinks.map(function(drinkData,arrayIndex) {
         var score;
-        if(drinkData.reviews!==undefined) {
+        if(drinkData.reviews!==undefined && drinkData.reviews!==null) {
           score=drinkData.reviews.score;
         } else {
           score ='';
@@ -269,28 +271,30 @@ export default class DrinksContainer extends React.Component {
       const noOfSelectedDrinks = this.getSelectedDrinks().length;
       return(
           <div>
-            <div className="row">
-              <div className="col-md-12">
-                <Slider min="0" max="10000" step="100" value={this.state.maxDistance} onChange={this.onSliderChange.bind(this)} />
+            <Loader loaded={this.state.loaded} className="loader">
+              <div className="row">
+                <div className="col-md-12">
+                  <Slider min="0" max="10000" step="100" value={this.state.maxDistance} onChange={this.onSliderChange.bind(this)} />
+                </div>
               </div>
-            </div>
-            <div className="row">
-              <TableButton toggleNonStocked={this.toggleNonStocked.bind(this)} />
-              <table className= "table table-striped table-bordered">
-                <TableHeaders sort={this.sort.bind(this)} />
-                <tbody>
-                  { this.state.drinks.map(function(drinkData){
-                    if(drinkData.visible) {
-                      return (
-                        <DrinkTableRow key={ drinkData.drink._id.$oid }
-                        drinkData={ drinkData } handleChecked = {this.handleChecked.bind(this)} />
-                      )
-                    }
-                  }, this)}
-                </tbody>
-              </table>
-            </div>
-            <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
+              <div className="row">
+                <TableButton toggleNonStocked={this.toggleNonStocked.bind(this)} />
+                <table className= "table table-striped table-bordered">
+                  <TableHeaders sort={this.sort.bind(this)} />
+                  <tbody>
+                    { this.state.drinks.map(function(drinkData){
+                      if(drinkData.visible) {
+                        return (
+                          <DrinkTableRow key={ drinkData.drink._id.$oid }
+                          drinkData={ drinkData } handleChecked = {this.handleChecked.bind(this)} />
+                        )
+                      }
+                    }, this)}
+                  </tbody>
+                </table>
+              </div>
+              <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
+            </Loader>
           </div>
       )
     }

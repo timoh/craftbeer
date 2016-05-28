@@ -10,7 +10,7 @@ class HomeController < ApplicationController
 
   def all_with_distance
     current_location = [params[:lat], params[:lng]]
-    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.1).order_by(best_rev_candidate_score: "desc").limit(5)
+    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.1).order_by(best_rev_candidate_score: "desc").limit(10)
 
     out_response = Array.new
     # out_response = {:lat => params[:lat], :lng => params[:lng]}
