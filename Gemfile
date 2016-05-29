@@ -19,6 +19,8 @@ gem 'mongoid-geospatial'
 # used for distance calculations
 gem 'georuby'
 
+gem 'libv8'
+
 # action caching
 gem 'actionpack-action_caching'
 
