@@ -3,6 +3,7 @@ class AlcoAvail
   include Mongoid::Timestamps
   field :amount, type: Integer
   field :last_updated, type: Date
+  field :history, type: Hash
 
   belongs_to :alco_location
   belongs_to :alco_drink
@@ -39,7 +40,6 @@ class AlcoAvail
       # also add the store_link at this point, so that it can be used for
       # getting the address of the store later
       loc_obj.store_link = res_loc["StoreLink"]
-
       loc_obj.save!
 
       av.alco_location = loc_obj
@@ -60,11 +60,7 @@ class AlcoAvail
         av.last_updated = Date.strptime(final_date, "%d.%m.%Y")
       end
 
-
-
-
       puts av
-
       # now we should be done!
       av.save!
     end

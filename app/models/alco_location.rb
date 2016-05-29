@@ -49,7 +49,7 @@ class AlcoLocation
     require 'json'
     alko_location_endpoint = 'http://www.alko.fi/api/store/mapmarkers?language=fi'
     response = RestClient.get(alko_location_endpoint)
-    return raw_data = JSON.parse(response)
+    return JSON.parse(response)
   end
 
   def AlcoLocation.populate_location_data
@@ -57,7 +57,6 @@ class AlcoLocation
     raw_data = AlcoLocation.perform_request
 
     puts 'Length of response: '+raw_data.length.to_s
-
     puts 'Attempting to process..'
 
     begin
@@ -115,21 +114,68 @@ class AlcoLocation
 
   end
 
-  # def self.get_address(store_link='myymalat-palvelut/2141/')
-  #
-  #   require 'rest-client'
-  #   require 'json'
-  #
-  #   url = 'https://api.spotify.com/v1/search?type=artist&q=tycho'
-  #   response = RestClient.get(url)
-  #   JSON.parse(response)
-  #
-  #
-  #
-  #   # body > div:nth-child(12) > div > div.main-content.StoreViewPage > div > div > div > div.store-contact.desktop > span.contact-info.address > div > span:nth-child(2)
-  #
-  #   page.at('body > div:nth-child(12) > div > div.main-content.StoreViewPage > div > div > div > div.store-contact.desktop > span.contact-info.address > div > span:nth-child(2)').text
-  #
-  # end
+  def dedupe_avails
+    start_size = self.alco_avails.size
+    puts "\n\n --- \n\n Starting with: "+start_size.to_s+" rows \n\n"
+    avails = self.alco_avails
+
+    avails.each do |avail|
+      drink = avail.alco_drink
+      avails_for_drink = avails.where(alco_drink: drink)
+
+      # search for avails that have duplication
+      if avails_for_drink.size > 1 # this means we have duplicates
+        history_hash = Hash.new
+        master_record_avail = avails_for_drink.order_by(created_at: "desc").first
+
+        # populate history hash
+        avails_for_drink.each do |inner_avail|
+
+          # ensure history is not lost
+          if inner_avail.history
+          history_hash.reverse_merge!(inner_avail.history)
+          end
+
+          # merge histories but avoid overwriting
+          unless history_hash[inner_avail.created_at.to_formatted_s(:db)]
+            history_hash[inner_avail.created_at.to_formatted_s(:db)] = inner_avail.amount
+          end
+        end
+
+        # save merged history hash
+        master_record_avail.history = history_hash
+        begin
+          master_record_avail.save!
+        rescue
+          puts 'Save failed!'
+        else
+          # destroy old records
+          while avails_for_drink.size > 1
+            avails_for_drink.order_by(created_at: "asc").first.destroy
+            avails_for_drink = avails.where(alco_drink: drink)
+          end
+        end
+      end
+
+    end
+
+    end_size = self.alco_avails.size
+    delta = start_size-end_size
+    puts "\n\n --- \n\n Ended with: "+end_size.to_s+" rows \n\n"
+    puts "\n\n --- \n\n Delta is: "+delta.to_s+" rows \n\n"
+  end
+
+  def AlcoLocation.dedupe_all_avails
+    total_size = AlcoLocation.all.size
+    counter = 0
+
+    puts "Beginning to deduplicate "+total_size.to_s+" rows."
+    AlcoLocation.all.each do |loc|
+      counter = counter + 1
+      loc.dedupe_avails
+      # progress indicator
+      puts " --- Progress: "+counter.to_s+ " / "+total_size.to_s+"."
+    end
+  end
 
 end
