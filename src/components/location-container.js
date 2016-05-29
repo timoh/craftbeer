@@ -19,6 +19,7 @@ export default class LocationContainer extends React.Component {
   storeLocation(position){
     const latitude = position.coords.latitude;
     const longitude = position.coords.longitude;
+    // this.props.state ... 
     this.setState({myLocation: [latitude, longitude] });
   }
 
