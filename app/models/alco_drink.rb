@@ -7,7 +7,7 @@ class AlcoDrink
   field :size, type: Float
   field :url, type: String
   field :alko_id, type: String
-  field :best_rev_candidate_score, type: Float
+  field :best_rev_candidate_score, type: Float # match score
 
   validates :url, uniqueness: true
   validates :title, uniqueness: true

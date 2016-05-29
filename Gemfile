@@ -19,6 +19,9 @@ gem 'mongoid-geospatial'
 # used for distance calculations
 gem 'georuby'
 
+# action caching
+gem 'actionpack-action_caching'
+
 gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "twitter-bootstrap-rails"
