@@ -60,15 +60,8 @@ export default class TableHeaders extends React.Component {
           },
           {
             key:"no_of_stores_with_availability",
-            name: "# of stores that have beer in stock",
+            name: "# of stores that have drink in stock",
             field: "noOfNearbyStoresWithAvailability",
-            initialSortOrder: true,
-            type: "int"
-          },
-          {
-            key:"no_of_stores_matching_distance_condition",
-            name: "# of stores that match the distance condition",
-            field: "noOfStoresMatchingDistanceCondition",
             initialSortOrder: true,
             type: "int"
           }
@@ -95,6 +88,9 @@ export default class TableHeaders extends React.Component {
               )
             }.bind(this)
           )}
+          <th>
+            Top 3 nearest stores that have drink in stock
+          </th>
         </tr>
       </thead>
     )

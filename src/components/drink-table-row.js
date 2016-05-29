@@ -38,29 +38,31 @@ export default class DrinkTableRow extends React.Component {
     }
   }
 
-  topNearestStores(availabilityCondition) {
-    var storesString = "";
-    var stores = this.calculateTopNearestStores(availabilityCondition);
-    if(stores.length>0) {
-      stores.map(function(storeInArray) {
-          storesString += "Name: " + storeInArray.store.loc_name + "\n";
-          storesString += "Address: " + storeInArray.store.address + "\n";
-          storesString += "Distance: " + (storeInArray.distance_in_m/1000).toFixed(2) +" km\n";
-          storesString += "Amount: " + storeInArray.avail.amount + " pcs\n\n";
-      });
-    } else {
-      storesString ="No stores match the filters.";
-    }
-    return storesString;
-  }
-
   handleChecked() {
       this.props.handleChecked(this);
   }
 
   render() {
-    const storesWithAvailability = this.topNearestStores(true);
-    const nearbyStores = this.topNearestStores(false);
+
+    const topThreeStores = this.calculateTopNearestStores(true);
+    let topThreeStoresContent;
+    if (topThreeStores.length === 0) {
+      topThreeStoresContent = (
+        <span>
+           No stores match the filters.
+        </span>
+      )
+    } else {
+      topThreeStoresContent = topThreeStores.map(function(storeInArray){
+        const address ="http://www.alko.fi" + storeInArray.store.store_link;
+        return (
+          <div>
+            <a href={address}>{storeInArray.store.loc_name} ({(storeInArray.distance_in_m/1000).toFixed(2)} km, {storeInArray.avail.amount} pcs)</a>
+            <br/>
+          </div>
+        )
+      });
+    }
     return(
         <tr>
             <td className="centered">
@@ -88,16 +90,10 @@ export default class DrinkTableRow extends React.Component {
               {this.props.drinkData.maxAvailability}
             </td>
             <td>
-              <div className="tableCell">
-                <a href="#">{this.props.drinkData.noOfNearbyStoresWithAvailability} </a>
-                    <div className="popup">{storesWithAvailability}</div>
-              </div>
+            {this.props.drinkData.noOfNearbyStoresWithAvailability}
             </td>
-            <td>
-            <div className="tableCell">
-              <a href="#">{this.props.drinkData.noOfStoresMatchingDistanceCondition} </a>
-                  <div className="popup">{nearbyStores}</div>
-            </div>
+            <td className="topstores">
+              {topThreeStoresContent}
             </td>
         </tr>
     )
