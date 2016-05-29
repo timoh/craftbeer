@@ -38,22 +38,6 @@ export default class DrinkTableRow extends React.Component {
     }
   }
 
-  topNearestStores(availabilityCondition) {
-    var storesString = "";
-    var stores = this.calculateTopNearestStores(availabilityCondition);
-    if(stores.length>0) {
-      stores.map(function(storeInArray) {
-          storesString += "Name: " + storeInArray.store.loc_name + "\n";
-          storesString += "Address: " + storeInArray.store.address + "\n";
-          storesString += "Distance: " + (storeInArray.distance_in_m/1000).toFixed(2) +" km\n";
-          storesString += "Amount: " + storeInArray.avail.amount + " pcs\n\n";
-      });
-    } else {
-      storesString ="No stores match the filters.";
-    }
-    return storesString;
-  }
-
   handleChecked() {
       this.props.handleChecked(this);
   }
@@ -73,7 +57,7 @@ export default class DrinkTableRow extends React.Component {
         const address ="http://www.alko.fi" + storeInArray.store.store_link;
         return (
           <div>
-            <a href={address}>{storeInArray.store.loc_name} ({(storeInArray.distance_in_m/1000).toFixed(2)} km)</a>
+            <a href={address}>{storeInArray.store.loc_name} ({(storeInArray.distance_in_m/1000).toFixed(2)} km, {storeInArray.avail.amount} pcs)</a>
             <br/>
           </div>
         )

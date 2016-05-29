@@ -25613,23 +25613,6 @@ var DrinkTableRow = function (_React$Component) {
       }
     }
   }, {
-    key: 'topNearestStores',
-    value: function topNearestStores(availabilityCondition) {
-      var storesString = "";
-      var stores = this.calculateTopNearestStores(availabilityCondition);
-      if (stores.length > 0) {
-        stores.map(function (storeInArray) {
-          storesString += "Name: " + storeInArray.store.loc_name + "\n";
-          storesString += "Address: " + storeInArray.store.address + "\n";
-          storesString += "Distance: " + (storeInArray.distance_in_m / 1000).toFixed(2) + " km\n";
-          storesString += "Amount: " + storeInArray.avail.amount + " pcs\n\n";
-        });
-      } else {
-        storesString = "No stores match the filters.";
-      }
-      return storesString;
-    }
-  }, {
     key: 'handleChecked',
     value: function handleChecked() {
       this.props.handleChecked(this);
@@ -25658,7 +25641,9 @@ var DrinkTableRow = function (_React$Component) {
               storeInArray.store.loc_name,
               ' (',
               (storeInArray.distance_in_m / 1000).toFixed(2),
-              ' km)'
+              ' km, ',
+              storeInArray.avail.amount,
+              ' pcs)'
             ),
             _react2.default.createElement('br', null)
           );
