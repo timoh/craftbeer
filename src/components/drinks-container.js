@@ -14,7 +14,7 @@ export default class DrinksContainer extends React.Component {
   		super();
   		this.state = {
   			drinks: [],
-        maxDistance: 2000,
+        initialMaxDistance: 2000,
         loaded: false
   		};
   	}
@@ -51,7 +51,7 @@ export default class DrinksContainer extends React.Component {
         } else {
           score ='';
         }
-        const storesData = this.updateMatchesDistanceCondition(drinkData.avails);
+        const storesData = this.updateMatchesDistanceCondition(drinkData.avails,this.state.initialMaxDistance);
         const maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         const stocked = this.isStocked(maxAvailability);
         const updatedDrink = update(drinkData, {$merge: {
@@ -69,11 +69,11 @@ export default class DrinksContainer extends React.Component {
       this.setState({drinks: updatedDrinks});
     }
 
-    updatesAfterMaxDistanceChange(){
+    updatesAfterMaxDistanceChange(newMaxDistance){
       var drinks = this.state.drinks;
       var updatedDrinks;
       drinks.map(function(drinkData,arrayIndex) {
-        var storesData = this.updateMatchesDistanceCondition(drinkData.avails);
+        var storesData = this.updateMatchesDistanceCondition(drinkData.avails,newMaxDistance);
         var maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         var stocked = this.isStocked(maxAvailability);
         var updatedDrink = update(drinkData, {$merge: {
@@ -88,13 +88,12 @@ export default class DrinksContainer extends React.Component {
       this.setState({drinks: updatedDrinks});
     }
 
-    updateMatchesDistanceCondition(availsData) {
+    updateMatchesDistanceCondition(availsData,givenMaxDistance) {
       const storesMatchingDistanceCondition = [];
       const nearbyStoresWithAvailability = [];
-      const maxDistance = this.state.maxDistance;
       if(availsData !== undefined) {
         availsData.map(function(availData){
-          availData.matchesDistanceCondition = availData.distance_in_m <= maxDistance;
+          availData.matchesDistanceCondition = availData.distance_in_m <= givenMaxDistance;
           if(availData.matchesDistanceCondition) {
               storesMatchingDistanceCondition.push(availData);
               if(availData.avail.amount > 0) {
@@ -202,10 +201,7 @@ export default class DrinksContainer extends React.Component {
     }
 
     onSliderChange(newValue) {
-      this.setState({
-        maxDistance: newValue
-      });
-      this.updatesAfterMaxDistanceChange();
+      this.updatesAfterMaxDistanceChange(newValue);
     }
 
     handleChecked(sourceComponent) {
@@ -274,7 +270,7 @@ export default class DrinksContainer extends React.Component {
             <Loader loaded={this.state.loaded} className="loader">
               <div className="row">
                 <div className="col-md-12">
-                  <Slider min="0" max="10000" step="100" value={this.state.maxDistance} onChange={this.onSliderChange.bind(this)} />
+                  <Slider min="0" max="10000" step="100" initialMaxDistance={this.state.initialMaxDistance} onChange={this.onSliderChange.bind(this)} />
                 </div>
               </div>
               <div className="row">

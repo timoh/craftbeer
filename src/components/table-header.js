@@ -19,7 +19,7 @@ export default class TableHeader extends React.Component {
   render() {
     return(
       <th>
-        <a href="#" onClick={this.handleOnClick.bind(this)}>{this.props.header.name}</a>
+        <span className="fake-link unselectable" onClick={this.handleOnClick.bind(this)}>{this.props.header.name}</span>
       </th>
     )
   }

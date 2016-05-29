@@ -56,7 +56,7 @@ export default class DrinkTableRow extends React.Component {
       topThreeStoresContent = topThreeStores.map(function(storeInArray){
         const address ="http://www.alko.fi" + storeInArray.store.store_link;
         return (
-          <div>
+          <div key={storeInArray.store._id.$oid}>
             <a href={address}>{storeInArray.store.loc_name} ({(storeInArray.distance_in_m/1000).toFixed(2)} km, {storeInArray.avail.amount} pcs)</a>
             <br/>
           </div>

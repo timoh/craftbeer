@@ -12,7 +12,8 @@ export default class Slider extends React.Component {
     super(props);
     this.state= {
       limit: null,
-      grab: null
+      grab: null,
+			value: props.initialMaxDistance
     };
   }
 
@@ -21,22 +22,22 @@ export default class Slider extends React.Component {
     const handlePos = findDOMNode(this.refs.handle)['offsetWidth'];
     this.setState({
       limit: sliderPos - handlePos,
-      grab: handlePos / 2,
-      value: 1000
+      grab: handlePos / 2
     });
   }
 
   handleSliderMouseDown = (e) => {
-  	this.onChange(this.position(e));
+  		this.onChange(this.position(e),true);
   }
 
   handleDrag = (e) => {
-  	this.onChange(this.position(e));
+  		this.onChange(this.position(e),false);
   }
 
   handleDragEnd = () => {
     document.removeEventListener('mousemove', this.handleDrag);
     document.removeEventListener('mouseup', this.handleDragEnd);
+		this.props.onChange(this.state.value);
   }
 
   handleKnobMouseDown = () => {
@@ -53,8 +54,13 @@ export default class Slider extends React.Component {
     this.handleDrag(e);
   }
 
-  onChange(changedValue) {
-    this.props.onChange(changedValue);
+  onChange(changedValue,updateTable) {
+		this.setState({
+			value: changedValue
+		});
+		if(updateTable) {
+				this.props.onChange(changedValue);
+		}
   }
 
   getPositionFromValue = (value) => {
@@ -102,7 +108,7 @@ export default class Slider extends React.Component {
 	}
 
   render() {
-    const value = this.props.value;
+    const value = this.state.value;
     const position = this.getPositionFromValue(value);
     const coords = this.coordinates(position);
     const fillStyle = {'width': `${coords.fill}px`};
@@ -121,7 +127,7 @@ export default class Slider extends React.Component {
 							{this.valueToKilometers(this.props.min)}
 						</div>
 						<div className="col-md-2 value">
-	            {this.valueToKilometers(this.props.value)}
+	            {this.valueToKilometers(this.state.value)}
 	          </div>
 						<div className="col-md-5 max">
 							{this.valueToKilometers(this.props.max)}
