@@ -25528,15 +25528,20 @@ var _drinkpage = require('./pages/drinkpage');
 
 var _drinkpage2 = _interopRequireDefault(_drinkpage);
 
+var _intropage = require('./pages/intropage');
+
+var _intropage2 = _interopRequireDefault(_intropage);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var app = _react2.default.createElement(
   _reactRouter.Router,
   { history: _reactRouter.hashHistory },
-  _react2.default.createElement(_reactRouter.Redirect, { from: '/', to: '/indexpage' }),
+  _react2.default.createElement(_reactRouter.Redirect, { from: '/', to: '/intropage' }),
   _react2.default.createElement(
     _reactRouter.Route,
     { path: '/', component: _layout2.default },
+    _react2.default.createElement(_reactRouter.Route, { path: 'intropage', component: _intropage2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'indexpage', component: _indexpage2.default }),
     _react2.default.createElement(_reactRouter.Route, { path: 'alco_drinks/:id', component: _drinkpage2.default })
   )
@@ -25544,7 +25549,7 @@ var app = _react2.default.createElement(
 
 _reactDom2.default.render(app, document.getElementById('craftbeer-app'));
 
-},{"./layout/layout":245,"./pages/drinkpage":246,"./pages/indexpage":247,"react":232,"react-dom":3,"react-router":35}],234:[function(require,module,exports){
+},{"./layout/layout":246,"./pages/drinkpage":247,"./pages/indexpage":248,"./pages/intropage":249,"react":232,"react-dom":3,"react-router":35}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26257,7 +26262,7 @@ var DrinksContainer = function (_React$Component) {
 
 exports.default = DrinksContainer;
 
-},{"../components/drink-table-row":234,"../components/search-button":239,"../components/slider":240,"../components/table-button":241,"../components/table-headers":243,"../current-location":244,"react":232,"react-addons-update":2,"react-loader":4}],237:[function(require,module,exports){
+},{"../components/drink-table-row":234,"../components/search-button":240,"../components/slider":241,"../components/table-button":242,"../components/table-headers":244,"../current-location":245,"react":232,"react-addons-update":2,"react-loader":4}],237:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26324,6 +26329,71 @@ var Header = function (_React$Component) {
 exports.default = Header;
 
 },{"react":232}],238:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRouter = require('react-router');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var LocationContainer = function (_React$Component) {
+  _inherits(LocationContainer, _React$Component);
+
+  function LocationContainer() {
+    _classCallCheck(this, LocationContainer);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(LocationContainer).apply(this, arguments));
+  }
+
+  _createClass(LocationContainer, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { className: 'row' },
+        _react2.default.createElement(
+          'div',
+          { className: 'col-md-12 margin-bottom' },
+          _react2.default.createElement(
+            'p',
+            { className: 'centered' },
+            'Welcome to Craftbeer app. This app needs to know your location so that it can show availability data from the Alko stores that are close to you. Do you allow the usage of your location?'
+          ),
+          _react2.default.createElement(
+            _reactRouter.Link,
+            { to: '/indexpage' },
+            _react2.default.createElement(
+              'button',
+              { className: 'btn btn-primary btn-middle btn-lg' },
+              'Show all drinks'
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return LocationContainer;
+}(_react2.default.Component);
+
+exports.default = LocationContainer;
+
+},{"react":232,"react-router":35}],239:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26377,7 +26447,7 @@ var Menu = function (_React$Component) {
 
 exports.default = Menu;
 
-},{"react":232}],239:[function(require,module,exports){
+},{"react":232}],240:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26461,7 +26531,7 @@ var SearchButton = function (_React$Component) {
 
 exports.default = SearchButton;
 
-},{"react":232}],240:[function(require,module,exports){
+},{"react":232}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26655,7 +26725,7 @@ var Slider = function (_React$Component) {
 
 exports.default = Slider;
 
-},{"react":232,"react-dom":3}],241:[function(require,module,exports){
+},{"react":232,"react-dom":3}],242:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26726,7 +26796,7 @@ var TableButton = function (_React$Component) {
 
 exports.default = TableButton;
 
-},{"react":232}],242:[function(require,module,exports){
+},{"react":232}],243:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26789,7 +26859,7 @@ var TableHeader = function (_React$Component) {
 
 exports.default = TableHeader;
 
-},{"react":232}],243:[function(require,module,exports){
+},{"react":232}],244:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26916,7 +26986,7 @@ var TableHeaders = function (_React$Component) {
 
 exports.default = TableHeaders;
 
-},{"../components/table-header":242,"react":232}],244:[function(require,module,exports){
+},{"../components/table-header":243,"react":232}],245:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26948,7 +27018,7 @@ var CurrentLocation = function () {
 
 exports.default = CurrentLocation;
 
-},{}],245:[function(require,module,exports){
+},{}],246:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27004,7 +27074,7 @@ var Layout = function (_React$Component) {
 
 exports.default = Layout;
 
-},{"../components/header":237,"../components/menu":238,"react":232}],246:[function(require,module,exports){
+},{"../components/header":237,"../components/menu":239,"react":232}],247:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27057,7 +27127,7 @@ var DrinkPage = function (_React$Component) {
               { className: 'col-md-12 margin-bottom' },
               _react2.default.createElement(
                 _reactRouter.Link,
-                { to: '/', className: 'indexlink' },
+                { to: '/indexpage', className: 'indexlink' },
                 'Show all drinks'
               )
             )
@@ -27077,7 +27147,7 @@ var DrinkPage = function (_React$Component) {
 
 exports.default = DrinkPage;
 
-},{"../components/drink":235,"react":232,"react-router":35}],247:[function(require,module,exports){
+},{"../components/drink":235,"react":232,"react-router":35}],248:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27131,5 +27201,59 @@ var IndexPage = function (_React$Component) {
 
 exports.default = IndexPage;
 
-},{"../components/drinks-container":236,"react":232}]},{},[233])
+},{"../components/drinks-container":236,"react":232}],249:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _locationContainer = require('../components/location-container');
+
+var _locationContainer2 = _interopRequireDefault(_locationContainer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var IntroPage = function (_React$Component) {
+  _inherits(IntroPage, _React$Component);
+
+  function IntroPage() {
+    _classCallCheck(this, IntroPage);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(IntroPage).apply(this, arguments));
+  }
+
+  _createClass(IntroPage, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'section',
+        { id: 'content' },
+        _react2.default.createElement(
+          'div',
+          { className: 'container' },
+          _react2.default.createElement(_locationContainer2.default, null)
+        )
+      );
+    }
+  }]);
+
+  return IntroPage;
+}(_react2.default.Component);
+
+exports.default = IntroPage;
+
+},{"../components/location-container":238,"react":232}]},{},[233])
 //# sourceMappingURL=bundle.js.map

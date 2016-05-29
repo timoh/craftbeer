@@ -1,14 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {hashHistory, Router, Route, Redirect} from 'react-router';
-import Layout from './layout/layout'
-import IndexPage from './pages/indexpage'
-import DrinkPage from './pages/drinkpage'
+import Layout from './layout/layout';
+import IndexPage from './pages/indexpage';
+import DrinkPage from './pages/drinkpage';
+import IntroPage from './pages/intropage';
 
 const app = (
   <Router history={hashHistory}>
-    <Redirect from="/" to="/indexpage" />
+    <Redirect from="/" to="/intropage" />
     <Route path="/" component={Layout}>
+      <Route path="intropage" component={IntroPage} />
       <Route path="indexpage" component={IndexPage} />
       <Route path="alco_drinks/:id" component={DrinkPage} />
     </Route>

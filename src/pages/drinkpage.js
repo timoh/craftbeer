@@ -8,7 +8,9 @@ export default class DrinkPage extends React.Component {
         <div className="container">
           <div className="row">
             <div className="col-md-12 margin-bottom">
-              <Link to="/" className="indexlink">Show all drinks</Link>
+              <Link to="/indexpage" className="indexlink">
+                Show all drinks
+              </Link>
             </div>
           </div>
           <div className="row">
