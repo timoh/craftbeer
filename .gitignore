@@ -19,3 +19,5 @@
 config/settings.local.yml
 npm-debug.log
 Gemfile.lock
+/public/assets
+/public/assets/*
