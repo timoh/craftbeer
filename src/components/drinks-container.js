@@ -45,17 +45,21 @@ export default class DrinksContainer extends React.Component {
       var drinks = this.state.drinks;
       var updatedDrinks;
       drinks.map(function(drinkData,arrayIndex) {
-        var score;
+        let score;
+        let reviewTitle;
         if(drinkData.reviews!==undefined && drinkData.reviews!==null) {
           score=drinkData.reviews.score;
+          reviewTitle= drinkData.reviews.title;
         } else {
           score ='';
+          reviewTitle = '';
         }
         const storesData = this.updateMatchesDistanceCondition(drinkData.avails,this.state.initialMaxDistance);
         const maxAvailability = this.calculateMaxAvailability(drinkData.avails);
         const stocked = this.isStocked(maxAvailability);
         const updatedDrink = update(drinkData, {$merge: {
             score: score,
+            reviewTitle: reviewTitle,
             maxAvailability: maxAvailability,
             stocked: stocked,
             visible: true,

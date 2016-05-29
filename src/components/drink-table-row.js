@@ -72,7 +72,7 @@ export default class DrinkTableRow extends React.Component {
               <Link to={`/alco_drinks/${this.props.drinkData.drink._id.$oid}`}>{this.props.drinkData.drink.title}</Link>
             </td>
             <td>
-              {this.props.drinkData.drink.title}
+              {this.props.drinkData.reviewTitle}
             </td>
             <td>
               {this.props.drinkData.drink.best_rev_candidate_score.toFixed(2)}
