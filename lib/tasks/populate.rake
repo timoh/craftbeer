@@ -13,16 +13,29 @@ namespace :populate do
     puts "Alko product data successfully populated!"
   end
 
+  desc "Populate the DB with Alko location data"
+  task alko_locs: :environment do
+    AlcoLocation.populate_location_data
+    puts "Alko location data successfully populated!"
+  end
+
   desc "Populate the DB with Alko availability data"
   task alko_avail: :environment do
     AlcoDrink.get_all_avails
     puts "Alko availability data successfully populated!"
   end
 
-  desc "Populate the DB with Alko location data"
-  task alko_locs: :environment do
-    AlcoLocation.populate_location_data
-    puts "Alko location data successfully populated!"
+  desc "De-duplicate availability data"
+  task dedupe_avails: :environment do
+    AlcoLocation.dedupe_all_avails
+    puts "Availability data successfully de-duplicated!"
+  end
+
+  desc "Fetch AND deduplicate availability data"
+  task avail_fetch_dedupe: :environment do
+      Rake::Task["populate:alko_avail"].invoke
+      Rake::Task["populate:dedupe_avails"].invoke
+      puts "Fetch AND deduplicate availability data done!"
   end
 
   desc "Match the reviews with Alko data"
