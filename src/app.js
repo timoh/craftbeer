@@ -5,6 +5,11 @@ import Layout from './layout/layout';
 import IndexPage from './pages/indexpage';
 import DrinkPage from './pages/drinkpage';
 import IntroPage from './pages/intropage';
+import {Provider} from 'react-redux';
+import {createStore,applyMiddleware} from 'redux';
+import rootReducer from './reducers';
+import thunkMiddleware from 'redux-thunk';
+import createLogger from 'redux-logger';
 
 const app = (
   <Router history={hashHistory}>
@@ -17,6 +22,18 @@ const app = (
   </Router>
 )
 
+const loggerMiddleware = createLogger();
+
+const store = createStore(
+  rootReducer,
+  applyMiddleware(
+    thunkMiddleware,
+    loggerMiddleware
+  )
+);
+
 ReactDOM.render(
-  app, document.getElementById('craftbeer-app')
+  <Provider store={store}>
+    {app}
+  </Provider>, document.getElementById('craftbeer-app')
 );
