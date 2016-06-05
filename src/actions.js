@@ -16,7 +16,7 @@ export function receiveDrinks(json) {
 export function receiveLocation(position) {
   return {
     type: 'RECEIVE_LOCATION',
-    position: position
+    position: [position.coords.latitude,position.coords.longitude]
   };
 }
 
@@ -28,22 +28,20 @@ function getPosition(callback) {
     }
 }
 
-export function getLocationAndDrinks() {
+export function getLocation() {
   return function (dispatch) {
     function onPositionResponse(position) {
       dispatch(receiveLocation(position));
-      dispatch(fetchDrinks(position));
     }
     return getPosition(onPositionResponse);
   };
 }
 
-export function fetchDrinks(position) {
-  return function (dispatch) {
+export function fetchDrinks() {
+  return function (dispatch,getState) {
     dispatch(requestDrinks());
-    const latitude = position.coords.latitude;
-    const longitude = position.coords.longitude;
-    const apiCallAddress = '/home/distanced?lat=' + latitude + '&lng=' + longitude;
+    const positionData = getState().positionData;
+    const apiCallAddress = '/home/distanced?lat=' + positionData[0] + '&lng=' + positionData[1];
     return fetch(apiCallAddress)
       .then(response => response.json())
       .then(json =>

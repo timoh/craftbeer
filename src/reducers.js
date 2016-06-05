@@ -24,7 +24,7 @@ function drinksReducer(state = {
 // affects e.g. loading / loaded boolean value.
 
 function locationReducer(state = {
-  position: {}
+  position: [0.00, 0.00]
 }, action) {
   switch (action.type) {
     case 'RECEIVE_LOCATION':
@@ -38,8 +38,8 @@ function locationReducer(state = {
 }
 
 const rootReducer = combineReducers({
-  drinksReducer,
-  locationReducer
+  drinksData: drinksReducer,
+  positionData: locationReducer
 });
 
 export default rootReducer;
