@@ -20,6 +20,43 @@ export function receiveLocation(position) {
   };
 }
 
+export function addAdditionalDataForDrinks() {
+  return {
+    type: 'ADD_ADDITIONAL_DATA'
+  };
+}
+
+export function maxDistanceChange(newMaxDistance) {
+  return {
+    type: 'MAX_DISTANCE_CHANGE',
+    newMaxDistance: newMaxDistance
+  };
+}
+
+export function checkedChange(sourceComponent) {
+  return {
+    type: 'CHECKED_CHANGE',
+    source: sourceComponent
+  };
+}
+
+export function showNonStockedChange(showNonStocked) {
+  return {
+    type: 'TOGGLE_NON_STOCKED',
+    showNonStocked: showNonStocked
+  };
+}
+
+export function sortDrinks(field,newSortOrder,datatype) {
+  return {
+    type: 'SORT',
+    field: field,
+    newSortOrder: newSortOrder,
+    datatype: datatype
+  };
+}
+
+
 function getPosition(callback) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(callback);
@@ -46,6 +83,6 @@ export function fetchDrinks() {
       .then(response => response.json())
       .then(json =>
         dispatch(receiveDrinks(json))
-      );
+      ).then(() => dispatch(addAdditionalDataForDrinks()));
   };
 }

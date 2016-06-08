@@ -19,7 +19,7 @@ export default class TableHeaders extends React.Component {
           {
             key: "review_title",
             name: "Review title",
-            field: "title",
+            field: "reviewTitle",
             initialSortOrder: false,
             type: "string"
           },
