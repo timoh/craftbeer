@@ -13,6 +13,12 @@ export function receiveDrinks(json) {
   };
 }
 
+export function requestLocation() {
+  return {
+    type: 'REQUEST_LOCATION'
+  };
+}
+
 export function receiveLocation(position) {
   return {
     type: 'RECEIVE_LOCATION',
@@ -56,6 +62,19 @@ export function sortDrinks(field,newSortOrder,datatype) {
   };
 }
 
+export function selectAll() {
+  return {
+    type: 'SELECT_ALL'
+  };
+}
+
+export function deSelectAll() {
+  return {
+    type: 'DESELECT_ALL'
+  };
+}
+
+
 
 function getPosition(callback) {
     if (navigator.geolocation) {
@@ -67,6 +86,7 @@ function getPosition(callback) {
 
 export function getLocation() {
   return function (dispatch) {
+    dispatch(requestLocation());
     function onPositionResponse(position) {
       dispatch(receiveLocation(position));
     }

@@ -25,6 +25,16 @@ body {
     cursor: pointer;
 }
 
+.no-link {
+    color: white;
+    text-decoration: none;
+}
+
+.no-link:hover {
+    color:white;
+    text-decoration: none
+}
+
 
 .fake-link:hover  {
   text-decoration:underline;

@@ -1,6 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {getSelectedDrinks} from '../redux/helpers';
+import {Link} from 'react-router';
 
 class Stores extends React.Component {
 
@@ -26,7 +27,7 @@ class Stores extends React.Component {
                     return (
                       <tr key={drinkData.drink._id.$oid}>
                         <td>
-                        {drinkData.drink.title}
+                        <Link to={`/alco_drinks/${drinkData.drink._id.$oid}`}>{drinkData.drink.title}</Link>
                         </td>
                       </tr>
                       );
