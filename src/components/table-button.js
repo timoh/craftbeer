@@ -18,7 +18,7 @@ export default class TableButton extends React.Component {
   }
 
   render() {
-    var actionText;
+    let actionText;
     if (this.state.showNonStocked) {
       actionText = "Hide";
     } else {

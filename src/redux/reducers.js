@@ -73,7 +73,13 @@ function toggleNonStockedReducer(state,showNonStocked) {
     } else {
       visible = drink.stocked ? true : false;
     }
-    const updatedDrink = update(drink, {$merge: {visible:visible}});
+    let selected;
+    if (!visible) {
+      selected = false;
+    } else {
+      selected = drink.selected;
+    }
+    const updatedDrink = update(drink, {$merge: {visible:visible, selected: selected}});
     updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drink,updatedDrink,state,updatedDrinks);
   });
   return updatedDrinks;

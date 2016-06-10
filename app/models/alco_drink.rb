@@ -30,7 +30,11 @@ class AlcoDrink
     to_path = 'public/pics/productpic_'+pic_id+'.png'
     require 'open-uri'
     open(to_path, 'wb') do |file|
-      file << open(from_uri).read
+      begin
+        file << open(from_uri).read
+      rescue
+        puts "Error opening URL " + from_uri
+      end
     end
   end
 

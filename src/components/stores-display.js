@@ -10,31 +10,39 @@ class Stores extends React.Component {
   }
 
   render() {
+    const storesArray = Object.keys(this.props.stores).map((key) => {
+      return this.props.stores[key];
+    });
+    storesArray.sort(function(a,b) {
+      return a.distance_in_m - b.distance_in_m;
+    });
+    const tdStyle = {
+        verticalAlign: 'middle'
+    };
     return (
-      <div>
+
+      <div className="row">
+        <div className="col-md-4">
           <h4>Selected drinks
           </h4>
-            <table className="table table-striped table-bordered">
-              <thead>
-                <tr>
-                  <th>
-                    Drink title
-                  </th>
-                </tr>
-              </thead>
+            <table className="table table-striped">
               <tbody>
-                  { this.props.drinks.map(function (drinkData) {
+                  { this.props.drinks.map((drinkData) => {
                     return (
                       <tr key={drinkData.drink._id.$oid}>
+                        <td style={tdStyle}>
+                        <Link to={`/alco_drinks/${drinkData.drink._id.$oid}`} className="link-large">{drinkData.drink.title}</Link>
+                        </td>
                         <td>
-                        <Link to={`/alco_drinks/${drinkData.drink._id.$oid}`}>{drinkData.drink.title}</Link>
+                          <img src={`/pics/productpic_${drinkData.drink.alko_id}.png`} className="img-responsive img-very-small"/>
                         </td>
                       </tr>
                       );
-                  }, this)}
+                  })}
               </tbody>
           </table>
-          <br/>
+        </div>
+        <div className="col-md-8">
           <h4>Stores that have selected drinks
           </h4>
           <table className="table table-striped table-bordered">
@@ -49,22 +57,22 @@ class Stores extends React.Component {
               </tr>
             </thead>
             <tbody>
-                { Object.keys(this.props.stores).map(function (key) {
-                  const storeInObj = this.props.stores[key];
-                  const address ="http://www.alko.fi" + storeInObj.store.store_link;
+                { storesArray.map((storeInArray) => {
+                  const address ="http://www.alko.fi" + storeInArray.store.store_link;
                   return (
-                    <tr key={key}>
+                    <tr key={storeInArray.store._id.$oid}>
                       <td>
-                        <a href={address}>{storeInObj.store.loc_name}</a>
+                        <a href={address}>{storeInArray.store.loc_name}</a>
                       </td>
                       <td>
-                        {storeInObj.store.address} ({(storeInObj.distance_in_m/1000).toFixed(2)} km)
+                        {storeInArray.store.address} ({(storeInArray.distance_in_m/1000).toFixed(2)} km)
                       </td>
                     </tr>
                     );
-                }, this)}
+                })}
             </tbody>
-        </table>
+            </table>
+        </div>
       </div>
     )
   }
@@ -77,7 +85,7 @@ const mapDispatchToStoresProps = (dispatch) => (
   }
 );
 
-const mapStateToStoresProps = state => (
+const mapStateToStoresProps = (state) => (
   {
     stores: state.drinksData.storesWithSelectedDrinks,
     drinks: getSelectedDrinks(state.drinksData.drinks)

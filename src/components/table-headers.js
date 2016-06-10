@@ -8,8 +8,7 @@ class TableHeaders extends React.Component {
   constructor(props) {
     super(props);
     this.handleOnClick = this.handleOnClick.bind(this);
-    }
-
+  }
 
   handleOnClick(field,newSortOrder,type){
     this.props.sort(field,newSortOrder,type);
@@ -48,21 +47,21 @@ class TableHeaders extends React.Component {
       },
       {
         key: "size",
-        name: "Size",
+        name: "Size (l)",
         field: "size",
         initialSortOrder: false,
         type: "float"
       },
       {
         key: "price",
-        name: "Price",
+        name: "Price (euros)",
         field: "price",
         initialSortOrder: false,
         type: "float"
       },
       {
         key: "max_availability",
-        name: "Max availability in Alko",
+        name: "Max availability in Alko (pcs)",
         field: "maxAvailability",
         initialSortOrder: true,
         type: "int"
@@ -79,7 +78,6 @@ class TableHeaders extends React.Component {
 
   render() {
     const headers = this.getHeaders();
-
     return(
       <thead>
         <tr>
@@ -88,12 +86,11 @@ class TableHeaders extends React.Component {
             <span className="fake-link unselectable" onClick={this.props.handleSelectAll}>Select all</span> /
             <span className="fake-link unselectable" onClick={this.props.handleDeSelectAll}> Deselect all</span>
           </th>
-          {headers.map(function (header) {
+          { headers.map((header) => {
               return (
                 <TableHeader onClick={this.handleOnClick} key={header.key} header={header} />
               )
-            }.bind(this)
-          )}
+            }) }
           <th>
             Top 3 nearest stores that have drink in stock
           </th>
@@ -102,7 +99,6 @@ class TableHeaders extends React.Component {
     )
   }
 }
-
 
 const mapDispatchToHeadersProps = (dispatch) => (
   {

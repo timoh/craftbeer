@@ -48,48 +48,48 @@ export function isStocked(maxAvailability) {
 
 
 export function handleSort(field,sortOrder,type) {
-      if (type=="float") {
-        return sortBy(field,sortOrder,parseFloat,true);
-      } else if (type=="int") {
-        return sortBy(field,sortOrder,parseInt,false);
-      } else {
-        let isDrinkField;
-        if (field =="reviewTitle") {
-          isDrinkField = false;
-        } else {
-          isDrinkField = true;
-        }
-        return sortBy(field,sortOrder, function(a){return a.toUpperCase();}, isDrinkField);
-      }
+  if (type=="float") {
+    return sortBy(field,sortOrder,parseFloat,true);
+  } else if (type=="int") {
+    return sortBy(field,sortOrder,parseInt,false);
+  } else {
+    let isDrinkField;
+    if (field =="reviewTitle") {
+      isDrinkField = false;
+    } else {
+      isDrinkField = true;
     }
+    return sortBy(field,sortOrder, function(a){return a.toUpperCase();}, isDrinkField);
+  }
+}
 
 export function sortBy(field,reverse,primer,isDrinkField){
-      var key;
-      if(primer) {
-        if(isDrinkField) {
-          key = function(x) {
-            return primer(x.drink[field]);
-          };
-        } else {
-          key = function(x) {
-            return primer(x[field]);
-          };
-        }
-      } else {
-        if(isDrinkField) {
-          key = function(x) {
-            return x.drink[field];
-          };
-        } else {
-          key = function(x) {
-            return x[field];
-          };
-        }
-      }
-       reverse = !reverse ? 1 : -1;
-       return function (a, b) {
-         return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
-       };
+  let key;
+  if(primer) {
+    if(isDrinkField) {
+      key = function(x) {
+        return primer(x.drink[field]);
+      };
+    } else {
+      key = function(x) {
+        return primer(x[field]);
+      };
+    }
+  } else {
+    if(isDrinkField) {
+      key = function(x) {
+        return x.drink[field];
+      };
+    } else {
+      key = function(x) {
+        return x[field];
+      };
+    }
+  }
+   reverse = !reverse ? 1 : -1;
+   return function (a, b) {
+     return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+   };
 }
 
 export function getSelectedDrinks(drinks) {

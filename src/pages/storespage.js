@@ -3,6 +3,7 @@ import StoresDisplay from '../components/stores-display';
 import {Link} from 'react-router';
 
 export default class StoresPage extends React.Component {
+  
   render() {
     return(
       <section id="content">

@@ -7,9 +7,8 @@ export default class DrinkTableRow extends React.Component {
     super(props);
   }
 
-
   calculateTopNearestStores(availabilityCondition) {
-    var avails = [];
+    const avails = [];
 
     if(this.props.drinkData.avails !== undefined) {
       this.props.drinkData.avails.map(function(availData) {
@@ -39,7 +38,7 @@ export default class DrinkTableRow extends React.Component {
   }
 
   handleChecked() {
-      this.props.handleChecked(this);
+    this.props.handleChecked(this);
   }
 
   render() {
@@ -91,7 +90,7 @@ export default class DrinkTableRow extends React.Component {
               {this.props.drinkData.drink.size.toFixed(2)}
             </td>
             <td>
-              {this.props.drinkData.drink.price.toFixed(2)}
+              {this.props.drinkData.drink.price.toFixed(2)} {String.fromCharCode(8364)}
             </td>
             <td>
               {this.props.drinkData.maxAvailability}

@@ -2,6 +2,7 @@ import React from 'react';
 import Drink from '../components/drink';
 import {Link} from 'react-router';
 export default class DrinkPage extends React.Component {
+
   render() {
     return(
       <section id="content">
@@ -10,6 +11,10 @@ export default class DrinkPage extends React.Component {
             <div className="col-md-12 margin-bottom">
               <Link to="/indexpage" className="indexlink">
                 Show all drinks
+              </Link>
+              <span> |  </span>
+              <Link to="/storespage" className="indexlink">
+                 Show stores with selected drinks
               </Link>
             </div>
           </div>

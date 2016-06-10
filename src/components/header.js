@@ -4,7 +4,6 @@ export default class Header extends React.Component {
 
   render() {
     return(
-
         <header>
           <div className="container">
             <div className="row">
@@ -15,8 +14,7 @@ export default class Header extends React.Component {
               </div>
             </div>
           </div>
-       </header>
-    
+       </header>  
     )
   }
 }

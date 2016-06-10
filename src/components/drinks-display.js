@@ -45,14 +45,14 @@ class Drinks extends React.Component {
                 <table className= "table table-striped table-bordered">
                   <HeadersDisplay sort={this.props.sortDrinks.bind(this)} />
                   <tbody>
-                    { this.props.drinks.map(function(drinkData){
+                    { this.props.drinks.map((drinkData) => {
                       if(drinkData.visible) {
                         return (
                           <DrinkTableRow key={ drinkData.drink._id.$oid }
                           drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
                         )
                       }
-                    }, this)}
+                    })}
                   </tbody>
                 </table>
               </div>

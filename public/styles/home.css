@@ -19,6 +19,30 @@ body {
     border-radius: 10px;
 }
 
+.bolded {
+  font-weight: bold;
+}
+
+.vert-middle {
+  vertical-align: middle
+}
+
+.link-large {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.margin-top {
+  margin-top: 60px;
+}
+
+.img-small {
+    width: 15%;
+}
+
+.img-very-small {
+    height: 5%;
+}
 
 .fake-link {
     color: #18bc9c;

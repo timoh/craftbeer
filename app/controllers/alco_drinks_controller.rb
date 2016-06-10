@@ -83,6 +83,6 @@ class AlcoDrinksController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def alco_drink_params
-      params.require(:alco_drink).permit(:title, :price, :type, :size, :url)
+      params.require(:alco_drink).permit(:title, :price, :type, :size, :url, :alko_id)
     end
 end

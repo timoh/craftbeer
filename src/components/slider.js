@@ -27,11 +27,11 @@ export default class Slider extends React.Component {
   }
 
   handleSliderMouseDown = (e) => {
-  		this.onChange(this.position(e),true);
+  	this.onChange(this.position(e),true);
   }
 
   handleDrag = (e) => {
-  		this.onChange(this.position(e),false);
+  	this.onChange(this.position(e),false);
   }
 
   handleDragEnd = () => {
@@ -59,7 +59,7 @@ export default class Slider extends React.Component {
 			value: changedValue
 		});
 		if(updateTable) {
-				this.props.onChange(changedValue);
+			this.props.onChange(changedValue);
 		}
   }
 
@@ -114,26 +114,25 @@ export default class Slider extends React.Component {
     const fillStyle = {'width': `${coords.fill}px`};
     const handleStyle = {'left': `${coords.handle}px`};
     return(
-        <div>
-
-					<div className="h4 text-center unselectable">Maximum distance to Alko store</div>
-          <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
-	  		onClick={this.handleNoop}>
-            <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
-            <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown}	onTouchMove={this.handleTouchMove} onClick={this.handleNoop} style={handleStyle} />
-          </div>
-					<div className="row unselectable">
-						<div className="col-md-5 min">
-							{this.valueToKilometers(this.props.min)}
-						</div>
-						<div className="col-md-2 value">
-	            {this.valueToKilometers(this.state.value)}
-	          </div>
-						<div className="col-md-5 max">
-							{this.valueToKilometers(this.props.max)}
-						</div>
-					</div>
+      <div>
+				<div className="h4 text-center unselectable">Maximum distance to Alko store</div>
+        <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
+  		onClick={this.handleNoop}>
+          <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
+          <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown}	onTouchMove={this.handleTouchMove} onClick={this.handleNoop} style={handleStyle} />
         </div>
+				<div className="row unselectable">
+					<div className="col-md-5 min">
+						{this.valueToKilometers(this.props.min)}
+					</div>
+					<div className="col-md-2 value">
+            {this.valueToKilometers(this.state.value)}
+          </div>
+					<div className="col-md-5 max">
+						{this.valueToKilometers(this.props.max)}
+					</div>
+				</div>
+      </div>
     )
   }
 }
