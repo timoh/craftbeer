@@ -52,6 +52,8 @@ export function handleSort(field,sortOrder,type) {
     return sortBy(field,sortOrder,parseFloat,true);
   } else if (type=="int") {
     return sortBy(field,sortOrder,parseInt,false);
+  } else if (type=="boolean") {
+    return sortBy(field,sortOrder,(a) => a ? 1 : 0);
   } else {
     let isDrinkField;
     if (field =="reviewTitle") {
@@ -59,32 +61,20 @@ export function handleSort(field,sortOrder,type) {
     } else {
       isDrinkField = true;
     }
-    return sortBy(field,sortOrder, function(a){return a.toUpperCase();}, isDrinkField);
+    return sortBy(field,sortOrder, (a) => a.toUpperCase(), isDrinkField);
   }
 }
 
 export function sortBy(field,reverse,primer,isDrinkField){
   let key;
   if(primer) {
-    if(isDrinkField) {
-      key = function(x) {
-        return primer(x.drink[field]);
-      };
-    } else {
-      key = function(x) {
-        return primer(x[field]);
-      };
-    }
+    key = function(x) {
+      return isDrinkField ? primer(x.drink[field]) : primer(x[field]);
+    };
   } else {
-    if(isDrinkField) {
-      key = function(x) {
-        return x.drink[field];
-      };
-    } else {
-      key = function(x) {
-        return x[field];
-      };
-    }
+    key = function(x) {
+      return isDrinkField ? x.drink[field] : x[field];
+    };
   }
    reverse = !reverse ? 1 : -1;
    return function (a, b) {

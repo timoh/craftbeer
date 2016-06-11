@@ -22,7 +22,7 @@ class Stores extends React.Component {
     return (
 
       <div className="row">
-        <div className="col-md-4">
+        <div className="col-md-5">
           <h4>Selected drinks
           </h4>
             <table className="table table-striped">
@@ -42,7 +42,7 @@ class Stores extends React.Component {
               </tbody>
           </table>
         </div>
-        <div className="col-md-8">
+        <div className="col-md-7">
           <h4>Stores that have selected drinks
           </h4>
           <table className="table table-striped table-bordered">

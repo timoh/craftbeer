@@ -26,7 +26,7 @@ export default class TableButton extends React.Component {
     }
     return(
         <div>
-          <button type="button" className="btn btn-primary margin-bottom" onClick={this.handleClick.bind(this)}>{actionText} non-stocked drinks</button>
+          <button type="button" className="btn btn-primary" onClick={this.handleClick.bind(this)}>{actionText} non-stocked drinks</button>
         </div>
     )
   }

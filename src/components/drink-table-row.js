@@ -37,7 +37,8 @@ export default class DrinkTableRow extends React.Component {
     }
   }
 
-  handleChecked() {
+  handleChecked(e) {
+    e.stopPropagation();
     this.props.handleChecked(this);
   }
 
@@ -62,17 +63,11 @@ export default class DrinkTableRow extends React.Component {
         )
       });
     }
-    const tdStyle = {
-        verticalAlign: 'middle',
-        padding: '0px'
-    };
     return(
         <tr>
-            <td style={tdStyle}>
-                <label className="control control--checkbox">
-                  <input type="checkbox" checked={this.props.drinkData.selected} onChange={this.handleChecked.bind(this)} />
-                   <div className="control__indicator"></div>
-                </label>
+            <td className="centered">
+              <input type="checkbox" id={this.props.drinkData.drink._id.$oid} className="chk-btn" checked={this.props.drinkData.selected} onChange={this.handleChecked.bind(this)} />
+                  <label htmlFor={this.props.drinkData.drink._id.$oid}></label>
             </td>
             <td>
               <Link to={`/alco_drinks/${this.props.drinkData.drink._id.$oid}`}>{this.props.drinkData.drink.title}</Link>

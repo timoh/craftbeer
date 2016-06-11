@@ -26,7 +26,8 @@ function drinksReducer(state = {
       const drinksAfterDistChange = maxDistanceChangeReducer(state.drinks,action.newMaxDistance);
       return Object.assign({}, state, {
         drinks: drinksAfterDistChange,
-        storesWithSelectedDrinks: storesReducer(state.storesWithSelectedDrinks,drinksAfterDistChange)
+        storesWithSelectedDrinks: storesReducer(state.storesWithSelectedDrinks,drinksAfterDistChange),
+        initialMaxDistance: action.newMaxDistance
       });
     case 'SORT':
       return Object.assign({}, state, {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Loader from 'react-loader';
 import DrinkTableRow from '../components/drink-table-row';
-import HeadersDisplay from '../components/table-headers';
+import TableHeaders from '../components/table-headers';
 import TableButton from '../components/table-button';
 import Slider from '../components/slider';
 import SearchButton from '../components/search-button';
@@ -41,22 +41,30 @@ class Drinks extends React.Component {
                 </div>
               </div>
               <div className="row">
-                <TableButton toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
-                <table className= "table table-striped table-bordered">
-                  <HeadersDisplay sort={this.props.sortDrinks.bind(this)} />
-                  <tbody>
-                    { this.props.drinks.map((drinkData) => {
-                      if(drinkData.visible) {
-                        return (
-                          <DrinkTableRow key={ drinkData.drink._id.$oid }
-                          drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
-                        )
-                      }
-                    })}
-                  </tbody>
-                </table>
+                <div className="col-md-12">
+                    <div className="row margin-bottom">
+                      <div className="col-md-2">
+                        <TableButton toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
+                      </div>
+                      <div className="col-md-8">
+                        <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
+                      </div>
+                    </div>
+                    <table className= "table table-striped table-bordered">
+                      <TableHeaders sort={this.props.sortDrinks.bind(this)} />
+                      <tbody>
+                        { this.props.drinks.map((drinkData) => {
+                          if(drinkData.visible) {
+                            return (
+                              <DrinkTableRow key={ drinkData.drink._id.$oid }
+                              drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
+                            )
+                          }
+                        })}
+                      </tbody>
+                    </table>
+                </div>
               </div>
-              <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
             </Loader>
           </div>
       )
