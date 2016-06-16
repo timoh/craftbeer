@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import update from 'react-addons-update';
 import * as Helpers from '../redux/helpers';
 
-function drinksReducer(state = {
+export function drinksReducer(state = {
   loading: false,
   drinks: [],
   initialMaxDistance: 2000,
@@ -10,47 +10,62 @@ function drinksReducer(state = {
 }, action) {
   switch (action.type) {
     case 'REQUEST_DRINKS':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         loading: true
-      });
+      };
     case 'RECEIVE_DRINKS':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         drinks: action.drinks
-      });
+      };
     case 'ADD_ADDITIONAL_DATA':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         loading: false,
         drinks: additionalDrinksDataReducer(state.drinks,state.initialMaxDistance)
-      });
+      };
     case 'MAX_DISTANCE_CHANGE':
       const drinksAfterDistChange = maxDistanceChangeReducer(state.drinks,action.newMaxDistance);
-      return Object.assign({}, state, {
+      return {
+        ...state,
         drinks: drinksAfterDistChange,
-        storesWithSelectedDrinks: storesReducer(state.storesWithSelectedDrinks,drinksAfterDistChange),
+        storesWithSelectedDrinks: storesReducer(drinksAfterDistChange),
         initialMaxDistance: action.newMaxDistance
-      });
+      };
     case 'SORT':
-      return Object.assign({}, state, {
-       drinks: sortReducer(state.drinks,action.field,action.newSortOrder,action.datatype)
-      });
+      return {
+        ...state,
+        drinks: sortReducer(state.drinks,action.field,action.newSortOrder,action.datatype)
+      };
     case 'CHECKED_CHANGE':
-      const drinksAfterCheckedChange = checkedReducer(state.drinks,action.source);
-      return Object.assign({}, state, {
+      const drinksAfterCheckedChange = checkedReducer(state.drinks,action.drinkData);
+      return {
+        ...state,
         drinks: drinksAfterCheckedChange,
-        storesWithSelectedDrinks: storesReducer(state.storesWithSelectedDrinks,drinksAfterCheckedChange)
-      });
+        storesWithSelectedDrinks: storesReducer(drinksAfterCheckedChange)
+      };
     case 'TOGGLE_NON_STOCKED':
-      return Object.assign({}, state, {
-        drinks: toggleNonStockedReducer(state.drinks,action.showNonStocked)
-      });
+      const drinksAfterToggle = toggleNonStockedReducer(state.drinks,action.showNonStocked);
+      return {
+        ...state,
+        drinks: drinksAfterToggle,
+        storesWithSelectedDrinks: storesReducer(drinksAfterToggle)
+      };
     case 'SELECT_ALL':
-      return Object.assign({}, state, {
-        drinks: changedSelectedForAllReducer(state.drinks,true)
-      });
+      const drinksAfterSelectAll = changedSelectedForAllReducer(state.drinks,true);
+      return {
+        ...state,
+        drinks: drinksAfterSelectAll,
+        storesWithSelectedDrinks: storesReducer(drinksAfterSelectAll)
+      };
     case 'DESELECT_ALL':
-        return Object.assign({}, state, {
-          drinks: changedSelectedForAllReducer(state.drinks,false)
-    });
+      const drinksAfterDeSelectAll = changedSelectedForAllReducer(state.drinks,false);
+      return {
+        ...state,
+        drinks: drinksAfterDeSelectAll,
+        storesWithSelectedDrinks: storesReducer(drinksAfterDeSelectAll)
+      };
     default:
       return state;
   }
@@ -86,8 +101,8 @@ function toggleNonStockedReducer(state,showNonStocked) {
   return updatedDrinks;
 }
 
-function checkedReducer(state,sourceComponent) {
-  const index = state.indexOf(sourceComponent.props.drinkData);
+function checkedReducer(state,drinkData) {
+  const index = state.indexOf(drinkData);
   const drinkInState = state[index];
   const currentSelected = drinkInState.selected;
   const updatedDrink = update(drinkInState,{$merge: {selected:!currentSelected}});
@@ -107,18 +122,19 @@ function additionalDrinksDataReducer(state,maxDistance) {
         score ='';
         reviewTitle = '';
       }
-      const storesData = Helpers.updateMatchesDistanceCondition(drinkData.avails,maxDistance);
-      const maxAvailability = Helpers.calculateMaxAvailability(drinkData.avails);
+      const availsAndStoresData = Helpers.updateMatchesDistanceCondition(drinkData.avails,maxDistance);
+      const maxAvailability = Helpers.calculateMaxAvailability(availsAndStoresData[0]);
       const stocked = Helpers.isStocked(maxAvailability);
       const updatedDrink = update(drinkData, {$merge: {
+          avails: availsAndStoresData[0],
           score: score,
           reviewTitle: reviewTitle,
           maxAvailability: maxAvailability,
           stocked: stocked,
           visible: true,
-          noOfStoresMatchingDistanceCondition: storesData[0].length,
-          noOfNearbyStoresWithAvailability: storesData[1].length,
-          nearbyStoresWithAvailability: storesData[1],
+          noOfStoresMatchingDistanceCondition: availsAndStoresData[1].length,
+          noOfNearbyStoresWithAvailability: availsAndStoresData[2].length,
+          nearbyStoresWithAvailability: availsAndStoresData[2],
           selected: false
         }});
       updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,state,updatedDrinks);
@@ -129,22 +145,23 @@ function additionalDrinksDataReducer(state,maxDistance) {
 function maxDistanceChangeReducer(state,newMaxDistance){
   let updatedDrinks;
   state.map(function(drinkData,arrayIndex) {
-    const storesData = Helpers.updateMatchesDistanceCondition(drinkData.avails,newMaxDistance);
-    const maxAvailability = Helpers.calculateMaxAvailability(drinkData.avails);
+    const availsAndStoresData = Helpers.updateMatchesDistanceCondition(drinkData.avails,newMaxDistance);
+    const maxAvailability = Helpers.calculateMaxAvailability(availsAndStoresData[0]);
     const stocked = Helpers.isStocked(maxAvailability);
     const updatedDrink = update(drinkData, {$merge: {
+        avails: availsAndStoresData[0],
         maxAvailability: maxAvailability,
         stocked: stocked,
-        noOfStoresMatchingDistanceCondition: storesData[0].length,
-        noOfNearbyStoresWithAvailability: storesData[1].length,
-        nearbyStoresWithAvailability: storesData[1]
+        noOfStoresMatchingDistanceCondition: availsAndStoresData[1].length,
+        noOfNearbyStoresWithAvailability: availsAndStoresData[2].length,
+        nearbyStoresWithAvailability: availsAndStoresData[2]
       }});
     updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,state,updatedDrinks);
   }.bind(this));
   return updatedDrinks;
 }
 
-function storesReducer(stores,drinks) {
+function storesReducer(drinks) {
   const storesMatchingConditions = {};
   const selectedDrinks = Helpers.getSelectedDrinks(drinks);
   selectedDrinks.map(function(drinkData,index) {
@@ -181,24 +198,25 @@ function sortReducer(state,field,newSortOrder,type){
     return state.slice().sort(Helpers.handleSort(field,newSortOrder,type));
 }
 
-function locationReducer(state = {
+export function locationReducer(state = {
   position: [0.00, 0.00],
   loading: false,
   requested: false
 }, action) {
   switch (action.type) {
     case 'REQUEST_LOCATION': {
-      return Object.assign({}, state, {
+      return {
+        ...state,
         loading: true,
         requested: true
-      });
+      };
     }
     case 'RECEIVE_LOCATION':
-      return Object.assign({}, state, {
+      return {
+        ...state,
         position: action.position,
         loading: false
-    });
-
+      };
     default:
       return state;
   }

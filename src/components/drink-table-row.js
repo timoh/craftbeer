@@ -39,7 +39,7 @@ export default class DrinkTableRow extends React.Component {
 
   handleChecked(e) {
     e.stopPropagation();
-    this.props.handleChecked(this);
+    this.props.handleChecked(this.props.drinkData);
   }
 
   render() {

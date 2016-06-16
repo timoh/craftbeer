@@ -4,7 +4,7 @@
   "description": "Beer finder app",
   "main": "bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava -v",
     "start": "gulp watch"
   },
   "author": "Timo Herttua",
@@ -19,15 +19,19 @@
     "es2015"
   ],
   "devDependencies": {
+    "ava": "^0.15.2",
     "babel-core": "^6.8.0",
     "babel-eslint": "^6.0.4",
     "babel-plugin-transform-class-properties": "^6.9.0",
+    "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-es2015": "^6.6.0",
     "babel-preset-react": "^6.5.0",
     "babel-register": "^6.8.0",
     "babelify": "^7.2.0",
     "browser-sync": "^2.11.2",
     "browserify": "^13.0.0",
+    "chalk": "^1.1.3",
+    "diff": "^2.2.3",
     "eslint": "^2.10.2",
     "eslint-plugin-react": "^4.2.3",
     "exorcist": "^0.4.0",
@@ -46,5 +50,14 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.7.0"
+  },
+  "ava": {
+    "babel": "inherit",
+    "require": [
+      "babel-register"
+    ]
+  },
+  "dependencies": {
+    "chalk": "^1.1.3"
   }
 }

@@ -1,20 +1,24 @@
 import update from 'react-addons-update';
 
 export function updateMatchesDistanceCondition(availsData,givenMaxDistance) {
+    let updatedAvailsData;
     const storesMatchingDistanceCondition = [];
     const nearbyStoresWithAvailability = [];
     if(availsData !== undefined) {
-      availsData.map(function(availData){
-        availData.matchesDistanceCondition = availData.distance_in_m <= givenMaxDistance;
-        if(availData.matchesDistanceCondition) {
+      availsData.map(function(availData,index){
+        //mutating state --> bad
+        const matchesDistanceCondition = availData.distance_in_m <= givenMaxDistance;
+        if(matchesDistanceCondition) {
             storesMatchingDistanceCondition.push(availData);
             if(availData.avail.amount > 0) {
               nearbyStoresWithAvailability.push(availData);
             }
         }
+        const updatedAvailData = update(availData, {$merge: {matchesDistanceCondition: matchesDistanceCondition}});
+        updatedAvailsData = handleArrayUpdate(index,availData,updatedAvailData,availsData,updatedAvailsData);
       });
     }
-    return [storesMatchingDistanceCondition,nearbyStoresWithAvailability];
+    return [updatedAvailsData, storesMatchingDistanceCondition, nearbyStoresWithAvailability];
 }
 
 export function calculateMaxAvailability(availsData) {

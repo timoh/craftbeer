@@ -39,10 +39,10 @@ export function maxDistanceChange(newMaxDistance) {
   };
 }
 
-export function checkedChange(sourceComponent) {
+export function checkedChange(drinkData) {
   return {
     type: 'CHECKED_CHANGE',
-    source: sourceComponent
+    drinkData: drinkData
   };
 }
 

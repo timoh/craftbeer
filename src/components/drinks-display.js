@@ -78,8 +78,8 @@ const mapDispatchToDrinksProps = (dispatch) => (
     onSliderChange: (newValue) => (
       dispatch(maxDistanceChange(newValue))
     ),
-    handleChecked: (sourceComponent) => (
-      dispatch(checkedChange(sourceComponent))
+    handleChecked: (drinkData) => (
+      dispatch(checkedChange(drinkData))
     ),
     toggleNonStocked: (showNonStocked) => (
       dispatch(showNonStockedChange(showNonStocked))
