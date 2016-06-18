@@ -38,6 +38,7 @@
     "gulp": "^3.9.0",
     "gulp-eslint": "^2.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "nock": "^8.0.0",
     "react": "^15.0.1",
     "react-addons-update": "^15.0.2",
     "react-dom": "^15.0.1",
@@ -46,6 +47,7 @@
     "react-router": "^2.4.0",
     "redux": "^3.5.2",
     "redux-logger": "^2.6.1",
+    "redux-mock-store": "^1.1.1",
     "redux-thunk": "^2.1.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
@@ -56,8 +58,5 @@
     "require": [
       "babel-register"
     ]
-  },
-  "dependencies": {
-    "chalk": "^1.1.3"
   }
 }

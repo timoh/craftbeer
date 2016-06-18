@@ -6,15 +6,14 @@ export function updateMatchesDistanceCondition(availsData,givenMaxDistance) {
     const nearbyStoresWithAvailability = [];
     if(availsData !== undefined) {
       availsData.map(function(availData,index){
-        //mutating state --> bad
         const matchesDistanceCondition = availData.distance_in_m <= givenMaxDistance;
+        const updatedAvailData = update(availData, {$merge: {matchesDistanceCondition: matchesDistanceCondition}});
         if(matchesDistanceCondition) {
-            storesMatchingDistanceCondition.push(availData);
-            if(availData.avail.amount > 0) {
-              nearbyStoresWithAvailability.push(availData);
+            storesMatchingDistanceCondition.push(updatedAvailData);
+            if(updatedAvailData.avail.amount > 0) {
+              nearbyStoresWithAvailability.push(updatedAvailData);
             }
         }
-        const updatedAvailData = update(availData, {$merge: {matchesDistanceCondition: matchesDistanceCondition}});
         updatedAvailsData = handleArrayUpdate(index,availData,updatedAvailData,availsData,updatedAvailsData);
       });
     }

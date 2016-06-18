@@ -4,7 +4,7 @@ import * as Actions from '../../src/redux/actions';
 import chalk from 'chalk';
 import * as JsDiff from 'diff';
 
-let drink, drink2, avail1, avail2, reviews, store1, store2;
+let drink, drink2, drinkObj1, avail1, avail2, avails, reviews, store1, store2;
 
 // warning!
 // t.deepEqual() tests attribute order while prettyDiff() does not
@@ -48,7 +48,16 @@ test.beforeEach(t => {
       store: store2,
       matchesDistanceCondition: false
     };
+    avails = [avail1,avail2];
     reviews = { score: 35,  title: "test beer in review" };
+    drinkObj1 = {
+      avails: avails,
+      drink: drink,
+      nearbyStoresWithAvailability: [avail1, avail2],
+      selected: true,
+      stocked: true,
+      visible: true
+    };
 });
 
 test('requests location', t => {
@@ -58,7 +67,7 @@ test('requests location', t => {
     requested: false
   };
   const nextState = locationReducer(prevState,Actions.requestLocation());
-  t.deepEqual(nextState, {
+  deepEqual(t,nextState, {
     position: [0.00, 0.00],
     loading: true,
     requested: true
@@ -78,7 +87,7 @@ test('receives location', t => {
     }
   };
   const nextState = locationReducer(prevState,Actions.receiveLocation(positionObj));
-  t.deepEqual(nextState, {
+  deepEqual(t,nextState, {
     position: [60.10, 40.10],
     loading: false,
     requested: true
@@ -93,7 +102,7 @@ test('requests drinks', t => {
     storesWithSelectedDrinks: {}
   };
   const nextState = drinksReducer(prevState,Actions.requestDrinks());
-  t.deepEqual(nextState, {
+  deepEqual(t,nextState, {
     loading: true,
     drinks: [],
     initialMaxDistance: 2000,
@@ -123,11 +132,10 @@ test('receives drinks', t => {
     initialMaxDistance: 2000,
     storesWithSelectedDrinks: {}
   };
-  t.deepEqual(nextState, correctState);
+  deepEqual(t,nextState, correctState);
 });
 
 test('adds additional data', t => {
-  const avails = [avail1,avail2];
   const prevState = {
     loading: true,
     drinks: [
@@ -163,12 +171,10 @@ test('adds additional data', t => {
     initialMaxDistance: 2000,
     storesWithSelectedDrinks: {}
   };
-  //keep in mind that two different objects with the same content are not deep equal
   deepEqual(t,nextState, correctState);
 });
 
 test('updates state after increasing max distance', t => {
-  const avails = [avail1, avail2];
   const prevState = {
     drinks: [
       {
@@ -186,17 +192,20 @@ test('updates state after increasing max distance', t => {
     }
   };
   const nextState = drinksReducer(prevState,Actions.maxDistanceChange(7000));
-  avail2.matchesDistanceCondition = true;
+  const avail3 = {
+    ...avail2,
+    matchesDistanceCondition: true
+  };
   const drinksArr2 = [
     {
-      avails: avails,
+      avails: [avail1,avail3],
       drink: drink,
       maxAvailability: 50,
       stocked: true,
       selected: true,
       noOfStoresMatchingDistanceCondition: 2,
       noOfNearbyStoresWithAvailability: 2,
-      nearbyStoresWithAvailability: [avail1,avail2]
+      nearbyStoresWithAvailability: [avail1,avail3]
     }
   ];
   const correctState = {
@@ -204,14 +213,13 @@ test('updates state after increasing max distance', t => {
     initialMaxDistance: 7000,
     storesWithSelectedDrinks: {
       "123": avail1,
-      "234": avail2
+      "234": avail3
     }
   };
   deepEqual(t,nextState, correctState);
 });
 
 test('updates state after decreasing max distance', t => {
-  const avails = [avail1, avail2];
   const prevState = {
     drinks: [
       {
@@ -300,13 +308,6 @@ test('sorts drinks based on price in ascending order', t => {
 });
 
 test('updates drinks after selecting a drink', t => {
-  const avails = [avail1, avail2];
-  const drinkObj1 = {
-    avails: avails,
-    drink: drink,
-    nearbyStoresWithAvailability: [avail1, avail2],
-    selected: true
-  };
   const drinkObj2 = {
     avails: avails,
     drink: drink2,
@@ -321,12 +322,104 @@ test('updates drinks after selecting a drink', t => {
     }
   };
   const nextState = drinksReducer(prevState,Actions.checkedChange(drinkObj2));
-  drinkObj2.selected = true;
+  const drinkObj3 = {
+    ...drinkObj2,
+    selected: true
+  };
   const correctState = {
+    drinks: [drinkObj1,drinkObj3],
+    storesWithSelectedDrinks: {
+      "123": avail1
+    }
+  };
+  deepEqual(t,nextState, correctState);
+});
+
+test('hides non-stocked drinks', t => {
+  const drinkObj2 = {
+    avails: [],
+    drink: drink2,
+    nearbyStoresWithAvailability: [],
+    stocked: false,
+    selected: true,
+    visible: true
+  };
+  const prevState = {
+    drinks: [drinkObj1,drinkObj2],
+    storesWithSelectedDrinks: {}
+  };
+  const nextState = drinksReducer(prevState,Actions.showNonStockedChange(false));
+  //immutability just in case …
+  const drinkObj3 = {
+    ...drinkObj2,
+    selected: false,
+    visible: false
+  };
+  const correctState = {
+    drinks: [drinkObj1,drinkObj3],
+    storesWithSelectedDrinks: {
+      "123": avail1,
+      "234": avail2
+    }
+  };
+  deepEqual(t,nextState, correctState);
+});
+
+test('selects all drinks', t => {
+  const drinkObj2 = {
+    avails: [],
+    drink: drink2,
+    nearbyStoresWithAvailability: [],
+    stocked: false,
+    selected: false
+  };
+  const prevState = {
+    drinks: [drinkObj1,drinkObj2],
+    storesWithSelectedDrinks: {
+      "123": avail1,
+      "234": avail2
+    }
+  };
+  const nextState = drinksReducer(prevState,Actions.selectAll());
+  //immutability just in case …
+  const drinkObj3 = {
+    ...drinkObj2,
+    selected: true
+  };
+  const correctState = {
+    drinks: [drinkObj1,drinkObj3],
+    storesWithSelectedDrinks: {}
+  };
+  deepEqual(t,nextState, correctState);
+});
+
+test('deselects all drinks', t => {
+  const drinkObj2 = {
+    avails: [avail1],
+    drink: drink2,
+    nearbyStoresWithAvailability: [avail1],
+    stocked: true,
+    selected: true
+  };
+  const prevState = {
     drinks: [drinkObj1,drinkObj2],
     storesWithSelectedDrinks: {
       "123": avail1
     }
+  };
+  const nextState = drinksReducer(prevState,Actions.deSelectAll());
+  //immutability just in case …
+  const drinkObj3 = {
+    ...drinkObj1,
+    selected: false
+  };
+  const drinkObj4 = {
+    ...drinkObj2,
+    selected: false
+  };
+  const correctState = {
+    drinks: [drinkObj3,drinkObj4],
+    storesWithSelectedDrinks: {}
   };
   deepEqual(t,nextState, correctState);
 });

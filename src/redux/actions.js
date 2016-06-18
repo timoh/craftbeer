@@ -94,15 +94,17 @@ export function getLocation() {
   };
 }
 
-export function fetchDrinks() {
+export function fetchDrinks(test) {
   return function (dispatch,getState) {
     dispatch(requestDrinks());
     const positionData = getState().positionData;
-    const apiCallAddress = '/home/distanced?lat=' + positionData[0] + '&lng=' + positionData[1];
+    // this is a stupid solution to the problem that in testing you can't use relative urls, but couldn't bother to think of a better one...
+    const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/home/distanced?lat=' + positionData.position[0] + '&lng=' + positionData.position[1];
     return fetch(apiCallAddress)
       .then(response => response.json())
       .then(json =>
         dispatch(receiveDrinks(json))
-      ).then(() => dispatch(addAdditionalDataForDrinks()));
+      ).then(() => dispatch(addAdditionalDataForDrinks()))
+      .catch(err => console.error(err));
   };
 }

@@ -56,7 +56,7 @@ const mapDispatchToLocationProps = (dispatch) => (
       dispatch(getLocation())
     ),
     onShowButtonClick: () => (
-      dispatch(fetchDrinks())
+      dispatch(fetchDrinks(false))
     ),
     dispatch: dispatch
   }
