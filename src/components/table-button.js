@@ -5,7 +5,7 @@ export default class TableButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      showNonStocked: true
+      showNonStocked: false
     };
   }
 

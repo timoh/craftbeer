@@ -6,7 +6,8 @@ export function drinksReducer(state = {
   loading: false,
   drinks: [],
   initialMaxDistance: 2000,
-  storesWithSelectedDrinks: {}
+  storesWithSelectedDrinks: {},
+  drinkWithProductInfoShown: {}
 }, action) {
   switch (action.type) {
     case 'REQUEST_DRINKS':
@@ -66,6 +67,11 @@ export function drinksReducer(state = {
         drinks: drinksAfterDeSelectAll,
         storesWithSelectedDrinks: storesReducer(drinksAfterDeSelectAll)
       };
+    case 'SELECT_DRINK_FROM_SELECTED':
+      return {
+        ...state,
+        drinkWithProductInfoShown: action.selectedDrink
+      }
     default:
       return state;
   }

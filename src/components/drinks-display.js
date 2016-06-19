@@ -7,7 +7,7 @@ import Slider from '../components/slider';
 import SearchButton from '../components/search-button';
 import {connect} from 'react-redux';
 import {getSelectedDrinks} from '../redux/helpers';
-import { maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks } from '../redux/actions';
+import { maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks,selectDrinkFromSelected } from '../redux/actions';
 import { withRouter } from 'react-router';
 
 class Drinks extends React.Component {
@@ -20,6 +20,13 @@ class Drinks extends React.Component {
       // force the user to go to intropage if user loaded indexpage directly.
       if(!this.props.loading && this.props.drinks.length === 0) {
         this.props.router.push('/intropage');
+      }
+    }
+
+    componentWillUnmount() {
+      if(this.props.drinks.length > 0) {
+        const selected = getSelectedDrinks(this.props.drinks)[0];
+        this.props.dispatch(selectDrinkFromSelected(selected));
       }
     }
 
@@ -86,7 +93,8 @@ const mapDispatchToDrinksProps = (dispatch) => (
     ),
     sortDrinks: (field,newSortOrder,datatype) => (
       dispatch(sortDrinks(field,newSortOrder,datatype))
-    )
+    ),
+    dispatch: dispatch
   }
 );
 

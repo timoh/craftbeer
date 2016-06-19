@@ -94,3 +94,11 @@ export function getSelectedDrinks(drinks) {
   });
   return selectedDrinks;
 }
+
+function filterByShowDrinkInfo(obj) {
+   return obj.showDrinkInfo;
+}
+
+export function getDrinkWithProductInfoShown(drinks) {
+  return drinks.filter(filterByShowDrinkInfo)[0];
+}

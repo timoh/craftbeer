@@ -48,12 +48,12 @@ gulp.task('transpile', ['lint'], () => bundle());
 gulp.task('lint', () => {
     return gulp.src(['src/**/*.js', 'gulpfile.babel.js'])
       .pipe(eslint())
-      .pipe(eslint.format())
+      .pipe(eslint.format());
 });
 
 //use proxy if there is another server (such as a Rails server running at localhost:3000)
 //apparently BrowserSync will run on another port, like 3001.
-gulp.task('serve', ['transpile'], () => sync.init({ proxy: 'http://localhost:3000'}))
+gulp.task('serve', ['transpile'], () => sync.init({ proxy: 'http://localhost:3000'}));
 gulp.task('js-watch', ['transpile'], () => sync.reload());
 
 //which files to watch?

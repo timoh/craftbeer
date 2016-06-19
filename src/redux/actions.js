@@ -74,6 +74,12 @@ export function deSelectAll() {
   };
 }
 
+export function selectDrinkFromSelected(selected) {
+  return {
+    type: 'SELECT_DRINK_FROM_SELECTED',
+    selectedDrink: selected
+  };
+}
 
 
 function getPosition(callback) {
@@ -105,6 +111,7 @@ export function fetchDrinks(test) {
       .then(json =>
         dispatch(receiveDrinks(json))
       ).then(() => dispatch(addAdditionalDataForDrinks()))
+      .then(() => dispatch(showNonStockedChange(false)))
       .catch(err => console.error(err));
   };
 }
