@@ -15,6 +15,23 @@ class Geocoder
     end
   end
 
+  def Geocoder.geocoder_works? # returns true if geocoder works, otherwise raises an error
+    begin
+      token = Geocoder.get_token
+    rescue
+      puts "Cannot get token!"
+    else
+      res = Geocoder.reverse_geocode(60.1616054,24.8814315)
+      should_be = "Taivaanvuohentie 8, 00200 Helsinki, Finland"
+
+      if res == should_be
+        return true
+      else
+        raise "Result not as expected: #{res}"
+      end
+    end
+  end
+
   def Geocoder.geocode(address, country="FI") # returns Hash = {:lat, :lng}
     begin
       access_token = Geocoder.get_token
@@ -43,13 +60,21 @@ class Geocoder
     else
       output = RestClient.get "https://maps.googleapis.com/maps/api/geocode/json?latlng=#{lat},#{lng}&key=#{access_token}&result_type=street_address"
       output = JSON.parse(output)
-      output = output['results'][0]['formatted_address']
+
       begin
-        # returns {:lat, :lng}
-        return output
+        output = output['results'][0]['formatted_address']
       rescue
-        puts "Geocoding failed!"
+        puts "No results!"
+        puts output
+      else
+        begin
+          # returns {:lat, :lng}
+          return output
+        rescue
+          puts "Geocoding failed!"
+        end
       end
+
     end
   end
 
