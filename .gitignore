@@ -12,14 +12,14 @@
 # Ignore all logfiles and tempfiles.
 /log/*
 !/log/.keep
-/tmp
-/dump
-/node_modules
-/public/pics
-/public/pics/*
-/config/settings.local.yml
+tmp
+dump
+node_modules
+public/pics
+public/pics/*
+config/settings.local.yml
 npm-debug.log
 Gemfile.lock
-/public/assets
-/public/assets/*
-/config/secrets.yml
+public/assets
+public/assets/*
+config/secrets.yml
