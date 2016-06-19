@@ -12,6 +12,12 @@ Rails.application.routes.draw do
   get 'alco_drinks/broad/:id' => 'alco_drinks#show_broad_json'
   get 'alco_drinks/broader/:id' => 'alco_drinks#show_broader_json'
 
+  post 'geocode/forward' => 'geocode#forward'
+  post 'geocode/backward' => 'geocode#backward'
+
+  get 'geocode/forward' => 'geocode#address'
+  get 'geocode/backward' => 'geocode#coords'
+
   resources :reviews
   resources :alco_drinks
   # The priority is based upon order of creation: first created -> highest priority.
