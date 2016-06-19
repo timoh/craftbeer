@@ -94,6 +94,32 @@ export function getLocation() {
   };
 }
 
+
+export function receiveAddressCoords(address, lat, lng){
+    return {
+      type: 'RECEIVE_ADDRESS_COORDS',
+      original_address: address,
+      latitude: lat,
+      longitude: lng
+    };
+}
+
+export function geocodeAddress(address) {
+  console.log(address);
+
+  var request = new Request('/geocode/forward', {
+  	method: 'POST',
+    body: JSON.stringify({
+  		address: address
+  	})
+  });
+
+  return fetch(request)
+    .then(response => response.json())
+    .then(json => dispatch(receiveAddressCoords(address, json['latitude'], json['longitude'])))
+    .catch(err => console.error(err));
+}
+
 export function fetchDrinks(test) {
   return function (dispatch,getState) {
     dispatch(requestDrinks());

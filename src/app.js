@@ -5,6 +5,7 @@ import Layout from './layout/layout';
 import IndexPage from './pages/indexpage';
 import DrinkPage from './pages/drinkpage';
 import IntroPage from './pages/intropage';
+import TypeAddress from './pages/typeaddress';
 import StoresPage from './pages/storespage';
 import {Provider} from 'react-redux';
 import {createStore,applyMiddleware} from 'redux';
@@ -20,6 +21,7 @@ const app = (
       <Route path="indexpage" component={IndexPage} />
       <Route path="storespage" component={StoresPage} />
       <Route path="alco_drinks/:id" component={DrinkPage} />
+      <Route path="typeaddress" component={TypeAddress} />
     </Route>
   </Router>
 )

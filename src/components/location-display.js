@@ -28,6 +28,12 @@ class Location extends React.Component {
         <button onClick={this.props.onAllowButtonClick} className="btn btn-success btn-middle btn-md">Yes</button>
       )
     }
+    let typeAddressButton;
+    if (!this.props.requested) {
+      typeAddressButton = (
+        <Link to="/typeaddress" onClick={this.props.onTypeAddressClick} className="btn btn-info btn-middle btn-lg">Type address</Link>
+      )
+    }
     let showButton;
     if (this.props.requested && !this.props.loading) {
       showButton = (
@@ -42,6 +48,7 @@ class Location extends React.Component {
           </p>
           <br/>
           {allowButton}
+          {typeAddressButton}
           {locationText}
           {showButton}
         </div>
