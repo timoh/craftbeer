@@ -34,6 +34,7 @@ class AlcoDrink
         file << open(from_uri).read
       rescue
         puts "Error opening URL " + from_uri
+        puts "Most likely product does not exist in Alko's selection anymore."
       end
     end
   end
