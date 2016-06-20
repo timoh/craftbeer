@@ -105,19 +105,22 @@ export function receiveAddressCoords(address, lat, lng){
 }
 
 export function geocodeAddress(address) {
-  console.log(address);
+  return function (dispatch){
 
-  var request = new Request('/geocode/forward', {
-  	method: 'POST',
-    body: JSON.stringify({
-  		address: address
-  	})
-  });
+    console.log(address);
 
-  return fetch(request)
-    .then(response => response.json())
-    .then(json => dispatch(receiveAddressCoords(address, json['latitude'], json['longitude'])))
-    .catch(err => console.error(err));
+    var request = new Request('/geocode/forward', {
+      method: 'POST',
+      body: JSON.stringify({
+        address: address
+      })
+    });
+
+    return fetch(request)
+      .then(response => response.json())
+      .then(json => dispatch(receiveAddressCoords(address, json['latitude'], json['longitude'])))
+      .catch(err => console.error(err));
+  }
 }
 
 export function fetchDrinks(test) {

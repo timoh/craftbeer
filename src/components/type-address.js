@@ -1,24 +1,25 @@
 import React from 'react';
 // import {Link} from 'react-router';
-// import {connect} from 'react-redux';
-// import { getLocation,fetchDrinks } from '../redux/actions';
+import {connect} from 'react-redux';
+import { geocodeAddress } from '../redux/actions';
 
 class Address extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = { address: ''};
   }
 
   render() {
 
     let addressInputField;
     addressInputField = (
-      <input type="text" name="addressInput" />
+      <input type="text" name="addressInput" value={this.state.address} onChange={event => this.setState({address: event.target.value})} />
     )
 
     let submitAddressButton;
-    allowButton = (
-      <button onClick={this.props.submitAddressButtonClick} className="btn btn-success btn-middle btn-md">Submit address</button>
+    submitAddressButton = (
+      <button onClick={this.props.submitAddressButtonClick(this.state.address)} className="btn btn-success btn-middle btn-md">Submit address</button>
     )
 
     return (
@@ -36,14 +37,23 @@ class Address extends React.Component {
 
 const mapDispatchToAddressProps = (dispatch) => (
   {
-    submitAddressButtonClick: () => (
-      dispatch(geocodeAddress())
+    submitAddressButtonClick: (address) => (
+      dispatch(geocodeAddress(address)),
+      console.log("Now geocoding!"),
+      console.log(dispatch)
     ),
     dispatch: dispatch
   }
 );
 
+const mapStateToAddressProps = state => (
+  {
+    address: state.address
+  }
+)
+
 const TypeAddress = connect(
+  mapStateToAddressProps,
   mapDispatchToAddressProps
 )(Address);
 
