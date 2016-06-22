@@ -1,13 +1,14 @@
 import React from 'react';
 import Loader from 'react-loader';
-import DrinkTableRow from '../components/drink-table-row';
-import TableHeaders from '../components/table-headers';
-import TableButton from '../components/table-button';
-import Slider from '../components/slider';
-import SearchButton from '../components/search-button';
+import DrinkTableRow from './drink-table-row';
+import TableHeaders from './table-headers';
+import TableButton from './table-button';
+import Slider from './slider';
+import SearchButton from './search-button';
 import {connect} from 'react-redux';
-import {getSelectedDrinks} from '../redux/helpers';
-import { maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks,selectDrinkFromSelected } from '../redux/actions';
+import { getSelectedDrinks } from '../../shared/selectors';
+import { fetchDrinks, maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks} from '../actions';
+import { selectDrinkFromSelected } from '../../shared/actions';
 import { withRouter } from 'react-router';
 
 class Drinks extends React.Component {
@@ -18,8 +19,10 @@ class Drinks extends React.Component {
 
     componentWillMount() {
       // force the user to go to intropage if user loaded indexpage directly.
-      if(!this.props.loading && this.props.drinks.length === 0) {
-        this.props.router.push('/intropage');
+      if (!this.props.requested) {
+          this.props.router.push('/intropage');
+      } else if(this.props.drinks.length === 0) {
+          this.props.dispatch(fetchDrinks(false));
       }
     }
 
@@ -103,7 +106,8 @@ const mapStateToDrinksProps = state => (
     drinks: state.drinksData.drinks,
     storesWithSelectedDrinks: state.drinksData.storesWithSelectedDrinks,
     loading: state.drinksData.loading,
-    initialMaxDistance: state.drinksData.initialMaxDistance
+    initialMaxDistance: state.drinksData.initialMaxDistance,
+    requested: state.positionData.requested
   }
 )
 

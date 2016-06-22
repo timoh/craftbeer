@@ -1,6 +1,7 @@
 import test from 'ava';
-import {drinksReducer,locationReducer} from '../../src/redux/reducers';
-import * as Actions from '../../src/redux/actions';
+import * as drinks from '../../src/drinks';
+import * as location from '../../src/location';
+import * as shared from '../../src/shared';
 import chalk from 'chalk';
 import * as JsDiff from 'diff';
 
@@ -66,7 +67,7 @@ test('requests location', t => {
     loading: false,
     requested: false
   };
-  const nextState = locationReducer(prevState,Actions.requestLocation());
+  const nextState = location.reducer(prevState,location.actions.requestLocation());
   deepEqual(t,nextState, {
     position: [0.00, 0.00],
     loading: true,
@@ -86,7 +87,7 @@ test('receives location', t => {
       longitude: 40.10
     }
   };
-  const nextState = locationReducer(prevState,Actions.receiveLocation(positionObj));
+  const nextState = location.reducer(prevState,location.actions.receiveLocation(positionObj));
   deepEqual(t,nextState, {
     position: [60.10, 40.10],
     loading: false,
@@ -101,7 +102,7 @@ test('requests drinks', t => {
     initialMaxDistance: 2000,
     storesWithSelectedDrinks: {}
   };
-  const nextState = drinksReducer(prevState,Actions.requestDrinks());
+  const nextState = drinks.reducer(prevState,drinks.actions.requestDrinks());
   deepEqual(t,nextState, {
     loading: true,
     drinks: [],
@@ -125,7 +126,7 @@ test('receives drinks', t => {
       drink: drink2
     }
   ];
-  const nextState = drinksReducer(prevState,Actions.receiveDrinks(drinksArr));
+  const nextState = drinks.reducer(prevState,drinks.actions.receiveDrinks(drinksArr));
   const correctState = {
     loading: true,
     drinks: drinksArr,
@@ -148,7 +149,7 @@ test('adds additional data', t => {
     initialMaxDistance: 2000,
     storesWithSelectedDrinks: {}
   };
-  const nextState = drinksReducer(prevState,Actions.addAdditionalDataForDrinks());
+  const nextState = drinks.reducer(prevState,drinks.actions.addAdditionalDataForDrinks());
   const drinksArr2 = [
     {
       avails: avails,
@@ -191,7 +192,7 @@ test('updates state after increasing max distance', t => {
       "123": avail1
     }
   };
-  const nextState = drinksReducer(prevState,Actions.maxDistanceChange(7000));
+  const nextState = drinks.reducer(prevState,drinks.actions.maxDistanceChange(7000));
   const avail3 = {
     ...avail2,
     matchesDistanceCondition: true
@@ -237,7 +238,7 @@ test('updates state after decreasing max distance', t => {
       "234": avail2
     }
   };
-  const nextState = drinksReducer(prevState,Actions.maxDistanceChange(2000));
+  const nextState = drinks.reducer(prevState,drinks.actions.maxDistanceChange(2000));
 
   const drinksArr2 = [
     {
@@ -271,7 +272,7 @@ test('sorts drinks based on title in descending order', t => {
       }
     ]
   };
-  const nextState = drinksReducer(prevState,Actions.sortDrinks("title",true,"string"));
+  const nextState = drinks.reducer(prevState,drinks.actions.sortDrinks("title",true,"string"));
   const correctState = {
     drinks: [
       {
@@ -294,7 +295,7 @@ test('sorts drinks based on price in ascending order', t => {
       }
     ]
   };
-  const nextState = drinksReducer(prevState,Actions.sortDrinks("price",false,"float"));
+  const nextState = drinks.reducer(prevState,drinks.actions.sortDrinks("price",false,"float"));
   const correctState = {
     drinks: [
       {
@@ -321,7 +322,7 @@ test('updates drinks after selecting a drink', t => {
       "234": avail2
     }
   };
-  const nextState = drinksReducer(prevState,Actions.checkedChange(drinkObj2));
+  const nextState = drinks.reducer(prevState,drinks.actions.checkedChange(drinkObj2));
   const drinkObj3 = {
     ...drinkObj2,
     selected: true
@@ -348,7 +349,7 @@ test('hides non-stocked drinks', t => {
     drinks: [drinkObj1,drinkObj2],
     storesWithSelectedDrinks: {}
   };
-  const nextState = drinksReducer(prevState,Actions.showNonStockedChange(false));
+  const nextState = drinks.reducer(prevState,drinks.actions.showNonStockedChange(false));
   //immutability just in case …
   const drinkObj3 = {
     ...drinkObj2,
@@ -380,7 +381,7 @@ test('selects all drinks', t => {
       "234": avail2
     }
   };
-  const nextState = drinksReducer(prevState,Actions.selectAll());
+  const nextState = drinks.reducer(prevState,drinks.actions.selectAll());
   //immutability just in case …
   const drinkObj3 = {
     ...drinkObj2,
@@ -407,7 +408,7 @@ test('deselects all drinks', t => {
       "123": avail1
     }
   };
-  const nextState = drinksReducer(prevState,Actions.deSelectAll());
+  const nextState = drinks.reducer(prevState,drinks.actions.deSelectAll());
   //immutability just in case …
   const drinkObj3 = {
     ...drinkObj1,
@@ -423,3 +424,21 @@ test('deselects all drinks', t => {
   };
   deepEqual(t,nextState, correctState);
 });
+
+test('changes selected drink', t => {
+  const drinkObj2 = {
+    avails: [avail1],
+    drink: drink2,
+    nearbyStoresWithAvailability: [avail1],
+    stocked: true,
+    selected: true
+  };
+  const prevState = {
+    drinkWithProductInfoShown: drinkObj2
+  };
+  const nextState = drinks.reducer(prevState,shared.actions.selectDrinkFromSelected(drinkObj1));
+  const correctState = {
+    drinkWithProductInfoShown: drinkObj1
+  };
+  deepEqual(t,nextState,correctState);
+})

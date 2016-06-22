@@ -1,8 +1,8 @@
 import React from 'react';
-import Header from '../components/header';
-import Menu from '../components/menu';
+import Header from './header';
+import Menu from './menu';
 
-export default class Layout extends React.Component {
+export class Root extends React.Component {
 
   render() {
     return(

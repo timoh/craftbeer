@@ -1,5 +1,5 @@
 import React from 'react';
-import {selectAll,deSelectAll} from '../redux/actions';
+import {selectAll,deSelectAll} from '../actions';
 import {connect} from 'react-redux';
 
 export default class TableHeader extends React.Component {

@@ -1,9 +1,6 @@
 import React from 'react';
-import HeaderDisplay from '../components/table-header';
-/*
-import {connect} from 'react-redux';
-import {selectAll,deSelectAll} from '../redux/actions';
-*/
+import HeaderDisplay from './table-header';
+
 export default class TableHeaders extends React.Component {
 
   constructor(props) {
@@ -125,22 +122,3 @@ export default class TableHeaders extends React.Component {
     )
   }
 }
-/*
-const mapDispatchToHeadersProps = (dispatch) => (
-  {
-    handleSelectAll: () => (
-      dispatch(selectAll())
-    ),
-    handleDeSelectAll: () => (
-      dispatch(deSelectAll())
-    ),
-  }
-);
-
-const HeadersDisplay = connect(
-  null,
-  mapDispatchToHeadersProps
-)(TableHeaders);
-
-export default HeadersDisplay;
-*/

@@ -1,13 +1,13 @@
 import React from 'react';
-import DrinksDisplay from '../components/drinks-display';
+import LocationDisplay from './location-display';
 
-export default class IndexPage extends React.Component {
-  
+export class Root extends React.Component {
+
   render() {
     return(
       <section id="content">
         <div className="container">
-          <DrinksDisplay />
+          <LocationDisplay />
         </div>
       </section>
     )

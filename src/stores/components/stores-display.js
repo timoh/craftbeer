@@ -1,9 +1,9 @@
 import React from 'react';
-import {connect} from 'react-redux';
-import {getSelectedDrinks} from '../redux/helpers';
-import {selectDrinkFromSelected} from '../redux/actions';
-import SelectedDrink from '../components/selected-drink';
-import SelectedDrinkTableRow from '../components/selected-drink-table-row';
+import { connect } from 'react-redux';
+import { getSelectedDrinks } from '../../shared/selectors';
+import { selectDrinkFromSelected } from '../../shared/actions';
+import SelectedDrink from './selected-drink';
+import SelectedDrinkTableRow from './selected-drink-table-row';
 
 class Stores extends React.Component {
 

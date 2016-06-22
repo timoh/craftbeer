@@ -1,7 +1,8 @@
 import React from 'react';
-import Drink from '../components/drink';
+import Drink from './drink';
 import {Link} from 'react-router';
-export default class DrinkPage extends React.Component {
+
+export class DrinkPage extends React.Component {
 
   render() {
     return(

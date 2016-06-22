@@ -2,7 +2,7 @@ import test from 'ava';
 import nock from 'nock';
 import configureStore from 'redux-mock-store';
 import thunkMiddleware from 'redux-thunk';
-import {fetchDrinks,receiveDrinks} from '../../src/redux/actions';
+import { fetchDrinks } from '../../src/drinks/actions';
 
 test('fetchDrinks action', t => {
   return new Promise((resolve, reject) => {
@@ -90,7 +90,8 @@ test('fetchDrinks action', t => {
     const expectedActions = [
       { type: 'REQUEST_DRINKS'},
       { type: 'RECEIVE_DRINKS', drinks: data},
-      { type: 'ADD_ADDITIONAL_DATA'}
+      { type: 'ADD_ADDITIONAL_DATA'},
+      { type: 'TOGGLE_NON_STOCKED', showNonStocked: false}
     ];
     const endpoint = '/home/distanced?lat=' +lat+ '&lng=' +lon;
     const api = nock('http://localhost:3000/')

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import { getLocation,fetchDrinks } from '../redux/actions';
+import { getLocation } from '../actions';
 
 class Location extends React.Component {
 
@@ -31,7 +31,7 @@ class Location extends React.Component {
     let showButton;
     if (this.props.requested && !this.props.loading) {
       showButton = (
-        <Link to="/indexpage" onClick={this.props.onShowButtonClick} className="btn btn-primary btn-middle btn-lg">Show all drinks</Link>
+        <Link to="/indexpage" className="btn btn-primary btn-middle btn-lg">Show all drinks</Link>
       )
     }
     return (
@@ -54,9 +54,6 @@ const mapDispatchToLocationProps = (dispatch) => (
   {
     onAllowButtonClick: () => (
       dispatch(getLocation())
-    ),
-    onShowButtonClick: () => (
-      dispatch(fetchDrinks(false))
     ),
     dispatch: dispatch
   }

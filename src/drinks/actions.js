@@ -1,37 +1,5 @@
 import fetch from 'isomorphic-fetch';
 
-export function requestDrinks() {
-  return {
-    type: 'REQUEST_DRINKS'
-  };
-}
-
-export function receiveDrinks(json) {
-  return {
-    type: 'RECEIVE_DRINKS',
-    drinks: json
-  };
-}
-
-export function requestLocation() {
-  return {
-    type: 'REQUEST_LOCATION'
-  };
-}
-
-export function receiveLocation(position) {
-  return {
-    type: 'RECEIVE_LOCATION',
-    position: [position.coords.latitude,position.coords.longitude]
-  };
-}
-
-export function addAdditionalDataForDrinks() {
-  return {
-    type: 'ADD_ADDITIONAL_DATA'
-  };
-}
-
 export function maxDistanceChange(newMaxDistance) {
   return {
     type: 'MAX_DISTANCE_CHANGE',
@@ -74,31 +42,32 @@ export function deSelectAll() {
   };
 }
 
-export function selectDrinkFromSelected(selected) {
+export function requestDrinks() {
   return {
-    type: 'SELECT_DRINK_FROM_SELECTED',
-    selectedDrink: selected
+    type: 'REQUEST_DRINKS'
   };
 }
 
-
-function getPosition(callback) {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(callback);
-    } else {
-        return;
-    }
-}
-
-export function getLocation() {
-  return function (dispatch) {
-    dispatch(requestLocation());
-    function onPositionResponse(position) {
-      dispatch(receiveLocation(position));
-    }
-    return getPosition(onPositionResponse);
+export function receiveDrinks(json) {
+  return {
+    type: 'RECEIVE_DRINKS',
+    drinks: json
   };
 }
+
+export function addAdditionalDataForDrinks() {
+  return {
+    type: 'ADD_ADDITIONAL_DATA'
+  };
+}
+
+export function showNonStockedChange(showNonStocked) {
+  return {
+    type: 'TOGGLE_NON_STOCKED',
+    showNonStocked: showNonStocked
+  };
+}
+
 
 export function fetchDrinks(test) {
   return function (dispatch,getState) {

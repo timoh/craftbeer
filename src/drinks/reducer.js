@@ -1,8 +1,8 @@
-import { combineReducers } from 'redux';
 import update from 'react-addons-update';
-import * as Helpers from '../redux/helpers';
+import * as Helpers from '../shared/helpers';
+import { getSelectedDrinks } from '../shared/selectors';
 
-export function drinksReducer(state = {
+export function reducer(state = {
   loading: false,
   drinks: [],
   initialMaxDistance: 2000,
@@ -169,7 +169,7 @@ function maxDistanceChangeReducer(state,newMaxDistance){
 
 function storesReducer(drinks) {
   const storesMatchingConditions = {};
-  const selectedDrinks = Helpers.getSelectedDrinks(drinks);
+  const selectedDrinks = getSelectedDrinks(drinks);
   selectedDrinks.map(function(drinkData,index) {
     if(drinkData.nearbyStoresWithAvailability !== undefined) {
       //if the 1st drink, add all stores.
@@ -203,34 +203,3 @@ function storesReducer(drinks) {
 function sortReducer(state,field,newSortOrder,type){
     return state.slice().sort(Helpers.handleSort(field,newSortOrder,type));
 }
-
-export function locationReducer(state = {
-  position: [0.00, 0.00],
-  loading: false,
-  requested: false
-}, action) {
-  switch (action.type) {
-    case 'REQUEST_LOCATION': {
-      return {
-        ...state,
-        loading: true,
-        requested: true
-      };
-    }
-    case 'RECEIVE_LOCATION':
-      return {
-        ...state,
-        position: action.position,
-        loading: false
-      };
-    default:
-      return state;
-  }
-}
-
-const rootReducer = combineReducers({
-  drinksData: drinksReducer,
-  positionData: locationReducer
-});
-
-export default rootReducer;

@@ -84,21 +84,3 @@ export function sortBy(field,reverse,primer,isDrinkField){
      return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
    };
 }
-
-export function getSelectedDrinks(drinks) {
-  const selectedDrinks = [];
-  drinks.map(function(drinkData) {
-    if(drinkData.selected) {
-      selectedDrinks.push(drinkData);
-    }
-  });
-  return selectedDrinks;
-}
-
-function filterByShowDrinkInfo(obj) {
-   return obj.showDrinkInfo;
-}
-
-export function getDrinkWithProductInfoShown(drinks) {
-  return drinks.filter(filterByShowDrinkInfo)[0];
-}

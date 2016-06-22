@@ -1,9 +1,9 @@
 import React from 'react';
-import StoresDisplay from '../components/stores-display';
+import StoresDisplay from './stores-display';
 import {Link} from 'react-router';
 
-export default class StoresPage extends React.Component {
-  
+export class Root extends React.Component {
+
   render() {
     return(
       <section id="content">
