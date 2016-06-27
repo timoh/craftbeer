@@ -9,13 +9,13 @@ export default class SelectedDrink extends React.Component {
 
   render() {
     let img;
-    if (this.props.drinkData.drink !== undefined) {
+    if (this.props.drinkData !== undefined && this.props.drinkData.drink !== undefined) {
       img = (
           <img src={`/pics/productpic_${this.props.drinkData.drink.alko_id}.png`} className="img-responsive img-small"/>
       );
     }
     let content;
-    if (this.props.drinkData.drink !== undefined) {
+    if (this.props.drinkData !== undefined && this.props.drinkData.drink !== undefined) {
       content = (
         <div>
           <div className="row">
@@ -68,8 +68,10 @@ export default class SelectedDrink extends React.Component {
       )
     } else {
       content = (
-        <div>
-          <span>Select drinks first.</span>
+        <div className="row">
+          <div className="col-md-12">
+            <span>Select drinks first.</span>
+          </div>
         </div>
       )
     }

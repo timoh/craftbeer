@@ -25,7 +25,7 @@ class Stores extends React.Component {
     return (
       <div>
         <div className="row">
-          <div className="col-md-7 col-md-offset-3">
+          <div className="col-md-12">
             <h4>Stores that have selected drinks
             </h4>
             <table className="table table-striped table-bordered">

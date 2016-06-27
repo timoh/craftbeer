@@ -7,7 +7,7 @@ export class Root extends React.Component {
   render() {
     return(
       <div>
-        <Menu />
+        <Menu currentRoute={this.props.location.pathname} />
         <Header />
         {this.props.children}
       </div>
