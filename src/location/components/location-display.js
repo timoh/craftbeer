@@ -18,7 +18,9 @@ class Location extends React.Component {
         )
       } else {
         locationText = (
-            <p className="centered">This is your location: lat: {this.props.myLocation[0].toFixed(2)}, lng: {this.props.myLocation[1].toFixed(2)}</p>
+            <p className="centered"><strong>This is your location:</strong> <br/>
+            {this.props.address}
+            </p>
         )
       }
     }
@@ -31,7 +33,7 @@ class Location extends React.Component {
     let showButton;
     if (this.props.requested && !this.props.loading) {
       showButton = (
-        <Link to="/indexpage" className="btn btn-primary btn-middle btn-lg">Show all drinks</Link>
+        <Link to="/indexpage" className="btn btn-primary btn-middle btn-lg">Show all drinks with availability data based on your location</Link>
       )
     }
     return (
@@ -63,7 +65,8 @@ const mapStateToLocationProps = state => (
   {
     myLocation: state.positionData.position,
     loading: state.positionData.loading,
-    requested: state.positionData.requested
+    requested: state.positionData.requested,
+    address: state.positionData.address
   }
 )
 

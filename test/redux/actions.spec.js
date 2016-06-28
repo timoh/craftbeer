@@ -3,6 +3,7 @@ import nock from 'nock';
 import configureStore from 'redux-mock-store';
 import thunkMiddleware from 'redux-thunk';
 import { fetchDrinks } from '../../src/drinks/actions';
+import { locationToAddress } from '../../src/location/actions';
 
 test('fetchDrinks action', t => {
   return new Promise((resolve, reject) => {
@@ -98,6 +99,37 @@ test('fetchDrinks action', t => {
       .get(endpoint)
       .reply(200, data);
     store.dispatch(fetchDrinks(true))
+      .then(() => {
+        t.deepEqual(store.getActions(), expectedActions);
+        resolve();
+      });
+  });
+});
+
+test('locationToAddress action', t => {
+  return new Promise((resolve, reject) => {
+    const address = "Tölögatan 35, 00260 Helsingfors, Finland";
+    const mockStore = configureStore([thunkMiddleware]);
+    const lat = 60.1688202;
+    const lon = 24.9337834;
+    const store = mockStore({
+      positionData: {
+        position:[lat,lon]
+      }
+    });
+    const expectedActions = [
+      { type: 'RECEIVE_ADDRESS', address: address}
+    ];
+    const endpoint = '/geocode/backward';
+    const api = nock('http://localhost:3000/')
+    .post(endpoint,
+      {
+        latitude: lat,
+        longitude: lon
+      }
+    )
+    .reply(201, address);
+    store.dispatch(locationToAddress(true))
       .then(() => {
         t.deepEqual(store.getActions(), expectedActions);
         resolve();
