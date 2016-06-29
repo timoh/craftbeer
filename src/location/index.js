@@ -1,6 +1,6 @@
+import * as components from './components';
+import * as constants from './constants';
 import * as actions from './actions';
-export { actions }; 
 
-export { NAME } from './constants';
-export { Root } from './components/Root';
 export { reducer } from './reducer';
+export { components, constants, actions };

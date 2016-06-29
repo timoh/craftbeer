@@ -14,13 +14,19 @@ export function reducer(state = {
     case 'RECEIVE_LOCATION':
       return {
         ...state,
-        position: action.position
+        position: action.position,
+        loading: action.loading
       };
     case 'RECEIVE_ADDRESS':
       return {
         ...state,
         address: action.address,
         loading: false
+      }
+    case 'INPUT_ADDRESS':
+      return {
+        ...state,
+        address: action.address
       }
     default:
       return state;

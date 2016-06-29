@@ -11,7 +11,11 @@ body {
   display: block;
   width: 50%;
   vertical-align: middle;
-  margin: 0 auto;
+  margin: 5px auto;
+}
+
+.btn-custom-lg {
+  width:80%
 }
 
 .active-table-row {
@@ -20,6 +24,8 @@ body {
   border-style: solid;
 }
 
+.top30 { margin-top:30px; }
+.top15 { margin-top:15px; }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
   background-color: #e3f9f5;

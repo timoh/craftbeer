@@ -38,15 +38,11 @@ test('receives location', t => {
     loading: true,
     requested: true
   };
-  const positionObj = {
-    coords: {
-      latitude: 60.10,
-      longitude: 40.10
-    }
-  };
-  const nextState = location.reducer(prevState,location.actions.receiveLocation(positionObj));
+  const lat = 60.10;
+  const lon = 40.10;
+  const nextState = location.reducer(prevState,location.actions.receiveLocation(lat,lon,true));
   deepEqual(t,nextState, {
-    position: [60.10, 40.10],
+    position: [lat, lon],
     loading: true,
     requested: true
   });
