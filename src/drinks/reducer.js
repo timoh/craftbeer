@@ -7,7 +7,8 @@ export function reducer(state = {
   drinks: [],
   initialMaxDistance: 2000,
   storesWithSelectedDrinks: {},
-  drinkWithProductInfoShown: {}
+  drinkWithProductInfoShown: {},
+  showNonStocked: false
 }, action) {
   switch (action.type) {
     case 'REQUEST_DRINKS':
@@ -28,10 +29,11 @@ export function reducer(state = {
       };
     case 'MAX_DISTANCE_CHANGE':
       const drinksAfterDistChange = maxDistanceChangeReducer(state.drinks,action.newMaxDistance);
+      const drinksAfterVisibilityChange = toggleNonStockedReducer(drinksAfterDistChange,state.showNonStocked);
       return {
         ...state,
-        drinks: drinksAfterDistChange,
-        storesWithSelectedDrinks: storesReducer(drinksAfterDistChange),
+        drinks: drinksAfterVisibilityChange,
+        storesWithSelectedDrinks: storesReducer(drinksAfterVisibilityChange),
         initialMaxDistance: action.newMaxDistance
       };
     case 'SORT':
@@ -51,7 +53,8 @@ export function reducer(state = {
       return {
         ...state,
         drinks: drinksAfterToggle,
-        storesWithSelectedDrinks: storesReducer(drinksAfterToggle)
+        storesWithSelectedDrinks: storesReducer(drinksAfterToggle),
+        showNonStocked: action.showNonStocked
       };
     case 'SELECT_ALL':
       const drinksAfterSelectAll = changedSelectedForAllReducer(state.drinks,true);
@@ -90,7 +93,7 @@ function toggleNonStockedReducer(state,showNonStocked) {
   let updatedDrinks;
   state.map(function(drink,arrayIndex) {
     let visible;
-    if(showNonStocked && !drink.visible) {
+    if(showNonStocked) {
       visible = true;
     } else {
       visible = drink.stocked ? true : false;
