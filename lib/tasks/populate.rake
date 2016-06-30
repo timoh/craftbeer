@@ -9,7 +9,8 @@ namespace :populate do
 
   desc "Populate the DB with Alko product data"
   task alko_product: :environment do
-    AlcoDrink.store_kimono(AlcoDrink.get_kimono)
+    puts "Starting to populate product data through API, this might take a while..."
+    AlcoDrink.store_all_from_api
     puts "Alko product data successfully populated!"
   end
 
