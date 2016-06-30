@@ -1,5 +1,4 @@
 class HomeController < ApplicationController
-  caches_action :index, :all_with_distance
 
   def index
     @drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by(best_rev_candidate_score: "desc")
