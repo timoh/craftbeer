@@ -17,11 +17,63 @@ class AlcoDrink
   has_many :alco_avails
   has_one :review
 
-  def AlcoDrink.get_kimono
+
+  def AlcoDrink.fetch_from_api(page_number=0)
     require 'rest-client'
     require 'json'
-    response = RestClient.get(Settings[:apis][:alco_drink_path].to_s)
-    j = JSON.parse(response)['results']['collection1']
+    url = "http://www.alko.fi/api/find/products?Language=fi&Page=#{page_number.to_s}&PageSize=20&ProductIds=&Query=&SingleGrape=false&Sort=0&Tags=(2872)"
+    response = RestClient.get(url)
+    return JSON.parse(response)
+  end
+
+  def AlcoDrink.fetch_all_from_api
+    counter = 0
+    final_response = []
+
+    loop do
+        res = AlcoDrink.fetch_from_api(counter)
+        final_response = final_response + res["Results"]
+      counter = counter+1
+      break unless res["HasMoreResults"]
+    end
+
+    return final_response
+  end
+
+  def AlcoDrink.store_all_from_api
+    begin
+      reponse = AlcoDrink.fetch_all_from_api
+
+      reponse.each do |row|
+        begin
+          a = AlcoDrink.new
+
+          a.title = row["Name"]
+          a.price = row["Price"].gsub!(',','.').to_f if row["Price"].is_a?(String)
+          a.type = row["TasteSymbol"]["Name"]
+          a.size = row["Volume"].gsub!(',','.').to_f if row["Volume"].is_a?(String)
+          a.url = "http://www.alko.fi/tuotteet/#{row["ProductId"]}"
+          a.alko_id = row["ProductId"]
+
+          a.review = Review.where(name: a.title)
+
+          a.save! # will fail if duplicate URL or title!
+        rescue Exception => detail
+          puts "Storing drink failed"
+          puts "Reason: \n\n ---- "
+          puts detail
+          puts " ----- \n\n "
+        end
+      end
+
+    rescue Exception  => detail
+      puts "Storing drinks failed!"
+      puts "Reason: \n\n ---- "
+      puts detail
+      puts " ----- \n\n "
+    else
+      puts "Storing all Alko Beers successful!"
+    end
   end
 
   def get_pic
@@ -54,27 +106,6 @@ class AlcoDrink
       end
     end
 
-  end
-
-  def AlcoDrink.store_kimono(hash) # takes .get_kimono result and tries to store into DB
-    hash.each do |row|
-      # ["Otsikko", "Hinta", "Tyyppi", "Koko", "index", "url"]
-
-      a = AlcoDrink.new
-
-      a.title = row["Otsikko"]
-      a.price = row["Hinta"].gsub!(',','.').to_f if row["Hinta"].is_a?(String)
-      a.type = row["Tyyppi"]
-      a.size = row["Koko"].gsub!(',','.').to_f if row["Koko"].is_a?(String)
-      a.url = row["url"]
-
-      # alko_id needs to be parsed from the url
-      a.alko_id = /[0-9]+/.match(row["url"])
-
-      a.review = Review.where(name: a.title)
-
-      a.save # will fail if duplicate URL or title!
-    end
   end
 
   def AlcoDrink.get_all_avails
