@@ -15,10 +15,11 @@ Data collected earlier already, available in external API.
 
 ## To populate the data
 
-1. To get drink and review data ... that's broken ATM (will fix, TODO)
+1. First, get review data (needs ParseHub):
   * `bundle exec rake populate:review_data`
+2. Second, get drink data:
   * `bundle exec rake populate:alko_product`
-2. Then, populate:
+3. Then, populate:
   * `bundle exec rake populate:alko_avail`
   * `bundle exec rake populate:alko_locs`
 

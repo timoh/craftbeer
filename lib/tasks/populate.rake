@@ -3,7 +3,8 @@ namespace :populate do
 
   desc "Populate the database with review data"
   task review_data: :environment do
-    Review.store_kimono(Review.get_kimono)
+    puts "Starting to fetch Review data!"
+    Review.store_parsehub
     puts "Review data successfully populated!"
   end
 

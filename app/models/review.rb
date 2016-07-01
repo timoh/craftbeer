@@ -9,28 +9,41 @@ class Review
 
   belongs_to :alco_drink
 
-  def Review.get_kimono
+  def Review.get_parsehub
     require 'rest-client'
     require 'json'
-    response = RestClient.get(Settings[:apis][:review_path].to_s)
-    j = JSON.parse(response)['results']['collection1']
+    url = Rails.application.secrets.review_url
+    response = RestClient.get url, {:params => {:api_key => Rails.application.secrets.review_api_token}}
+    return JSON.parse(response)['beers']
   end
 
-  def Review.store_kimono(hash) # takes .get_kimono result and tries to store into DB
-    hash.each do |row|
-      # ["Otsikko", "Tyyppi", "Panimo", "Arvio", "index", "url"]
+  def Review.store_parsehub
+    puts "Fetching review data from ParseHub"
+    data = Review.get_parsehub
+    puts "Fetching donw, iterating over each row in memory"
+    data.each do |row|
+      existing_review = Review.where(url: row["url"]).first
 
-      a = Review.new
+      unless existing_review
+        puts "Creating new row for: #{row["beer"][0]["beerTitle"]}"
+        a = Review.new
 
-      a.title = row["Otsikko"]
-      a.url = row["url"]
-      a.score = row["Arvio"]
-      a.company = row["Panimo"]["text"]
-      a.type = row["Tyyppi"]["type"]
+        a.title = row["beer"][0]["beerTitle"]
+        a.url = row["url"]
+        a.score = row["beer"][0]["beerScore"].to_i
+        a.company = row["beer"][0]["beerBrewery"]
+        a.type = row["beer"][0]["beerType"]
 
-      a.save # will fail if duplicate URL or title!
+        a.save # will fail if duplicate URL or title!
+      else
+        puts "Updating existing row for: #{row["beer"][0]["beerTitle"]}"
+        # even if review exists, update type and score
+        existing_review.type = row["beer"][0]["beerType"]
+        existing_review.score = row["beer"][0]["beerScore"].to_i
+        existing_review.save
+      end
     end
-
+    puts "All done with getting reviews!"
   end
 
 end
