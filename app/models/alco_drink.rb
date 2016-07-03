@@ -17,7 +17,6 @@ class AlcoDrink
   has_many :alco_avails
   has_one :review
 
-
   def AlcoDrink.fetch_from_api(page_number=0)
     require 'rest-client'
     require 'json'
@@ -150,6 +149,52 @@ class AlcoDrink
         puts "No review found for "+drink_row.title+"!"
       end
     end
+  end
+
+  def AlcoDrink.all_with_distance(lat, lng) # only those with availability AND maximum 10km range
+    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by(best_rev_candidate_score: "desc")
+
+    out_response = Array.new
+    drinks.each do |drink|
+
+      if drink.review
+        drink_max_avail = drink.alco_avails.max(:amount)
+
+        # only process avails that have stock
+        if drink_max_avail
+          if drink_max_avail > 0
+
+            avails_a = Array.new
+            drink.alco_avails.each do |avail|
+
+              # calculate distance in meters for location
+              loc = avail.alco_location
+              distance_in_m = loc.get_distance_to_point(lat, lng)
+
+              # only append locations within max 10km range
+              if (distance_in_m <= 10000 and avail.amount)
+                if avail.amount > 0
+                  avails_a.append({:avail => avail,
+                                   :store => avail.alco_location,
+                                   :distance_in_m => distance_in_m})
+                end
+              else
+                puts 'Omitted an avail due to too long distance'
+              end
+
+            end
+
+            drink_hash = {:drink => drink, :avails => avails_a, :reviews => drink.review}
+            out_response.append(drink_hash)
+
+          end
+        end
+
+
+      end
+    end
+
+    return out_response
   end
 
 end
