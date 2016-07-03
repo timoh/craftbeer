@@ -9,7 +9,7 @@
   "scripts": {
     "test": "ava -v",
     "start": "gulp watch",
-    "heroku-postbuild": "gulp watch"
+    "heroku-postbuild": "gulp transpile"
   },
   "author": "Timo Herttua",
   "license": "ISC",
