@@ -21,7 +21,7 @@ class Drinks extends React.Component {
       // force the user to go to intropage if user loaded indexpage directly.
       if (!this.props.requested) {
           this.props.router.push('/intropage');
-      } else if(this.props.drinks.length === 0) {
+      } else if(this.props.shouldUpdateDrinks) {
           this.props.dispatch(fetchDrinks(false));
       }
     }
@@ -107,7 +107,8 @@ const mapStateToDrinksProps = state => (
     storesWithSelectedDrinks: state.drinksData.storesWithSelectedDrinks,
     loading: state.drinksData.loading,
     initialMaxDistance: state.drinksData.initialMaxDistance,
-    requested: state.positionData.requested
+    requested: state.positionData.requested,
+    shouldUpdateDrinks: state.positionData.shouldUpdateDrinks
   }
 )
 

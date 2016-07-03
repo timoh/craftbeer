@@ -6,3 +6,9 @@ export function selectDrinkFromSelected(selected) {
     selectedDrink: selected
   };
 }
+
+export function drinksUpdated() {
+  return {
+    type: 'DRINKS_UPDATED'
+  };
+}

@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { drinksUpdated } from '../shared/actions';
 
 export function maxDistanceChange(newMaxDistance) {
   return {
@@ -81,6 +82,7 @@ export function fetchDrinks(test) {
         dispatch(receiveDrinks(json))
       ).then(() => dispatch(addAdditionalDataForDrinks()))
       .then(() => dispatch(showNonStockedChange(false)))
+      .then(() => dispatch(drinksUpdated()))
       .catch(err => console.error(err));
   };
 }
