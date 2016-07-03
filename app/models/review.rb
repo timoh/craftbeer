@@ -9,11 +9,23 @@ class Review
 
   belongs_to :alco_drink
 
+  def Review.get_token
+    access_token = ENV['REVIEW_API_TOKEN'] || Rails.application.secrets.review_api_token
+    raise "Review API token missing!" unless access_token
+    return access_token
+  end
+
+  def Review.get_url
+    url = ENV['REVIEW_URL'] || Rails.application.secrets.review_url
+    raise "Review URL token missing!" unless url
+    return url
+  end
+
   def Review.get_parsehub
     require 'rest-client'
     require 'json'
-    url = Rails.application.secrets.review_url
-    response = RestClient.get url, {:params => {:api_key => Rails.application.secrets.review_api_token}}
+    url = Review.get_url
+    response = RestClient.get url, {:params => {:api_key => Review.get_token}}
     return JSON.parse(response)['beers']
   end
 

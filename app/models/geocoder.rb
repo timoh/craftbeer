@@ -6,9 +6,10 @@ class Geocoder
   # API docs: https://developers.google.com/maps/documentation/geocoding
 
   def Geocoder.get_token
+    access_token = ENV['GOOGLEMAPS_TOKEN'] || Rails.application.secrets.googlemaps_token
+
     begin
-      raise "Google Maps token missing from secrets.yml!" unless Rails.application.secrets.googlemaps_token
-      access_token = Rails.application.secrets.googlemaps_token
+      raise "Google Maps token missing from secrets.yml / ENV variables!" unless access_token
       return access_token
     rescue
       puts "Getting token failed!"
