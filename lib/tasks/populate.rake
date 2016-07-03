@@ -46,6 +46,32 @@ namespace :populate do
     puts "Review data matched successfully with Alko data!"
   end
 
+  desc "Get big images from CDN"
+  task pics: :environment do
+    begin
+      Dir.mkdir 'public/pics'
+    rescue
+      puts "Could not create public/pics folder!"
+    end
+    AlcoDrink.get_all_pics
+    puts "All pics fetched"
+  end
+
+  desc "Run all setup activities at onece"
+  task setup_all: :environment do
+      puts "Starting initial setup.."
+      Rake::Task["populate:review_data"].invoke
+      Rake::Task["populate:alko_product"].invoke
+      Rake::Task["populate:alko_locs"].invoke
+      Rake::Task["populate:alko_avail"].invoke
+      Rake::Task["populate:dedupe_avails"].invoke
+      Rake::Task["populate:fuzzymatch"].invoke
+      Rake::Task["populate:pics"].invoke
+      puts "Initial setup done, ready to rock and roll!"
+  end
+
+  # Auxiliary tasks
+
   desc "Purge whole DB"
   task purge_db: :environment do
     AlcoAvail.delete_all
@@ -63,17 +89,6 @@ namespace :populate do
     Rake::Task["populate:alko_avail"].invoke
     Rake::Task["populate:fuzzymatch"].invoke
     puts "Whole shebang complete!"
-  end
-
-  desc "Get big images from CDN"
-  task pics: :environment do
-    begin
-      Dir.mkdir 'public/pics'
-    rescue
-      puts "Could not create public/pics folder!"
-    end
-    AlcoDrink.get_all_pics
-    puts "All pics fetched"
   end
 
 end
