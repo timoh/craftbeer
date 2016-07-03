@@ -21,5 +21,3 @@ config/settings.local.yml
 npm-debug.log
 public/assets
 public/assets/*
-config/secrets.yml
-/config/secrets.yml

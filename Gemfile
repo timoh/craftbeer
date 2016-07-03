@@ -11,8 +11,6 @@ gem 'rest-client'
 gem 'sass-rails', '~> 5.0'
 
 gem 'puma' # webserver for production use
-gem 'heroku_secrets', github: 'alexpeattie/heroku_secrets'
-# then run rake heroku:secrets RAILS_ENV=production
 
 # gem "nokogiri"
 # gem "mechanize"
