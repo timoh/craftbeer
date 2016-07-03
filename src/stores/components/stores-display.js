@@ -73,7 +73,7 @@ class Stores extends React.Component {
               </table>
           </div>
           <div className="col-md-7">
-            <SelectedDrink drinkData={this.props.selectedDrink} />
+            <SelectedDrink drinkData={this.props.selectedDrink} storesData={this.props.stores} />
           </div>
         </div>
       </div>
