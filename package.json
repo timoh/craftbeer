@@ -5,7 +5,8 @@
   "main": "bundle.js",
   "scripts": {
     "test": "ava -v",
-    "start": "gulp watch"
+    "start": "gulp watch",
+    "heroku-postbuild": "gulp watch"
   },
   "author": "Timo Herttua",
   "license": "ISC",
