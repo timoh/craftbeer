@@ -19,7 +19,6 @@ public/pics
 public/pics/*
 config/settings.local.yml
 npm-debug.log
-Gemfile.lock
 public/assets
 public/assets/*
 config/secrets.yml
