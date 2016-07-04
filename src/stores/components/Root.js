@@ -3,6 +3,7 @@ import StoresDisplay from './stores-display';
 
 export class Root extends React.Component {
 
+
   render() {
     return(
       <section id="content">
