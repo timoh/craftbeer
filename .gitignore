@@ -21,3 +21,4 @@ config/settings.local.yml
 npm-debug.log
 public/assets
 public/assets/*
+getbeer/
