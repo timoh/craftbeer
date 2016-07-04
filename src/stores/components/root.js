@@ -1,14 +1,15 @@
 import React from 'react';
-import LocationDisplay from './location-display';
+import StoresDisplay from './stores-display';
 
 export class Root extends React.Component {
-
 
   render() {
     return(
       <section id="content">
         <div className="container">
-          <LocationDisplay />
+          <div className="row">
+            <StoresDisplay />
+          </div>
         </div>
       </section>
     )

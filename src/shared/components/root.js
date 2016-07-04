@@ -4,7 +4,6 @@ import Menu from './menu';
 
 export class Root extends React.Component {
 
-
   render() {
     return(
       <div>
