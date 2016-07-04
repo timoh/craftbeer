@@ -72,3 +72,9 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 end
+
+group :production do
+  # Include 'rails_12factor' gem to enable all platform features
+  # See https://devcenter.heroku.com/articles/rails-integration-gems for more information.
+  gem 'rails_12factor'
+end
