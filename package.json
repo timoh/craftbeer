@@ -1,15 +1,12 @@
 {
   "name": "craftbeer",
   "version": "1.0.0",
-  "engines": {
-    "node": "5.3.0"
-  },
   "description": "Beer finder app",
-  "main": "bundle.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "ava -v",
     "start": "gulp watch",
-    "heroku-postbuild": "gulp transpile"
+    "heroku-postbuild": "gulp production-build"
   },
   "author": "Timo Herttua",
   "license": "ISC",
@@ -24,6 +21,12 @@
   ],
   "devDependencies": {
     "ava": "^0.15.2",
+    "chalk": "^1.1.3",
+    "diff": "^2.2.3",
+    "nock": "^8.0.0",
+    "redux-mock-store": "^1.1.1"
+  },
+  "dependencies": {
     "babel-core": "^6.8.0",
     "babel-eslint": "^6.0.4",
     "babel-plugin-transform-class-properties": "^6.9.0",
@@ -34,15 +37,14 @@
     "babelify": "^7.2.0",
     "browser-sync": "^2.11.2",
     "browserify": "^13.0.0",
-    "chalk": "^1.1.3",
-    "diff": "^2.2.3",
     "eslint": "^2.10.2",
     "eslint-plugin-react": "^4.2.3",
     "exorcist": "^0.4.0",
     "gulp": "^3.9.0",
     "gulp-eslint": "^2.0.0",
+    "gulp-if-else": "^1.0.3",
+    "gulp-uglify": "^1.5.4",
     "isomorphic-fetch": "^2.2.1",
-    "nock": "^8.0.0",
     "react": "^15.0.1",
     "react-addons-update": "^15.0.2",
     "react-dom": "^15.0.1",
@@ -51,7 +53,6 @@
     "react-router": "^2.4.0",
     "redux": "^3.5.2",
     "redux-logger": "^2.6.1",
-    "redux-mock-store": "^1.1.1",
     "redux-thunk": "^2.1.0",
     "reselect": "^2.5.1",
     "vinyl-buffer": "^1.0.0",

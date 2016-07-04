@@ -7,6 +7,8 @@ import exorcist from 'exorcist';
 import browserSync from 'browser-sync';
 import watchify from 'watchify';
 import babelify from 'babelify';
+import uglify from 'gulp-uglify';
+import ifElse from 'gulp-if-else';
 
 const sync = browserSync.create();
 
@@ -14,7 +16,6 @@ const sync = browserSync.create();
 //watchify: Update any source file and your browserify bundle will be recompiled on the spot.
 watchify.args.debug = true;
 var bundler = browserify('src/app.js', watchify.args);
-
 
 // Babel transform
 bundler.transform(babelify.configure({
@@ -27,7 +28,7 @@ bundler.transform(babelify.configure({
 // On updates recompile
 bundler.on('update', bundle);
 
-function bundle() {
+function bundle(prod) {
   return bundler.bundle()
     .on('error', function(error){
       console.error( '\nError: ', error.message, '\n');
@@ -36,12 +37,15 @@ function bundle() {
     .pipe(exorcist('public/assets/bundle.js.map'))
     .pipe(source('bundle.js'))
     .pipe(buffer())
+    .pipe(ifElse(prod, uglify))
     .pipe(gulp.dest('public/assets/'));
 }
 
 gulp.task('default', ['transpile']);
 
-gulp.task('transpile', ['lint'], () => bundle());
+gulp.task('transpile', ['lint'], () => bundle(false));
+
+gulp.task('production-build', () => bundle(true));
 
 // lint helps in finding bugs in compile stage, instead of finding them live on the browser.
 // most useful when npm start is running so you see errors right after edits
