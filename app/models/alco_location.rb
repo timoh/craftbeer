@@ -27,10 +27,21 @@ class AlcoLocation
   def get_distance_to_point(lat=60.1688202, lng=24.9337834)
     # Urho Kekkosen Katu = [60.1688202, 24.9337834]
 
-    current_location = GeoRuby::SimpleFeatures::Point.from_x_y_z(lat, lng, nil)
-    store_location = GeoRuby::SimpleFeatures::Point.from_x_y_z(self.location[1], self.location[0], nil)
+    begin
+      store_lat = self.location[1]
+      store_lng = self.location[0]
+      raise "Missing store location for #{self.loc_name}!" unless store_lat && store_lng
+    rescue Exception => details
+      puts "Exception raised:"
+      puts details
+      raise "Cannot proceed current-to-store distance calculation; missing store location coordinates!"
+    else
+      current_location = GeoRuby::SimpleFeatures::Point.from_x_y_z(lat, lng, nil)
+      store_location = GeoRuby::SimpleFeatures::Point.from_x_y_z(store_lat, store_lng, nil)
 
-    return current_location.spherical_distance(store_location)
+      return current_location.spherical_distance(store_location)
+    end
+
   end
 
   def AlcoLocation.get_distances_to_point(lat=60.1688202, lng=24.9337834)
