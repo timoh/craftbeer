@@ -126,7 +126,7 @@ export default class Slider extends React.Component {
     return(
       <div>
 				<div className="h4 text-center unselectable">Maximum distance to Alko store</div>
-        <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown} onTouchStart={this.handleSliderTouchStart}
+        <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
   		onClick={this.handleNoop}>
           <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
           <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown} onTouchStart={this.handleKnobTouchStart}	onClick={this.handleNoop} style={handleStyle} />

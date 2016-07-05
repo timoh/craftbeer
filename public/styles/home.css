@@ -156,7 +156,7 @@ input.chk-btn:checked ~ label:after {
 }
 
 .rangeslider {
-    margin: 20px 0;
+    margin: 35px 0;
     position: relative;
     background: #e6e6e6;
 }
@@ -200,10 +200,10 @@ input.chk-btn:checked ~ label:after {
 }
 
 .rangeslider-horizontal .rangeslider__handle {
-    width: 40px;
-    height: 40px;
-    border-radius: 40px;
-    top: -10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 60px;
+    top: -20px;
 }
 
 .rangeslider .rangeslider__handle {
