@@ -34,7 +34,7 @@ export default class TableHeaders extends React.Component {
         className:"",
         secondLink: false,
         thirdLink: false
-      },
+      },/* I don't think the user cares about these...
       {
         key: "review_title",
         name: "Review title",
@@ -52,7 +52,7 @@ export default class TableHeaders extends React.Component {
         type: "float",
         secondLink: false,
         thirdLink: false
-      },
+      },*/
       {
         key: "review_score",
         name: "Review score",

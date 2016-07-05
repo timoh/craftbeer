@@ -29,7 +29,7 @@ class Location extends React.Component {
       changeAddressButton = (
         <div className="row">
           <div className="col-md-6 col-md-offset-3">
-              <Link to="/addresspage" className="btn btn-info btn-middle btn-lg">Change my address</Link>
+              <Link to="/addresspage" className="btn btn-info location-btn-middle btn-lg">Change my address</Link>
           </div>
         </div>
       )
@@ -57,10 +57,10 @@ class Location extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-md-4 col-md-offset-3">
+            <div className="col-md-4 col-md-offset-3 col-xs-6">
               {allowButton}
             </div>
-            <div className="col-md-4">
+            <div className="col-md-4 col-xs-6">
               {typeAddressButton}
             </div>
           </div>
@@ -69,7 +69,9 @@ class Location extends React.Component {
           </div>
           {changeAddressButton}
           <div className="row top15">
-            {showButton}
+            <div className="col-md-6 col-md-offset-3">
+              {showButton}
+            </div>
           </div>
         </div>
       </div>

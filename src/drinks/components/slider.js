@@ -30,29 +30,39 @@ export default class Slider extends React.Component {
   	this.onChange(this.position(e),true);
   }
 
+	handleSliderTouchStart = (e) => {
+		e.preventDefault();
+  	this.onChange(this.position(e),true);
+  }
+
   handleDrag = (e) => {
+		e.preventDefault();
   	this.onChange(this.position(e),false);
   }
 
-  handleDragEnd = () => {
+  handleDragEnd = (e) => {
+		e.preventDefault();
     document.removeEventListener('mousemove', this.handleDrag);
     document.removeEventListener('mouseup', this.handleDragEnd);
+		document.removeEventListener('touchmove', this.handleDrag);
+    document.removeEventListener('touchend', this.handleDragEnd);
 		this.props.onChange(this.state.value);
-  }
+  };
 
   handleKnobMouseDown = () => {
     document.addEventListener('mousemove', this.handleDrag);
     document.addEventListener('mouseup', this.handleDragEnd);
-  }
+  };
+
+	handleKnobTouchStart = () => {
+		document.addEventListener('touchmove', this.handleDrag);
+    document.addEventListener('touchend', this.handleDragEnd);
+	};
 
   handleNoop = (e) => {
     e.stopPropagation();
     e.preventDefault();
-  }
-
-  handleTouchMove = (e) => {
-    this.handleDrag(e);
-  }
+  };
 
   onChange(changedValue,updateTable) {
 		this.setState({
@@ -69,7 +79,7 @@ export default class Slider extends React.Component {
     const percentage = (value - min) / (max - min);
     const pos = Math.round(percentage * limit);
     return pos;
-  }
+  };
 
   getValueFromPosition = (pos) => {
   	const { limit } = this.state;
@@ -78,7 +88,7 @@ export default class Slider extends React.Component {
     const valToMultiply = Math.round(percentage * (max - min) / step);
     const value = step * valToMultiply + min*1;
   	return value;
-  }
+  };
 
   position = (e) => {
   	const { grab } = this.state;
@@ -116,19 +126,19 @@ export default class Slider extends React.Component {
     return(
       <div>
 				<div className="h4 text-center unselectable">Maximum distance to Alko store</div>
-        <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown}
+        <div ref="slider" className="rangeslider rangeslider-horizontal" onMouseDown={this.handleSliderMouseDown} onTouchStart={this.handleSliderTouchStart}
   		onClick={this.handleNoop}>
           <div ref="fill" className="rangeslider__fill" style={fillStyle}/>
-          <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown}	onTouchMove={this.handleTouchMove} onClick={this.handleNoop} style={handleStyle} />
+          <div ref="handle" className="rangeslider__handle" onMouseDown={this.handleKnobMouseDown} onTouchStart={this.handleKnobTouchStart}	onClick={this.handleNoop} style={handleStyle} />
         </div>
 				<div className="row unselectable">
-					<div className="col-md-5 min">
+					<div className="col-md-5 col-xs-5 min">
 						{this.valueToKilometers(this.props.min)}
 					</div>
-					<div className="col-md-2 value">
+					<div className="col-md-2 col-xs-2 value">
             {this.valueToKilometers(this.state.value)}
           </div>
-					<div className="col-md-5 max">
+					<div className="col-md-5 col-xs-5 max">
 						{this.valueToKilometers(this.props.max)}
 					</div>
 				</div>

@@ -61,7 +61,7 @@ class Stores extends React.Component {
           <div className="col-md-5">
             <h4>Selected drinks
             </h4>
-              <table className="table table-hover">
+              <table className="table table-hover selected-drinks-table-row">
                 <tbody>
                     { this.props.drinks.map((drinkData) => {
                       const selected = this.props.selectedDrink.drink._id.$oid == drinkData.drink._id.$oid ? true : false;

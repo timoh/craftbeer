@@ -72,12 +72,7 @@ export default class DrinkTableRow extends React.Component {
             <td>
               <Link to={`/alco_drinks/${this.props.drinkData.drink._id.$oid}`}>{this.props.drinkData.drink.title}</Link>
             </td>
-            <td>
-              {this.props.drinkData.reviewTitle}
-            </td>
-            <td>
-              {this.props.drinkData.drink.best_rev_candidate_score.toFixed(2)}
-            </td>
+
             <td>
               {this.props.drinkData.score}
             </td>
@@ -100,3 +95,14 @@ export default class DrinkTableRow extends React.Component {
     )
   }
 }
+
+/*
+MikkoR: removed these on 5.7.2016
+<td>
+  {this.props.drinkData.reviewTitle}
+</td>
+<td>
+  {this.props.drinkData.drink.best_rev_candidate_score.toFixed(2)}
+</td>
+
+*/

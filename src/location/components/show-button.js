@@ -5,7 +5,7 @@ export default class ShowButton extends React.Component {
 
   render() {
     return (
-      <Link to="/indexpage" className="btn btn-primary btn-middle btn-lg">Show all drinks with availability data based on your location</Link>
+      <Link to="/indexpage" className="btn btn-primary location-btn-middle btn-lg">Show all drinks & their availability</Link>
     )
   }
 }
