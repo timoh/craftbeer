@@ -75,7 +75,7 @@ export default class Drink extends React.Component {
                   {this.state.drink.size} l
                 </td>
                 <td>
-                  {this.state.drink.type}
+                  {this.state.drink.type ? this.state.drink.type.capitalize() : ''}
                 </td>
                 <td>
                   <a href={this.state.drink.url}>

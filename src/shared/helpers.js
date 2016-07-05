@@ -84,3 +84,7 @@ export function sortBy(field,reverse,primer,isDrinkField){
      return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
    };
 }
+
+String.prototype.capitalize = function() {
+    return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+};

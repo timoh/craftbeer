@@ -71,7 +71,7 @@ export default class SelectedDrink extends React.Component {
                       {this.props.drinkData.drink.size} l
                     </td>
                     <td>
-                      {this.props.drinkData.drink.type}
+                      {this.props.drinkData.drink.type ? this.props.drinkData.drink.type.capitalize() : ''}
                     </td>
                     <td>
                       <a href={this.props.drinkData.drink.url}>
