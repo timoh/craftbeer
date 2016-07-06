@@ -6,7 +6,7 @@ import TableButton from './table-button';
 import Slider from './slider';
 import SearchButton from './search-button';
 import {connect} from 'react-redux';
-import { getSelectedDrinks } from '../../shared/selectors';
+import { getSelectedDrinks, getVisibleDrinks } from '../../shared/selectors';
 import { fetchDrinks, maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks} from '../actions';
 import { selectDrinkFromSelected } from '../../shared/actions';
 import { withRouter } from 'react-router';
@@ -42,6 +42,7 @@ class Drinks extends React.Component {
         numberOfStoresWithSelectedDrinks = keys.length;
       }
       const noOfSelectedDrinks = getSelectedDrinks(this.props.drinks).length;
+      const visibleDrinks = getVisibleDrinks(this.props.drinks);
       return(
           <div>
             <Loader loaded={!this.props.loading} className="loader">
@@ -56,20 +57,18 @@ class Drinks extends React.Component {
                       <div className="col-md-3 col-xs-4">
                         <TableButton toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
                       </div>
-                      <div className="col-md-3 col-xs-6">
-                        <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
+                      <div className="col-md-6 col-xs-8">
+                        <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                       </div>
                     </div>
                     <table className= "table table-striped table-bordered">
                       <TableHeaders sort={this.props.sortDrinks.bind(this)} />
                       <tbody>
-                        { this.props.drinks.map((drinkData) => {
-                          if(drinkData.visible) {
+                        { visibleDrinks.map((drinkData) => {
                             return (
                               <DrinkTableRow key={ drinkData.drink._id.$oid }
                               drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
                             )
-                          }
                         })}
                       </tbody>
                     </table>

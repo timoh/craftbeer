@@ -11,14 +11,15 @@ export default class LocationText extends React.Component {
     if (this.props.requested) {
       if (this.props.loading) {
         locationText = (
-          <p className="centered">Loading location...</p>
+          <p className={this.props.centered ? 'centered' : ''}>Loading location...</p>
         )
       } else {
 
         locationText = (
-            <p className="centered"><strong>This is your location:</strong> <br/>
-            {this.props.address} {this.props.address ? <br/> : null}
-            Latitude {this.props.latitude}, longitude: {this.props.longitude}
+            <p className={this.props.centered ? 'centered' :''}>
+              <strong>This is your location:</strong> <br/>
+              {this.props.address} {this.props.address ? <br/> : null}
+              Latitude {this.props.latitude}, longitude: {this.props.longitude}
             </p>
         )
       }

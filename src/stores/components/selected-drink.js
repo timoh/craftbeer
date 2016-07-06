@@ -115,9 +115,6 @@ export default class SelectedDrink extends React.Component {
     } else {
       content = (
         <div className="row">
-          <div className="col-md-12">
-            <span>Select drinks first.</span>
-          </div>
         </div>
       )
     }

@@ -15,21 +15,21 @@ class Location extends React.Component {
     let allowButton;
     if (!this.props.requested) {
       allowButton = (
-        <button onClick={this.props.onAllowButtonClick} className="btn btn-success btn-lg btn-custom-lg">Use browser's location</button>
+        <button onClick={this.props.onAllowButtonClick} className="btn btn-success btn-lg">Use browser's location</button>
       )
     }
     let typeAddressButton;
     if (!this.props.requested) {
       typeAddressButton = (
-        <Link to="/addresspage" className="btn btn-info btn-lg btn-custom-lg">Let me type in my address</Link>
+        <Link to="/addresspage" className="btn btn-info btn-lg">Let me type in my address</Link>
       )
     }
     let changeAddressButton;
     if (this.props.requested && !this.props.loading) {
       changeAddressButton = (
-        <div className="row">
-          <div className="col-md-6 col-md-offset-3">
-              <Link to="/addresspage" className="btn btn-info location-btn-middle btn-lg">Change my address</Link>
+        <div className="row top30">
+          <div className="col-md-6">
+              <Link to="/addresspage" className="btn btn-info btn-md">Change my address</Link>
           </div>
         </div>
       )
@@ -37,41 +37,46 @@ class Location extends React.Component {
 
     let showButton;
     if (this.props.requested && !this.props.loading) {
-      showButton = (<ShowButton/>)
+      showButton = (<ShowButton cssClass="btn btn-primary btn-lg"/>)
     }
-    let guidingComment;
+    let selectComment;
     if (!this.props.requested) {
-      guidingComment = (
+      selectComment = (
         " Select whether you want to use your browser's location data or type in your address."
       )
     }
     return (
       <div className="row">
         <div className="col-md-12 margin-bottom">
-          <div className="row">
-            <div className="col-md-8 col-md-offset-3">
-              <p>Welcome to Craftbeer app. This app needs to know your location so that it can show availability data from the Alko stores that are close to you. <br/>
-              {guidingComment}
-              </p>
-              <br/>
+          <div className="jumbotron">
+            <div className="row">
+              <div className="col-md-8">
+                <h1>Welcome</h1>
+                <p>This app needs to know your location so that it can show availability data from the Alko stores that are close to you. <br/>
+                {selectComment}
+                </p>
+                <br/>
+              </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-md-4 col-md-offset-3 col-xs-6">
-              {allowButton}
+            <div className="row">
+              <div className="col-md-3 col-xs-6">
+                {allowButton}
+              </div>
+              <div className="col-md-3 col-xs-6">
+                {typeAddressButton}
+              </div>
             </div>
-            <div className="col-md-4 col-xs-6">
-              {typeAddressButton}
+            <div className="row">
+              <div className="col-md-6">
+                <LocationText centered={false} address={this.props.address} loading={this.props.loading} requested={this.props.requested} latitude={this.props.myLocation[0].toFixed(2)} longitude={this.props.myLocation[1].toFixed(2)} />
+              </div>
             </div>
-          </div>
-          <div className="row">
-              <LocationText address={this.props.address} loading={this.props.loading} requested={this.props.requested} latitude={this.props.myLocation[0].toFixed(2)} longitude={this.props.myLocation[1].toFixed(2)} />
-          </div>
-          {changeAddressButton}
-          <div className="row top15">
-            <div className="col-md-6 col-md-offset-3">
-              {showButton}
+            <div className="row top15">
+              <div className="col-md-6">
+                {showButton}
+              </div>
             </div>
+            {changeAddressButton}
           </div>
         </div>
       </div>

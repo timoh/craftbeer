@@ -11,16 +11,25 @@ export default class SearchButton extends React.Component {
     let content;
     const noOfStoresWithSelectedDrinks = this.props.noOfStoresWithSelectedDrinks;
     const noOfSelectedDrinks = this.props.noOfSelectedDrinks;
+    const noOfVisibleDrinks = this.props.noOfVisibleDrinks;
     if (noOfSelectedDrinks === 0) {
-      content = (
-        <div className="h4 centered">
-           Select drinks first.
-        </div>
-      )
+      if (noOfVisibleDrinks === 0) {
+        content = (
+          <div className="alert alert-warning no-margin-bottom">
+             No stores found. Try increasing the distance to get some results.
+          </div>
+        )
+      } else {
+        content = (
+          <div className="alert alert-info no-margin-bottom">
+             Select drinks to see how many nearby stores have all the selected drinks.
+          </div>
+        )
+      }
     } else {
       if (noOfStoresWithSelectedDrinks === 0) {
         content= (
-          <div className="h4 centered">
+          <div className="alert alert-info no-margin-bottom">
              Found no Alko stores with all selected drinks in stock.
           </div>
         )

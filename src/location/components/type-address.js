@@ -13,7 +13,7 @@ class Address extends React.Component {
 
     let showButton;
     if (this.props.requested && !this.props.loading) {
-      showButton = (<ShowButton/>)
+      showButton = (<ShowButton cssClass="btn btn-primary btn-lg location-btn-middle"/>)
     }
     return (
       <div className="row">
@@ -35,7 +35,7 @@ class Address extends React.Component {
           </div>
           <div className="row top30">
             <div>
-              <LocationText loading={this.props.loading} requested={this.props.requested} latitude={this.props.myLocation[0].toFixed(2)} longitude={this.props.myLocation[1].toFixed(2)} />
+              <LocationText centered={true} loading={this.props.loading} requested={this.props.requested} latitude={this.props.myLocation[0].toFixed(2)} longitude={this.props.myLocation[1].toFixed(2)} />
               {showButton}
             </div>
           </div>
