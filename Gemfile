@@ -21,6 +21,9 @@ gem 'mongoid-geospatial'
 # used for distance calculations
 gem 'georuby'
 
+gem 'kaminari'
+# used for API pagination
+
 gem 'libv8'
 
 # action caching

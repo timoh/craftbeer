@@ -10,7 +10,9 @@ class HomeController < ApplicationController
   end
 
   def all_with_distance # only those with availability AND maximum 10km range
-    out_response = AlcoDrink.all_with_distance(params[:lat].to_f, params[:lng].to_f)
+    page = 1 # initialize page to first page as default, for pagination
+    page = params[:page] if params[:page] # if params[:page] set, use it
+    out_response = AlcoDrink.all_with_distance(params[:lat].to_f, params[:lng].to_f, page)
     render :json => out_response
   end
 end

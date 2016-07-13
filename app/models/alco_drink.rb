@@ -153,8 +153,8 @@ class AlcoDrink
     end
   end
 
-  def AlcoDrink.all_with_distance(lat, lng) # only those with availability AND maximum 10km range
-    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by(best_rev_candidate_score: "desc").limit(50)
+  def AlcoDrink.all_with_distance(lat, lng, page_number=1) # only those with availability AND maximum 10km range
+    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by(best_rev_candidate_score: "desc").page(page_number)
 
     out_response = Array.new
     drinks.includes(:alco_avails).each do |drink|
