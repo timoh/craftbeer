@@ -1,12 +1,14 @@
 class AlcoAvail
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Attributes::Dynamic
+  
   field :amount, type: Integer
   field :last_updated, type: Date
   field :history, type: Hash
 
-  belongs_to :alco_location
-  belongs_to :alco_drink
+  belongs_to :alco_location, index: true, counter_cache: true
+  belongs_to :alco_drink, index: true, counter_cache: true
 
   validates :amount, presence: true
 

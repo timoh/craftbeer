@@ -1,6 +1,8 @@
 class AlcoDrink
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Attributes::Dynamic
+
   field :title, type: String
   field :price, type: Float
   field :type, type: String
@@ -152,10 +154,10 @@ class AlcoDrink
   end
 
   def AlcoDrink.all_with_distance(lat, lng) # only those with availability AND maximum 10km range
-    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by(best_rev_candidate_score: "desc")
+    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by(best_rev_candidate_score: "desc").limit(50)
 
     out_response = Array.new
-    drinks.each do |drink|
+    drinks.includes(:alco_avails).each do |drink|
 
       if drink.review
         drink_max_avail = drink.alco_avails.max(:amount)
@@ -165,7 +167,7 @@ class AlcoDrink
           if drink_max_avail > 0
 
             avails_a = Array.new
-            drink.alco_avails.each do |avail|
+            drink.alco_avails.includes(:alco_location).each do |avail|
 
               # calculate distance in meters for location
               loc = avail.alco_location
