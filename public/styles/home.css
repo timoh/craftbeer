@@ -30,7 +30,7 @@ body {
 
 .location-btn-middle {
   display: block;
-  width: 40%;
+  width: 65%;
   vertical-align: middle;
   margin: 0 auto;
 }
@@ -236,6 +236,11 @@ input.chk-btn:checked ~ label:after {
   }
 }
 
+@media(min-width:768px) {
+  .margin-on-mobile {
+      margin-bottom: 10px;
+  }
+}
 
 .centered {
   text-align: center;

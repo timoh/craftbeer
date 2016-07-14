@@ -35,7 +35,7 @@ class Address extends React.Component {
             </div>
           </div>
           <div className="row top30">
-            <div>
+            <div className="col-md-6 col-md-offset-3">
               <LocationText centered={true} loading={this.props.loading} requested={this.props.requested} latitude={this.props.myLocation[0].toFixed(2)} longitude={this.props.myLocation[1].toFixed(2)} />
               {showButton}
             </div>

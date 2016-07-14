@@ -27,7 +27,7 @@ export default class TableButton extends React.Component {
     }
     return(
         <div>
-          <Tappable component="button" className="btn btn-info btn-lg" onTap={this.handleClick.bind(this)}>{actionText} non-stocked</Tappable>
+          <Tappable component="button" className="btn btn-info btn-lg margin-on-mobile" onTap={this.handleClick.bind(this)}>{actionText} non-stocked</Tappable>
         </div>
     )
   }

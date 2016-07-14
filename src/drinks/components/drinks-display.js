@@ -54,10 +54,10 @@ class Drinks extends React.Component {
               <div className="row">
                 <div className="col-md-12">
                     <div className="row margin-bottom">
-                      <div className="col-md-3 col-xs-4">
+                      <div className="col-md-3 col-xs-9">
                         <TableButton toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
                       </div>
-                      <div className="col-md-6 col-xs-8">
+                      <div className="col-md-6 col-xs-9">
                         <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                       </div>
                     </div>
