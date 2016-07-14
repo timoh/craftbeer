@@ -30,13 +30,21 @@ body {
 
 .location-btn-middle {
   display: block;
-  width: 65%;
+  width: 80%;
   vertical-align: middle;
   margin: 0 auto;
 }
 
-.search-button {
-  width: 60%;
+@media(min-width:768px) {
+  .search-button {
+      width: 60%;
+  }
+}
+
+@media(max-width:768px) {
+  .search-button {
+      width: 80%;
+  }
 }
 
 .btn-custom-lg {
