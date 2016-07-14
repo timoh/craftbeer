@@ -25,21 +25,25 @@ export default class Menu extends React.Component {
       link.className = link.url === this.props.currentRoute ? link.className + " active" : link.className;
     });
     return(
-        <nav className="navbar navbar-default navbar-fixed-top navbar-shrink">
-           <div className="navbar-header page-scroll">
-              <Link to="/intropage" className="navbar-brand">Craftbeer</Link>
-           </div>
-           <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-               <ul className="nav navbar-nav navbar-right">
-                  {links.map( link =>
-                    (
-                      <li key={link.url} className={link.className}>
-                        <Link to={link.url}>{link.title}</Link>
-                      </li>
-                    )
-                  )}
-               </ul>
-           </div>
+        <nav className="navbar navbar-default navbar-fixed-top">
+          <div className="container">
+            <div className="row">
+              <div className="col-md-6 col-xs-3 navbar-header">
+                <Link to="/intropage" className="navbar-brand">Craftbeer</Link>
+              </div>
+              <div className="col-md-6 col-xs-9 collapse navbar-collapse">
+                <ul className="nav navbar-nav navbar-right">
+                   {links.map( link =>
+                     (
+                       <li key={link.url} className={link.className}>
+                         <Link to={link.url}>{link.title}</Link>
+                       </li>
+                     )
+                   )}
+                </ul>
+              </div>
+            </div>
+          </div>
         </nav>
     )
   }

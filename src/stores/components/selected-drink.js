@@ -14,7 +14,13 @@ export default class SelectedDrink extends React.Component {
       {
         // if the store that matches the distance condition is one of the stores with all selected drinks, then add it to the result array.
         if(storeIDs.indexOf(nearbyStore.store._id.$oid) != -1) {
-          availsArr.push({storeName: nearbyStore.store.loc_name, amount: nearbyStore.avail.amount, distance_in_m: nearbyStore.distance_in_m });
+          availsArr.push({
+            storeName: nearbyStore.store.loc_name,
+            amount: nearbyStore.avail.amount,
+            distance_in_m: nearbyStore.distance_in_m,
+            address: nearbyStore.store.address,
+            url: 'http://www.alko.fi' + nearbyStore.store.store_link
+            });
         }
       }
     );
@@ -28,7 +34,7 @@ export default class SelectedDrink extends React.Component {
     let img;
     if (this.props.drinkData !== undefined && this.props.drinkData.drink !== undefined) {
       img = (
-          <img src={`/pics/productpic_${this.props.drinkData.drink.alko_id}.png`} className="img-responsive img-small"/>
+          <img src={`/pics/productpic_${this.props.drinkData.drink.alko_id}.png`} className="img-responsive img-very-small"/>
       );
     }
     let avails;
@@ -83,13 +89,16 @@ export default class SelectedDrink extends React.Component {
                   </tr>
                 </tbody>
               </table>
-              <h5>Availability:</h5>
+              <h4>Availability:</h4>
               <table className="table table-striped">
               <thead>
                 <tr>
                   <th>Store
                   </th>
                   <th>Amount in pcs
+                  </th>
+                  <th>
+                    Address (distance from current location)
                   </th>
                 </tr>
               </thead>
@@ -98,10 +107,13 @@ export default class SelectedDrink extends React.Component {
                 return (
                   <tr key={avail.storeName}>
                     <td>
-                      {avail.storeName}
+                      <a href={avail.url}>{avail.storeName}</a>
                     </td>
                     <td>
                       {avail.amount}
+                    </td>
+                    <td>
+                      {avail.address} ({(avail.distance_in_m/1000).toFixed(2)} km)
                     </td>
                   </tr>
                   );

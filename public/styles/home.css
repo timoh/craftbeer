@@ -125,7 +125,7 @@ input.chk-btn:checked ~ label:after {
 }
 
 .img-very-small {
-    height: 5%;
+    width: 11%;
 }
 
 .fake-link {
