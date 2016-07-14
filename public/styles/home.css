@@ -236,7 +236,7 @@ input.chk-btn:checked ~ label:after {
   }
 }
 
-@media(min-width:768px) {
+@media(max-width:850px) {
   .margin-on-mobile {
       margin-bottom: 10px;
   }
