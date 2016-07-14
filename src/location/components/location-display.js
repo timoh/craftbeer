@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import { getLocation } from '../actions';
 import ShowButton from './show-button';
 import LocationText from './location-text';
+import Tappable from 'react-tappable';
 
 class Location extends React.Component {
 
@@ -15,7 +16,7 @@ class Location extends React.Component {
     let allowButton;
     if (!this.props.requested) {
       allowButton = (
-        <button onClick={this.props.onAllowButtonClick} className="btn btn-success btn-lg">Use browser's location</button>
+        <Tappable component="button" className="btn btn-success btn-lg" onTap={this.props.onAllowButtonClick}>Use browser's location</Tappable>
       )
     }
     let typeAddressButton;
@@ -59,10 +60,10 @@ class Location extends React.Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-3 col-xs-6">
+              <div className="col-md-3 margin-bottom">
                 {allowButton}
               </div>
-              <div className="col-md-3 col-xs-6">
+              <div className="col-md-3">
                 {typeAddressButton}
               </div>
             </div>

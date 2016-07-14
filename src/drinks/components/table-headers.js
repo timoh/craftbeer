@@ -84,7 +84,7 @@ export default class TableHeaders extends React.Component {
       },
       {
         key: "max_availability",
-        name: "Max availability in Alko (pcs)",
+        name: "Max stock (pcs)",
         field: "maxAvailability",
         initialSortOrder: true,
         type: "int",
@@ -93,7 +93,7 @@ export default class TableHeaders extends React.Component {
       },
       {
         key:"no_of_stores_with_availability",
-        name: "# of stores that have drink in stock",
+        name: "# of stores with stock > 0",
         field: "noOfNearbyStoresWithAvailability",
         initialSortOrder: true,
         type: "int",
@@ -115,7 +115,7 @@ export default class TableHeaders extends React.Component {
               )
             }) }
           <th>
-            Top 3 nearest stores that have drink in stock
+            Top 3 nearest stores with stock > 0
           </th>
         </tr>
       </thead>

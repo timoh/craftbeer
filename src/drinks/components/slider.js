@@ -30,11 +30,6 @@ export default class Slider extends React.Component {
   	this.onChange(this.position(e),true);
   }
 
-	handleSliderTouchStart = (e) => {
-		e.preventDefault();
-  	this.onChange(this.position(e),true);
-  }
-
   handleDrag = (e) => {
 		e.preventDefault();
   	this.onChange(this.position(e),false);

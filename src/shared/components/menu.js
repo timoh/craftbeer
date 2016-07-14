@@ -27,11 +27,14 @@ export default class Menu extends React.Component {
     return(
         <nav className="navbar navbar-default navbar-fixed-top">
           <div className="container">
-            <div className="row">
-              <div className="col-md-6 col-xs-3 navbar-header">
+              <div className="navbar-header page-scroll">
+                <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                  <span className="sr-only">Toggle navigation</span>
+                  Menu
+                </button>
                 <Link to="/intropage" className="navbar-brand">Craftbeer</Link>
               </div>
-              <div className="col-md-6 col-xs-9 collapse navbar-collapse">
+              <div className="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
                 <ul className="nav navbar-nav navbar-right">
                    {links.map( link =>
                      (
@@ -42,7 +45,6 @@ export default class Menu extends React.Component {
                    )}
                 </ul>
               </div>
-            </div>
           </div>
         </nav>
     )

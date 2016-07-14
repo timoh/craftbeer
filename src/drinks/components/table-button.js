@@ -1,4 +1,5 @@
 import React from 'react';
+import Tappable from 'react-tappable';
 
 export default class TableButton extends React.Component {
 
@@ -26,7 +27,7 @@ export default class TableButton extends React.Component {
     }
     return(
         <div>
-          <button type="button" className="btn btn-info btn-lg" onClick={this.handleClick.bind(this)}>{actionText} non-stocked drinks</button>
+          <Tappable component="button" className="btn btn-info btn-lg" onTap={this.handleClick.bind(this)}>{actionText} non-stocked</Tappable>
         </div>
     )
   }

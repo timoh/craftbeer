@@ -1,6 +1,7 @@
 import React from 'react';
 import {selectAll,deSelectAll} from '../actions';
 import {connect} from 'react-redux';
+import Tappable from 'react-tappable';
 
 export default class TableHeader extends React.Component {
 
@@ -24,7 +25,7 @@ export default class TableHeader extends React.Component {
     if (this.props.header.secondLink) {
       secondLink = (
         <div>
-         \ <span className="fake-link unselectable" onClick={this.props.handleSelectAll}>Select all</span>
+         <Tappable className="fake-link unselectable" onTap={this.props.handleSelectAll}>Select all</Tappable>
         </div>
       )
     }
@@ -32,13 +33,13 @@ export default class TableHeader extends React.Component {
     if (this.props.header.thirdLink) {
       thirdLink = (
         <div>
-         \ <span className="fake-link unselectable" onClick={this.props.handleDeSelectAll}>Deselect all</span>
+         <Tappable className="fake-link unselectable" onTap={this.props.handleDeSelectAll}>Deselect all</Tappable>
         </div>
       )
     }
     return (
       <th className={this.props.header.className}>
-        <span className="fake-link unselectable" onClick={this.handleOnClick.bind(this)}>{this.props.header.name}</span>
+        <Tappable className="fake-link unselectable" onTap={this.handleOnClick.bind(this)}>{this.props.header.name}</Tappable>
         {secondLink}
         {thirdLink}
       </th>

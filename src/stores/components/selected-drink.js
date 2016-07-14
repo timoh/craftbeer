@@ -45,7 +45,7 @@ export default class SelectedDrink extends React.Component {
     if (this.props.drinkData !== undefined && this.props.drinkData.drink !== undefined) {
       content = (
         <div>
-          <div className="row">
+          <div className="row no-margin-left-right">
             <div className="col-md-offset-2">
                 <div className="thumbnail">
                   {img}
@@ -56,7 +56,7 @@ export default class SelectedDrink extends React.Component {
                 </div>
             </div>
           </div>
-          <div className="row">
+          <div className="row no-margin-left-right">
             <div className="col-md-offset-2">
               <table className="table table-striped">
                 <thead>

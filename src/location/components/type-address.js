@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import { geocodeAddress, inputAddress } from '../actions';
 import ShowButton from './show-button';
 import LocationText from './location-text';
+import Tappable from 'react-tappable';
 
 class Address extends React.Component {
 
@@ -30,7 +31,7 @@ class Address extends React.Component {
           </div>
           <div className="row">
             <div className="col-md-6 col-md-offset-3">
-              <button onClick={this.props.submitAddressButtonClick} className="btn btn-success btn-middle btn-lg">Locate me</button>
+              <Tappable component="button" className="btn btn-success btn-middle btn-lg" onTap={this.props.submitAddressButtonClick}>Locate me</Tappable>
             </div>
           </div>
           <div className="row top30">

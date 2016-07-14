@@ -40,13 +40,13 @@ class Stores extends React.Component {
 
     return (
       <div>
-        <div className="row">
-          <div className="col-md-4">
+        <div className="row no-margin-left-right">
+          <div className="col-md-4 col-xs-12">
             <h3>Selected drinks
             </h3>
             {selectedDrinks}
           </div>
-          <div className="col-md-8">
+          <div className="col-md-8 col-xs-12">
             <SelectedDrink drinkData={this.props.selectedDrink} storesData={this.props.stores} />
           </div>
         </div>

@@ -14,6 +14,20 @@ body {
   margin: 0 auto;
 }
 
+.no-margin-left-right {
+  margin-left: 0px;
+  margin-right: 0px
+}
+
+.navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover {
+    color: #18bc9c;
+    background-color: transparent;
+}
+
+.navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+    background-color: #18bc9c;
+}
+
 .location-btn-middle {
   display: block;
   width: 40%;
@@ -216,9 +230,12 @@ input.chk-btn:checked ~ label:after {
     position: absolute;
 }
 
-.topstores {
-    white-space: pre;
+@media(min-width:768px) {
+  .topstores {
+      white-space: pre;
+  }
 }
+
 
 .centered {
   text-align: center;
@@ -324,7 +341,14 @@ header .intro-text .skills {
     }
 }
 
-@media(min-width:768px) {
+.navbar-toggle {
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 10px;
+    border-color: #fff;
+}
+
+@media(min-width:900px) {
     .navbar-fixed-top {
         padding: 10px 40px;
         -webkit-transition: padding .3s;
@@ -492,7 +516,7 @@ footer .footer-below {
 .btn:focus,
 .btn:active,
 .btn.active {
-    outline: 0;
+    outline: 0 !important;
 }
 
 .scroll-top {
