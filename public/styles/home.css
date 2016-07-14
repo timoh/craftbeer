@@ -35,6 +35,15 @@ body {
   margin: 0 auto;
 }
 
+@media(max-width:500px) {
+  .location-btn-middle {
+    display: block;
+    width: 95%;
+    vertical-align: middle;
+    margin: 0 auto;
+  }
+}
+
 @media(min-width:768px) {
   .search-button {
       width: 60%;
