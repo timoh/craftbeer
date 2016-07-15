@@ -10,9 +10,25 @@ class HomeController < ApplicationController
   end
 
   def all_with_distance # only those with availability AND maximum 10km range
-    page = 1 # initialize page to first page as default, for pagination
-    page = params[:page] if params[:page] # if params[:page] set, use it
-    out_response = AlcoDrink.all_with_distance(params[:lat].to_f, params[:lng].to_f, page)
-    render :json => out_response
+
+    if params[:lat] && params[:lng]
+
+      lat = params[:lat].to_f
+      lng = params[:lng].to_f
+
+      page = 1 # initialize page to first page as default, for pagination
+      page = params[:page] if params[:page] # if params[:page] set, use it
+
+      sort_column = "title"
+      sort_column = params[:sort_column] if params[:sort_column]
+      sort_order = "desc"
+      sort_order = params[:sort_order] if params[:sort_order]
+
+      out_response = AlcoDrink.all_with_distance(lat, lng, page, sort_column, sort_order)
+      render :json => out_response
+
+    else
+      render :json => {:error => { :message => "You need to supply lat & lng parameters as floats!" }}
+    end
   end
 end
