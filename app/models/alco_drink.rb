@@ -10,6 +10,7 @@ class AlcoDrink
   field :url, type: String
   field :alko_id, type: String
   field :best_rev_candidate_score, type: Float # match score
+  field :review_score, type: Integer # cached value of review score
 
   validates :url, uniqueness: true
   validates :title, uniqueness: true
@@ -18,6 +19,30 @@ class AlcoDrink
 
   has_many :alco_avails
   has_one :review
+
+  before_update :populate_review_score
+
+  def populate_review_score
+    if self.review
+      self.review_score = self.review.score.to_i # save the score to the parent object
+      self.save! # save and check if validations pass
+      puts "Score updated for #{self.title}: #{self.review_score}"
+    else
+      puts "Review does not exist for #{self.title}"
+    end
+  end
+
+  def AlcoDrink.populate_cached_review_scores
+    # skip the callback
+    AlcoDrink.skip_callback(:update, :before, :populate_review_score)
+
+    AlcoDrink.all.each do |drink|
+        drink.populate_review_score
+    end
+
+    # restore the callback for future calls
+    AlcoDrink.set_callback(:update, :before, :populate_review_score)
+  end
 
   def AlcoDrink.fetch_from_api(page_number=0)
     require 'rest-client'
