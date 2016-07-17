@@ -3,7 +3,7 @@
 > the Craft Beer finding app for Finland, written on Rails
 
 ## Status
-Just started this project.
+First deployed to Heroku, now fixing related issues.
 Data collected earlier already, available in external API.
 
 ## Usage in development mode
@@ -15,17 +15,11 @@ Data collected earlier already, available in external API.
 
 ## To populate the data
 
-1. First, get review data (needs ParseHub):
-  * `bundle exec rake populate:review_data`
-2. Second, get drink data:
-  * `bundle exec rake populate:alko_product`
-3. Then, populate:
-  * `bundle exec rake populate:alko_avail`
-  * `bundle exec rake populate:alko_locs`
+NOTE: Requires ParseHub setup!
+
+1. Run: `heroku run bundle exec rake populate:setup_all`
 
 ## Roadmap
 
-1. Ingest data from ext. api
-2. Cross-reference Reviews and pricing & availability information to only show available beers
-3. Ask for user's favorite place and only show availability of beers there
-4. More advanced filtering of multiple locations and beer tastes
+* Host images in Amazon S3 or similar
+* More advanced filtering of multiple locations and beer tastes
