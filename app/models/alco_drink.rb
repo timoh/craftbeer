@@ -11,6 +11,7 @@ class AlcoDrink
   field :alko_id, type: String
   field :best_rev_candidate_score, type: Float # match score
   field :review_score, type: Integer # cached value of review score
+  field :pic_cloudinary, type: Hash # information about picture in Cloudinary
 
   validates :url, uniqueness: true
   validates :title, uniqueness: true
@@ -103,23 +104,32 @@ class AlcoDrink
   end
 
   def get_pic
+    require 'json'
     pic_id = self.alko_id
     from_uri = 'http://cdn.alko.fi/ProductImages/Scaled/'+pic_id+'/zoom.jpg'
-    to_path = 'public/pics/productpic_'+pic_id+'.png'
-    require 'open-uri'
-    open(to_path, 'wb') do |file|
-      begin
-        file << open(from_uri).read
-      rescue
-        puts "Error opening URL " + from_uri
-        puts "Most likely product does not exist in Alko's selection anymore."
-      end
+
+    begin
+      # use Cloudinary to upload the file
+      out_hash = Cloudinary::Uploader.upload(from_uri)
+      #out_hash = JSON.parse(response)
+      self.pic_cloudinary = out_hash
+    rescue Exception => detail
+      puts "Failed to fetch pic for #{self.title}!"
+      puts "Reason:"
+      puts detail
+    else
+      # .. and then store the information regarding the file into Mongo
+      self.save
     end
+
   end
 
   def AlcoDrink.get_all_pics
+    # skip the callback
+    AlcoDrink.skip_callback(:update, :before, :populate_review_score)
+
     AlcoDrink.all.each do |drink|
-      unless File.exist?('public/pics/productpic_'+drink.alko_id+'.png')
+      unless drink.pic_cloudinary
         puts 'Getting pic for '+drink.title
         #begin
           drink.get_pic
@@ -132,6 +142,8 @@ class AlcoDrink
       end
     end
 
+    # restore the callback for future calls
+    AlcoDrink.set_callback(:update, :before, :populate_review_score)
   end
 
   def AlcoDrink.get_all_avails

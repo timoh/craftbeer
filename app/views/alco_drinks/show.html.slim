@@ -1,6 +1,7 @@
 p#notice =notice
 
-=image_tag('/pics/productpic_'+@alco_drink.alko_id+'.png', class: "img-responsive", size: "75")
+- if @alco_drink.pic_cloudinary
+  = cl_image_tag(@alco_drink.pic_cloudinary["public_id"]+".jpg",  class: "img-responsive", width: "75")
 p
   strong Title:&nbsp;
   = @alco_drink.title

@@ -33,9 +33,11 @@ export default class SelectedDrink extends React.Component {
   render() {
     let img;
     if (this.props.drinkData !== undefined && this.props.drinkData.drink !== undefined) {
-      img = (
-          <img src={`/pics/productpic_${this.props.drinkData.drink.alko_id}.png`} className="img-responsive img-very-small"/>
-      );
+      if (this.props.drinkData.drink.pic_cloudinary !== undefined && this.props.drinkData.drink.pic_cloudinary !== null) {
+        img = (
+            <img src={this.props.drinkData.drink.pic_cloudinary.url} className="img-responsive img-very-small"/>
+        );
+      }
     }
     let avails;
     if (this.props.drinkData !== undefined && this.props.drinkData.drink !== undefined && this.props.storesData !== undefined){
