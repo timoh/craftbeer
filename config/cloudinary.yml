@@ -1,0 +1,19 @@
+---
+development:
+  cloud_name: <%= ENV["CLOUDINARY_NAME"] %> # hzdkrj5gw
+  api_key: <%= ENV["CLOUDINARY_KEY"] %> # '377678885959694'
+  api_secret: <%= ENV["CLOUDINARY_SECRET"] %> # ZOUGmVjH9QnqxsnN0JArNKNn0D8
+  enhance_image_tag: true
+  static_image_support: false
+production:
+  cloud_name: <%= ENV["CLOUDINARY_NAME"] %> # hzdkrj5gw
+  api_key: <%= ENV["CLOUDINARY_KEY"] %> # '377678885959694'
+  api_secret: <%= ENV["CLOUDINARY_SECRET"] %> # ZOUGmVjH9QnqxsnN0JArNKNn0D8
+  enhance_image_tag: true
+  static_image_support: true
+test:
+  cloud_name: <%= ENV["CLOUDINARY_NAME"] %> # hzdkrj5gw
+  api_key: <%= ENV["CLOUDINARY_KEY"] %> # '377678885959694'
+  api_secret: <%= ENV["CLOUDINARY_SECRET"] %> # ZOUGmVjH9QnqxsnN0JArNKNn0D8
+  enhance_image_tag: true
+  static_image_support: false

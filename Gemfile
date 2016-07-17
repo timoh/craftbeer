@@ -4,6 +4,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem "config"
 gem "amatch"
+# fuzzymatching of drinks and reviews
+
 gem 'rails', '4.2.4'
 gem 'mongoid', '~> 5.0.0'
 gem 'rest-client'
@@ -12,22 +14,22 @@ gem 'sass-rails', '~> 5.0'
 
 gem 'puma' # webserver for production use
 
-# gem "nokogiri"
-# gem "mechanize"
-# gem "watir"
-
-# for geolocation stuff
 gem 'mongoid-geospatial'
-# used for distance calculations
+# for geolocation stuff
+
 gem 'georuby'
+# used for distance calculations
 
 gem 'kaminari'
 # used for API pagination
 
-gem 'libv8'
+gem 'carrierwave'
+# used for storing images in Cloudinary
 
-# action caching
-gem 'actionpack-action_caching'
+gem 'cloudinary'
+# load carrierwave before Cloudinary
+
+gem 'libv8'
 
 gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
