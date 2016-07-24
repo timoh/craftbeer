@@ -203,8 +203,24 @@ class AlcoDrink
     end
   end
 
-  def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="desc") # only those with availability AND maximum 10km range
-    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
+  def AlcoDrink.with_fulltext(query)
+    results = AlcoDrink.fulltext_search(query)
+
+    drink_ids = Array.new
+    results.each do |drink|
+      drink_ids.push(drink.id.to_s)
+    end
+
+    return AlcoDrink.where(id: { '$in': drink_ids })
+  end
+
+  def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="desc", filter='') # only those with availability AND maximum 10km range
+
+    if filter.length <= 0
+      drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
+    else
+      drinks = AlcoDrink.with_fulltext(filter).where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
+    end
 
     out_response = Array.new
     drinks.includes(:alco_avails).each do |drink|

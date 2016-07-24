@@ -13,6 +13,7 @@ namespace :populate do
     puts "Starting to populate product data through API, this might take a while..."
     AlcoDrink.store_all_from_api
     AlcoDrink.populate_cached_review_scores
+    Rake::Task["populate:fulltext_indexes"].invoke
     puts "Alko product data successfully populated!"
   end
 
