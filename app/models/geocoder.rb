@@ -71,7 +71,8 @@ class Geocoder
     rescue
       puts "Initialization failed!"
     else
-      output = RestClient.get "https://maps.googleapis.com/maps/api/geocode/json?latlng=#{escaped_lat},#{escaped_lng}&key=#{access_token}&result_type=street_address"
+      url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=#{escaped_lat},#{escaped_lng}&key=#{access_token}&result_type=street_address"
+      output = RestClient.get url
       output = JSON.parse(output)
 
       begin
@@ -79,6 +80,8 @@ class Geocoder
       rescue
         puts "No results!"
         puts output
+        puts "Query was:"
+        puts url
       else
         begin
           # returns {:lat, :lng}
