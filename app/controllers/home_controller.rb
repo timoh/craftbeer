@@ -17,14 +17,17 @@ class HomeController < ApplicationController
       lng = params[:lng].to_f
 
       page = 1 # initialize page to first page as default, for pagination
-      page = params[:page] if params[:page] # if params[:page] set, use it
+      page = params[:page].gsub(/[^0-9]/, '') if params[:page] # if params[:page] set, use it
 
       sort_column = "title"
-      sort_column = params[:sort_column] if params[:sort_column]
+      sort_column = params[:sort_column].gsub(/[^0-9A-Za-z]/, '') if params[:sort_column]
       sort_order = "desc"
-      sort_order = params[:sort_order] if params[:sort_order]
+      sort_order = params[:sort_order].gsub(/[^0-9A-Za-z]/, '') if params[:sort_order]
 
-      out_response = AlcoDrink.all_with_distance(lat, lng, page, sort_column, sort_order)
+      filter = ''
+      filter = params[:filter].gsub(/[^0-9A-Za-z]/, ' ') if params[:filter]
+
+      out_response = AlcoDrink.all_with_distance(lat, lng, page, sort_column, sort_order, filter)
       render :json => out_response
 
     else
