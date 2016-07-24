@@ -64,7 +64,6 @@ namespace :populate do
   task fulltext_indexes: :environment do
     Rake::Task["db:mongoid:create_indexes"].invoke
     AlcoDrink.update_ngram_index
-    PopularLocation.update_ngram_index
   end
 
   desc "Run all setup activities at onece"
