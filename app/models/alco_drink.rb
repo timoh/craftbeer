@@ -24,11 +24,7 @@ class AlcoDrink
 
   before_update :populate_review_score
 
-  def to_fulltext
-    [title, type, size].join(' ')
-  end
-
-  fulltext_search_in :to_fulltext
+  fulltext_search_in :title
 
   def populate_review_score
     if self.review

@@ -58,6 +58,12 @@ namespace :populate do
     puts "All pics fetched"
   end
 
+  desc "Populate full text search indexes"
+  task fulltext_indexes: :environment do
+    Rake::Task["db:mongoid:create_indexes"].invoke
+    AlcoDrink.update_ngram_index
+  end
+
   desc "Run all setup activities at onece"
   task setup_all: :environment do
       puts "Starting initial setup.."
@@ -68,7 +74,7 @@ namespace :populate do
       Rake::Task["populate:dedupe_avails"].invoke
       Rake::Task["populate:fuzzymatch"].invoke
       Rake::Task["populate:pics"].invoke
-      Rake::Task["db:mongoid:create_indexes"].invoke
+      Rake::Task["populate:fulltext_indexes"].invoke
       puts "Initial setup done, ready to rock and roll!"
   end
 
