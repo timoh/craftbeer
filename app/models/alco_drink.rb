@@ -1,5 +1,6 @@
 class AlcoDrink
   include Mongoid::Document
+  include Mongoid::FullTextSearch
   include Mongoid::Timestamps
   include Mongoid::Attributes::Dynamic
 
@@ -22,6 +23,12 @@ class AlcoDrink
   has_one :review
 
   before_update :populate_review_score
+
+  def to_fulltext
+    [title, type, size].join(' ')
+  end
+
+  fulltext_search_in :to_fulltext
 
   def populate_review_score
     if self.review

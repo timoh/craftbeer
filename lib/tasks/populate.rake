@@ -68,6 +68,7 @@ namespace :populate do
       Rake::Task["populate:dedupe_avails"].invoke
       Rake::Task["populate:fuzzymatch"].invoke
       Rake::Task["populate:pics"].invoke
+      Rake::Task["db:mongoid:create_indexes"].invoke
       puts "Initial setup done, ready to rock and roll!"
   end
 
