@@ -50,11 +50,6 @@ namespace :populate do
 
   desc "Get big images from CDN"
   task pics: :environment do
-    begin
-      Dir.mkdir 'public/pics'
-    rescue
-      puts "Could not create public/pics folder!"
-    end
     AlcoDrink.get_all_pics
     puts "All pics fetched"
   end
