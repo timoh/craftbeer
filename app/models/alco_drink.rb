@@ -25,9 +25,19 @@ class AlcoDrink
 
   def populate_review_score
     if self.review
-      self.review_score = self.review.score.to_i # save the score to the parent object
-      self.save! # save and check if validations pass
-      puts "Score updated for #{self.title}: #{self.review_score}"
+      if self.review.score
+        self.review_score = self.review.score.to_i # save the score to the parent object
+        begin
+          self.save! # save and check if validations pass
+        rescue Exception => detail
+          puts "Problem in saving review:"
+          puts detail
+        else
+          puts "Score updated for #{self.title}: #{self.review_score}"
+        end
+      else
+        puts "Review score does not exist, cannot update score!"
+      end
     else
       puts "Review does not exist for #{self.title}"
     end
