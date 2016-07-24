@@ -36,6 +36,13 @@ export function receiveAddress(address) {
   };
 }
 
+export function receivePopularLocations(popularLocations) {
+  return {
+    type: 'RECEIVE_POPULAR_LOCATIONS',
+    popularLocations: popularLocations
+  };
+}
+
 export function locationToAddress(test) {
   return function (dispatch,getState) {
     const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/geocode/backward';
@@ -53,6 +60,15 @@ export function locationToAddress(test) {
         body: body
       }).then(response => response.text()
       ).then(body => dispatch(receiveAddress(body))
+    ).catch(err => console.error(err));
+  };
+}
+
+export function getPopularLocations(test) {
+  return function (dispatch) {
+    const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/popular_locations.json';
+    return fetch(apiCallAddress).then(response => response.text()
+  ).then(body => dispatch(receivePopularLocations(body))
     ).catch(err => console.error(err));
   };
 }
