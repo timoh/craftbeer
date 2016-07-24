@@ -262,6 +262,7 @@ class AlcoDrink
       end
     end
 
+    SearchQuery.create(coords: [lat, lng], query: filter)
     return out_response
   end
 

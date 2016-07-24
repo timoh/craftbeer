@@ -36,14 +36,16 @@ class Geocoder
   def Geocoder.geocode(address, country="FI") # returns Hash = {:lat, :lng}
     begin
       access_token = Geocoder.get_token
-      address = URI.escape(address)
+      escaped_address = URI.escape(address)
     rescue
       puts "Initialization failed!"
     else
-      output = RestClient.get "https://maps.googleapis.com/maps/api/geocode/json?address=#{address}&key=#{access_token}&components=country:#{country}"
+      output = RestClient.get "https://maps.googleapis.com/maps/api/geocode/json?address=#{escaped_address}&key=#{access_token}&components=country:#{country}"
       output = JSON.parse(output)
       begin
         # returns {:lat, :lng}
+
+        AddressQuery.create(query: address, result_address: output['results'][0]['formatted_address'], coords: output['results'][0]['geometry']['location'])
         return output['results'][0]['geometry']['location']
       rescue
         puts "Geocoding failed!"
@@ -54,12 +56,12 @@ class Geocoder
   def Geocoder.reverse_geocode(lat, lng) # returns String (formatted_address)
     begin
       access_token = Geocoder.get_token
-      lat = URI.escape(lat.to_s)
-      lng = URI.escape(lng.to_s)
+      escaped_lat = URI.escape(lat.to_s)
+      escaped_lng = URI.escape(lng.to_s)
     rescue
       puts "Initialization failed!"
     else
-      output = RestClient.get "https://maps.googleapis.com/maps/api/geocode/json?latlng=#{lat},#{lng}&key=#{access_token}&result_type=street_address"
+      output = RestClient.get "https://maps.googleapis.com/maps/api/geocode/json?latlng=#{escaped_lat},#{escaped_lng}&key=#{access_token}&result_type=street_address"
       output = JSON.parse(output)
 
       begin
@@ -70,6 +72,8 @@ class Geocoder
       else
         begin
           # returns {:lat, :lng}
+
+          AddressQuery.create(query: address, result_address: output['results'][0]['formatted_address'], coords: output['results'][0]['geometry']['location'])
           return output
         rescue
           puts "Geocoding failed!"
