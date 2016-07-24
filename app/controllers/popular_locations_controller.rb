@@ -5,6 +5,7 @@ class PopularLocationsController < ApplicationController
   # GET /popular_locations.json
   def index
     @popular_locations = PopularLocation.all
+    @top_locations = PopularLocation.get_top
   end
 
   # GET /popular_locations/1

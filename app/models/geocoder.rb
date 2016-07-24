@@ -16,6 +16,16 @@ class Geocoder
     end
   end
 
+  def Geocoder.get_city(response)
+    response['results'][0]['address_components'].each do |adr_comp|
+      if adr_comp['types'][0].include? "administrative_area"
+        return adr_comp['long_name']
+      end
+    end
+
+    return ''
+  end
+
   def Geocoder.geocoder_works? # returns true if geocoder works, otherwise raises an error
     begin
       token = Geocoder.get_token
@@ -45,7 +55,7 @@ class Geocoder
       begin
         # returns {:lat, :lng}
 
-        AddressQuery.create(query: address, result_address: output['results'][0]['formatted_address'], coords: output['results'][0]['geometry']['location'])
+        AddressQuery.create(query: address, city: Geocoder.get_city(output), result_address: output['results'][0]['formatted_address'], raw_result: output, coords: output['results'][0]['geometry']['location'])
         return output['results'][0]['geometry']['location']
       rescue
         puts "Geocoding failed!"
@@ -73,7 +83,7 @@ class Geocoder
         begin
           # returns {:lat, :lng}
 
-          AddressQuery.create(query: address, result_address: output['results'][0]['formatted_address'], coords: output['results'][0]['geometry']['location'])
+          AddressQuery.create(query: address, city: Geocoder.get_city(output), result_address: output['results'][0]['formatted_address'], raw_result: output, coords: output['results'][0]['geometry']['location'])
           return output
         rescue
           puts "Geocoding failed!"

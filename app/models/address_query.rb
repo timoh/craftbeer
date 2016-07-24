@@ -1,7 +1,7 @@
 class AddressQuery
   include Mongoid::Document
   include Mongoid::Timestamps
-  # 
+  #
   # require 'georuby'
   # #include GeoRuby::SimpleFeatures
 
@@ -9,6 +9,9 @@ class AddressQuery
 
   field :query, type: String
   field :result_address, type: String
+  field :city, type: String
+
+  field :raw_result, type: Hash
 
   # requires Geospatial Gem; note that it returns in format [lng, lat]
   # (not other way around)

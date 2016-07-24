@@ -19,7 +19,6 @@ class PopularLocation
   end
 
   def PopularLocation.populate
-
     PopularLocation.reset_counts
 
     AddressQuery.all.each do |adr_query|
@@ -27,11 +26,18 @@ class PopularLocation
       loc = PopularLocation.find_or_create_by(:address => adr_query.query)
       loc.count += 1
       loc.coords = adr_query.coords
+      loc.city = adr_query.city if adr_query.city
       loc.save
     end
-
     puts "Populating popular locations complete!"
+  end
 
+  def PopularLocation.get_top
+    # max = PopularLocation.max(:count)
+    # min = PopularLocation.min(:count)
+    avg = PopularLocation.avg(:count)
+
+    return PopularLocation.all.where(:count.gte => avg).order_by(count: "desc").limit(5)
   end
 
 end
