@@ -38,11 +38,11 @@ export default class TableHeader extends React.Component {
       )
     }
     return (
-      <th className={this.props.header.className}>
+      <div className={this.props.header.className}>
         <Tappable className="fake-link unselectable" onTap={this.handleOnClick.bind(this)}>{this.props.header.name}</Tappable>
         {secondLink}
         {thirdLink}
-      </th>
+      </div>
     )
   }
 }

@@ -21,7 +21,7 @@ export default class TableHeaders extends React.Component {
         field: "selected",
         initialSortOrder: true,
         type: "boolean",
-        className:"col-sm-2",
+        className:"div-table-col",
         secondLink: true,
         thirdLink: true
       },
@@ -31,7 +31,7 @@ export default class TableHeaders extends React.Component {
         field: "title",
         initialSortOrder: false,
         type: "string",
-        className:"",
+        className:"div-table-col",
         secondLink: false,
         thirdLink: false
       },/* I don't think the user cares about these...
@@ -59,6 +59,7 @@ export default class TableHeaders extends React.Component {
         field: "score",
         initialSortOrder: true,
         type: "int",
+        className: "div-table-col",
         secondLink: false,
         thirdLink: false
       },
@@ -68,7 +69,7 @@ export default class TableHeaders extends React.Component {
         field: "size",
         initialSortOrder: false,
         type: "float",
-        className:"col-sm-1",
+        className:"div-table-col",
         secondLink: false,
         thirdLink: false
       },
@@ -78,7 +79,7 @@ export default class TableHeaders extends React.Component {
         field: "price",
         initialSortOrder: false,
         type: "float",
-        className:"col-sm-1",
+        className:"div-table-col",
         secondLink: false,
         thirdLink: false
       },
@@ -88,6 +89,7 @@ export default class TableHeaders extends React.Component {
         field: "maxAvailability",
         initialSortOrder: true,
         type: "int",
+        className:"div-table-col",
         secondLink: false,
         thirdLink: false
       },
@@ -97,7 +99,7 @@ export default class TableHeaders extends React.Component {
         field: "noOfNearbyStoresWithAvailability",
         initialSortOrder: true,
         type: "int",
-        className:"col-sm-1",
+        className:"div-table-col",
         secondLink: false,
         thirdLink: false
       }
@@ -107,18 +109,20 @@ export default class TableHeaders extends React.Component {
   render() {
     const headers = this.getHeaders();
     return(
-      <thead>
-        <tr>
-          { headers.map((header) => {
-              return (
-                <HeaderDisplay onClick={this.handleOnClick} key={header.key} header={header} />
-              )
-            }) }
-          <th>
-            Top 3 nearest stores with stock > 0
-          </th>
-        </tr>
-      </thead>
+        <div className="div-table-headers bolded">
+
+
+              { headers.map((header) => {
+                  return (
+                    <HeaderDisplay onClick={this.handleOnClick} key={header.key} header={header} />
+                  )
+                }) }
+              <div className="div-table-col">
+                Top 3 nearest stores with stock > 0
+              </div>
+
+        </div>
+
     )
   }
 }

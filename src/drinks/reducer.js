@@ -8,23 +8,34 @@ export function reducer(state = {
   initialMaxDistance: 2000,
   storesWithSelectedDrinks: {},
   drinkWithProductInfoShown: {},
-  showNonStocked: false
+  showNonStocked: false,
+  isInfiniteLoading: false,
+  pagesLoaded: 0,
+  pageLoading: 0,
+  stopLoadingDrinks: false
 }, action) {
   switch (action.type) {
     case 'REQUEST_DRINKS':
       return {
         ...state,
-        loading: true
+        loading: !action.isInfiniteLoad,
+        isInfiniteLoading: action.isInfiniteLoad,
+        pageLoading: action.pageLoading
       };
     case 'RECEIVE_DRINKS':
       return {
         ...state,
-        drinks: action.drinks
+        // if the location has changed, it loads the first page and it should clear the previous state.
+        drinks: state.pageLoading == 1 ? action.drinks : [...state.drinks,...action.drinks],
+        pagesLoaded: state.pageLoading,
+        pageLoading: 0,
+        stopLoadingDrinks: action.drinks.length === 0
       };
     case 'ADD_ADDITIONAL_DATA':
       return {
         ...state,
         loading: false,
+        isInfiniteLoading: false,
         drinks: additionalDrinksDataReducer(state.drinks,state.initialMaxDistance)
       };
     case 'MAX_DISTANCE_CHANGE':

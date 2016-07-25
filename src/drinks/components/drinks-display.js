@@ -10,6 +10,7 @@ import { getSelectedDrinks, getVisibleDrinks } from '../../shared/selectors';
 import { fetchDrinks, maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks} from '../actions';
 import { selectDrinkFromSelected } from '../../shared/actions';
 import { withRouter } from 'react-router';
+import Infinite from 'react-infinite';
 
 class Drinks extends React.Component {
 
@@ -22,7 +23,7 @@ class Drinks extends React.Component {
       if (!this.props.requested) {
           this.props.router.push('/intropage');
       } else if(this.props.shouldUpdateDrinks) {
-          this.props.dispatch(fetchDrinks(false));
+          this.props.dispatch(fetchDrinks(false, 1, false));
       }
     }
 
@@ -30,6 +31,29 @@ class Drinks extends React.Component {
       if(this.props.drinks.length > 0) {
         const selected = getSelectedDrinks(this.props.drinks)[0];
         this.props.dispatch(selectDrinkFromSelected(selected));
+      }
+    }
+
+    elementInfiniteLoad() {
+        let text;
+        if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
+          text = "Loading...";
+        }
+        return (
+          <div className="div-table-row">
+            <div className="loadingtext centered bolded">
+                  {text}
+            </div>
+          </div>
+        )
+    }
+
+    handleInfiniteLoad() {
+      // if there are no visible drinks, it should not load anything, because if it does, that will result in a never-ending loop.
+      // cursor will always be at the end of the table --> it would load more drinks.
+      // stopLoadingDrinks is true when the last request returned zero drinks.
+      if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
+        this.props.dispatch(fetchDrinks(false, this.props.pagesLoaded+1, true));
       }
     }
 
@@ -61,17 +85,26 @@ class Drinks extends React.Component {
                         <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                       </div>
                     </div>
-                    <table className= "table table-striped table-bordered">
-                      <TableHeaders sort={this.props.sortDrinks.bind(this)} />
-                      <tbody>
-                        { visibleDrinks.map((drinkData) => {
-                            return (
-                              <DrinkTableRow key={ drinkData.drink._id.$oid }
-                              drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
-                            )
-                        })}
-                      </tbody>
-                    </table>
+                        <div className= "div-table table table-bordered">
+
+                          <Infinite elementHeight={80}
+                                    infiniteLoadBeginEdgeOffset={200}
+                                    onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
+                                    loadingSpinnerDelegate={this.elementInfiniteLoad()}
+                                    isInfiniteLoading={this.props.isInfiniteLoading}
+                                    className="div-table-rows"
+                                    useWindowAsScrollContainer
+                                    preloadBatchSize={Infinite.containerHeightScaleFactor(100)}
+                                    preloadAdditionalHeight={Infinite.containerHeightScaleFactor(100)}>
+                            <TableHeaders sort={this.props.sortDrinks.bind(this)} />
+                            { visibleDrinks.map((drinkData) => {
+                                return (
+                                  <DrinkTableRow key={ drinkData.drink._id.$oid }
+                                  drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
+                                )
+                            })}
+                            </Infinite>
+                        </div>
                 </div>
               </div>
             </Loader>
@@ -107,7 +140,10 @@ const mapStateToDrinksProps = state => (
     loading: state.drinksData.loading,
     initialMaxDistance: state.drinksData.initialMaxDistance,
     requested: state.positionData.requested,
-    shouldUpdateDrinks: state.positionData.shouldUpdateDrinks
+    shouldUpdateDrinks: state.positionData.shouldUpdateDrinks,
+    isInfiniteLoading: state.drinksData.isInfiniteLoading,
+    pagesLoaded: state.drinksData.pagesLoaded,
+    stopLoadingDrinks: state.drinksData.stopLoadingDrinks
   }
 )
 

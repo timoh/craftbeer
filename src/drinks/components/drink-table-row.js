@@ -64,34 +64,34 @@ export default class DrinkTableRow extends React.Component {
       });
     }
     return(
-        <tr>
-            <td className="centered">
+        <div className="div-table-row">
+            <div className="div-table-col centered">
               <input type="checkbox" id={this.props.drinkData.drink._id.$oid} className="chk-btn" checked={this.props.drinkData.selected} onChange={this.handleChecked.bind(this)} />
                   <label htmlFor={this.props.drinkData.drink._id.$oid}></label>
-            </td>
-            <td>
+            </div>
+            <div className="div-table-col">
               <Link to={`/alco_drinks/${this.props.drinkData.drink._id.$oid}`}>{this.props.drinkData.drink.title}</Link>
-            </td>
+            </div>
 
-            <td>
+            <div className="div-table-col">
               {this.props.drinkData.score}
-            </td>
-            <td>
+            </div>
+            <div className="div-table-col">
               {this.props.drinkData.drink.size.toFixed(2)}
-            </td>
-            <td>
+            </div>
+            <div className="div-table-col">
               {this.props.drinkData.drink.price.toFixed(2)} {String.fromCharCode(8364)}
-            </td>
-            <td>
+            </div>
+            <div className="div-table-col">
               {this.props.drinkData.maxAvailability}
-            </td>
-            <td>
+            </div>
+            <div className="div-table-col">
             {this.props.drinkData.noOfNearbyStoresWithAvailability}
-            </td>
-            <td className="topstores">
+            </div>
+            <div className="div-table-col topstores">
               {topThreeStoresContent}
-            </td>
-        </tr>
+            </div>
+        </div>
     )
   }
 }

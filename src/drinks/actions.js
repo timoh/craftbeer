@@ -43,9 +43,12 @@ export function deSelectAll() {
   };
 }
 
-export function requestDrinks() {
+export function requestDrinks(pageToLoad, isInfiniteLoad) {
+
   return {
-    type: 'REQUEST_DRINKS'
+    type: 'REQUEST_DRINKS',
+    pageLoading: pageToLoad,
+    isInfiniteLoad: isInfiniteLoad
   };
 }
 
@@ -70,15 +73,24 @@ export function showNonStockedChange(showNonStocked) {
 }
 
 
-export function fetchDrinks(test) {
+export function fetchDrinks(test, pageToLoad, isInfiniteLoad) {
   return function (dispatch,getState) {
-    dispatch(requestDrinks());
+    dispatch(requestDrinks(pageToLoad, isInfiniteLoad));
     const positionData = getState().positionData;
     // this is a stupid solution to the problem that in testing you can't use relative urls, but couldn't bother to think of a better one...
-    const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/home/distanced?lat=' + positionData.position[0] + '&lng=' + positionData.position[1];
-    return fetch(apiCallAddress)
+    let apiCallAddress = (test ? 'http://localhost:3000' : '') + '/home/distanced?';
+    const params = {
+      lat: positionData.position[0],
+      lng: positionData.position[1],
+      page: pageToLoad
+    };
+    apiCallAddress = apiCallAddress + jQuery.param( params );
+    const request = new Request(apiCallAddress, {
+      method: 'GET'
+    });
+    return fetch(request)
       .then(response => response.json())
-      .then(json =>
+      .then((json) =>
         dispatch(receiveDrinks(json))
       ).then(() => dispatch(addAdditionalDataForDrinks()))
       .then(() => dispatch(showNonStockedChange(false)))

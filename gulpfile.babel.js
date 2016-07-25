@@ -60,7 +60,7 @@ gulp.task('lint', () => {
 //use proxy if there is another server (such as a Rails server running at localhost:3000)
 //apparently BrowserSync will run on another port, like 3001.
 // after transpile, initialize browsersync
-gulp.task('serve', ['transpile'], () => sync.init({ proxy: 'http://localhost:3000', logLevel: "debug"}));
+gulp.task('serve', ['transpile'], () => sync.init({ proxy: 'http://127.0.0.1:5000', logLevel: "debug"}));
 
 // after transpile, reload the browser
 gulp.task('js-watch', ['transpile'], () => sync.reload());
@@ -70,6 +70,7 @@ gulp.task('js-watch', ['transpile'], () => sync.reload());
 // reload if public/styles changes or public/index.html changes
 gulp.task('watch', ['serve'], () => {
   gulp.watch('src/**/*', ['js-watch']);
+  gulp.watch('node_modules/react-infinite/**/*', ['js-watch']);
   gulp.watch('public/styles/*', sync.reload);
   gulp.watch('public/index.html', sync.reload);
 });

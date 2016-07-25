@@ -15,13 +15,13 @@ export default class SearchButton extends React.Component {
     if (noOfSelectedDrinks === 0) {
       if (noOfVisibleDrinks === 0) {
         content = (
-          <div className="alert alert-warning no-margin-bottom">
+          <div className="alert alert-warning alert-custom">
              No stores found. Try increasing the distance to get some results.
           </div>
         )
       } else {
         content = (
-          <div className="alert alert-info no-margin-bottom">
+          <div className="alert alert-info alert-custom">
              Select drinks to see how many nearby stores have all the selected drinks.
           </div>
         )
@@ -29,7 +29,7 @@ export default class SearchButton extends React.Component {
     } else {
       if (noOfStoresWithSelectedDrinks === 0) {
         content= (
-          <div className="alert alert-info no-margin-bottom">
+          <div className="alert alert-info alert-custom">
              Found no Alko stores with all selected drinks in stock.
           </div>
         )
