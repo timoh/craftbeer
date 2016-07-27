@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getPopularLocations } from '../actions';
+import { getPopularLocations, inputAddress } from '../actions';
 
 export class Popular extends Component {
 
@@ -12,12 +12,19 @@ export class Popular extends Component {
     this.props.dispatch(getPopularLocations());
   }
 
-  render() {
+  renderLocationList() {
+    return this.props.popularLocations.map((location) => {
+      return (
+        <li><a key={location.address} onClick={ () => this.props.searchForPopularLocation(location) } >{location.address}</a></li>
+      );
+    })
+  }
 
+  render() {
     return(
       <div>
-          <p>This here is a popular location:</p>
-            <p>{ this.props.popularLocations }</p>
+          <p>Popular locations:</p>
+            <ul>{ this.renderLocationList() }</ul>
       </div>
     )
   }
@@ -25,13 +32,17 @@ export class Popular extends Component {
 
 const mapDispatchToProps = (dispatch) => (
   {
-    dispatch: dispatch
+    dispatch: dispatch,
+    searchForPopularLocation: (location) => (
+      dispatch(inputAddress(location.address))
+    )
   }
 );
 
 const mapStateToProps = state => (
   {
-    popularLocations: state.positionData.popularLocations
+    popularLocations: state.positionData.popularLocations,
+    address: state.positionData.address
   }
 )
 

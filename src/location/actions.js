@@ -67,7 +67,7 @@ export function locationToAddress(test) {
 export function getPopularLocations(test) {
   return function (dispatch) {
     const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/popular_locations.json';
-    return fetch(apiCallAddress).then(response => response.text()
+    return fetch(apiCallAddress).then(response => response.json()
   ).then(body => dispatch(receivePopularLocations(body))
     ).catch(err => console.error(err));
   };
