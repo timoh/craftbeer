@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getPopularLocations, inputAddress } from '../actions';
+import { withRouter } from 'react-router'
+import { getPopularLocations, inputAddress, geocodeAddress, getLocation} from '../actions';
 
 export class Popular extends Component {
 
@@ -12,10 +13,15 @@ export class Popular extends Component {
     this.props.dispatch(getPopularLocations());
   }
 
+  submitAddress(location) {
+    this.props.searchForPopularLocation(location);
+    this.props.router.push('/indexpage');
+  }
+
   renderLocationList() {
     return this.props.popularLocations.map((location) => {
       return (
-        <li><a key={location.address} onClick={ () => this.props.searchForPopularLocation(location) } >{location.address}</a></li>
+        <li key={location.address}><a onClick={ () => this.submitAddress(location) } >{location.address}</a></li>
       );
     })
   }
@@ -30,11 +36,15 @@ export class Popular extends Component {
   }
 }
 
+const PopularWithRouter = withRouter(Popular);
+
 const mapDispatchToProps = (dispatch) => (
   {
     dispatch: dispatch,
     searchForPopularLocation: (location) => (
-      dispatch(inputAddress(location.address))
+      dispatch(inputAddress(location.address)),
+      dispatch(geocodeAddress()),
+      dispatch(getLocation())
     )
   }
 );
@@ -49,6 +59,6 @@ const mapStateToProps = state => (
 const PopularLocations = connect(
   mapStateToProps,
   mapDispatchToProps
-)(Popular);
+)(PopularWithRouter);
 
 export default PopularLocations;
