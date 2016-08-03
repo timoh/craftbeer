@@ -12,107 +12,10 @@ export default class TableHeaders extends React.Component {
     this.props.sort(field,newSortOrder,type);
   }
 
-  getHeaders() {
-    // sortOrder = false on nouseva järjestys, sortOrder = true on laskeva järjestys. vaikuttaa sort-metodin reverse -parametriin.
-    return  [
-      {
-        key: "selected",
-        name: "Show selected on top",
-        field: "selected",
-        initialSortOrder: true,
-        type: "boolean",
-        className:"div-table-col",
-        secondLink: true,
-        thirdLink: true
-      },
-      {
-        key: "drink_title",
-        name: "Drink title",
-        field: "title",
-        initialSortOrder: false,
-        type: "string",
-        className:"div-table-col",
-        secondLink: false,
-        thirdLink: false
-      },/* I don't think the user cares about these...
-      {
-        key: "review_title",
-        name: "Review title",
-        field: "reviewTitle",
-        initialSortOrder: false,
-        type: "string",
-        secondLink: false,
-        thirdLink: false
-      },
-      {
-        key: "match_score",
-        name: "Match score",
-        field: "best_rev_candidate_score",
-        initialSortOrder: true,
-        type: "float",
-        secondLink: false,
-        thirdLink: false
-      },*/
-      {
-        key: "review_score",
-        name: "Review score",
-        field: "score",
-        initialSortOrder: true,
-        type: "int",
-        className: "div-table-col",
-        secondLink: false,
-        thirdLink: false
-      },
-      {
-        key: "size",
-        name: "Size (l)",
-        field: "size",
-        initialSortOrder: false,
-        type: "float",
-        className:"div-table-col",
-        secondLink: false,
-        thirdLink: false
-      },
-      {
-        key: "price",
-        name: "Price (euros)",
-        field: "price",
-        initialSortOrder: false,
-        type: "float",
-        className:"div-table-col",
-        secondLink: false,
-        thirdLink: false
-      },
-      {
-        key: "max_availability",
-        name: "Max stock (pcs)",
-        field: "maxAvailability",
-        initialSortOrder: true,
-        type: "int",
-        className:"div-table-col",
-        secondLink: false,
-        thirdLink: false
-      },
-      {
-        key:"no_of_stores_with_availability",
-        name: "# of stores with stock > 0",
-        field: "noOfNearbyStoresWithAvailability",
-        initialSortOrder: true,
-        type: "int",
-        className:"div-table-col",
-        secondLink: false,
-        thirdLink: false
-      }
-    ];
-  }
-
   render() {
-    const headers = this.getHeaders();
     return(
         <div className="div-table-headers bolded">
-
-
-              { headers.map((header) => {
+              { this.props.headers.map((header) => {
                   return (
                     <HeaderDisplay onClick={this.handleOnClick} key={header.key} header={header} />
                   )

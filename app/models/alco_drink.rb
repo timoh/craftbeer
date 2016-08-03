@@ -190,7 +190,7 @@ class AlcoDrink
     end
   end
 
-  def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="desc") # only those with availability AND maximum 10km range
+  def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="asc") # only those with availability AND maximum 10km range
     drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
 
     out_response = Array.new

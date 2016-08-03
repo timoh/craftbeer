@@ -30,7 +30,7 @@ export default class Drink extends React.Component {
 
   render() {
     let img;
-    if (this.state.drink.alko_id !== undefined && this.state.drink.pic_cloudinary.url !== undefined && this.state.drink.pic_cloudinary.url !== null) {
+    if (this.state.drink.alko_id !== undefined && this.state.drink.pic_cloudinary !== undefined && this.state.drink.pic_cloudinary !== null) {
       img = (
           <img src={this.state.drink.pic_cloudinary.url} className="img-responsive img-small"/>
       )

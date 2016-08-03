@@ -70,7 +70,6 @@ gulp.task('js-watch', ['transpile'], () => sync.reload());
 // reload if public/styles changes or public/index.html changes
 gulp.task('watch', ['serve'], () => {
   gulp.watch('src/**/*', ['js-watch']);
-  gulp.watch('node_modules/react-infinite/**/*', ['js-watch']);
   gulp.watch('public/styles/*', sync.reload);
   gulp.watch('public/index.html', sync.reload);
 });

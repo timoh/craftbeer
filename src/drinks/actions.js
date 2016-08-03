@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import { drinksUpdated } from '../shared/actions';
+import { SORTABLE_FIELDS_IN_API } from './constants';
 
 export function maxDistanceChange(newMaxDistance) {
   return {
@@ -22,12 +23,29 @@ export function showNonStockedChange(showNonStocked) {
   };
 }
 
-export function sortDrinks(field,newSortOrder,datatype) {
+export function sortDrinks(field,newSortOrder,datatype,stopLoadingDrinks) {
+
+  if (SORTABLE_FIELDS_IN_API.indexOf(field) != -1 && !stopLoadingDrinks) {
+    const sortOrder = newSortOrder ? "desc" : "asc";
+    return function(dispatch) {
+      dispatch(changeSort(field,newSortOrder));
+      dispatch(fetchDrinks(false, 1, false, false, field, sortOrder));
+    };
+  } else {
+    return {
+      type: 'SORT',
+      field: field,
+      newSortOrder: newSortOrder,
+      datatype: datatype
+    };
+  }
+}
+
+export function changeSort(field,newSortOrder) {
   return {
-    type: 'SORT',
+    type: 'CHANGE_SORT',
     field: field,
-    newSortOrder: newSortOrder,
-    datatype: datatype
+    newSortOrder: newSortOrder
   };
 }
 
@@ -43,12 +61,13 @@ export function deSelectAll() {
   };
 }
 
-export function requestDrinks(pageToLoad, isInfiniteLoad) {
+export function requestDrinks(pageToLoad, isInfiniteLoad, isInitialLoad) {
 
   return {
     type: 'REQUEST_DRINKS',
     pageLoading: pageToLoad,
-    isInfiniteLoad: isInfiniteLoad
+    isInfiniteLoad: isInfiniteLoad,
+    isInitialLoad: isInitialLoad
   };
 }
 
@@ -73,9 +92,9 @@ export function showNonStockedChange(showNonStocked) {
 }
 
 
-export function fetchDrinks(test, pageToLoad, isInfiniteLoad) {
+export function fetchDrinks(test, pageToLoad, isInfiniteLoad, isInitialLoad, sortColumn, sortOrder) {
   return function (dispatch,getState) {
-    dispatch(requestDrinks(pageToLoad, isInfiniteLoad));
+    dispatch(requestDrinks(pageToLoad, isInfiniteLoad, isInitialLoad));
     const positionData = getState().positionData;
     // this is a stupid solution to the problem that in testing you can't use relative urls, but couldn't bother to think of a better one...
     let apiCallAddress = (test ? 'http://localhost:3000' : '') + '/home/distanced?';
@@ -84,6 +103,14 @@ export function fetchDrinks(test, pageToLoad, isInfiniteLoad) {
       lng: positionData.position[1],
       page: pageToLoad
     };
+    if(sortColumn !== undefined && sortOrder !== undefined) {
+      params.sort_column = sortColumn;
+      params.sort_order = sortOrder;
+    } else {
+      // previous sort order should be kept. it is set to "title", "asc" by default.
+      params.sort_column = getState().drinksData.sortColumn;
+      params.sort_order = getState().drinksData.sortOrder;
+    }
     apiCallAddress = apiCallAddress + jQuery.param( params );
     const request = new Request(apiCallAddress, {
       method: 'GET'
@@ -93,8 +120,11 @@ export function fetchDrinks(test, pageToLoad, isInfiniteLoad) {
       .then((json) =>
         dispatch(receiveDrinks(json))
       ).then(() => dispatch(addAdditionalDataForDrinks()))
-      .then(() => dispatch(showNonStockedChange(false)))
-      .then(() => dispatch(drinksUpdated()))
+      .then(() => {
+          if(isInitialLoad) {
+            dispatch(showNonStockedChange(false));
+          }
+      }).then(() => dispatch(drinksUpdated()))
       .catch(err => console.error(err));
   };
 }

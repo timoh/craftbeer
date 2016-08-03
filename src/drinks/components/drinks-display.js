@@ -23,7 +23,7 @@ class Drinks extends React.Component {
       if (!this.props.requested) {
           this.props.router.push('/intropage');
       } else if(this.props.shouldUpdateDrinks) {
-          this.props.dispatch(fetchDrinks(false, 1, false));
+          this.props.dispatch(fetchDrinks(false, 1, false, true));
       }
     }
 
@@ -35,17 +35,17 @@ class Drinks extends React.Component {
     }
 
     elementInfiniteLoad() {
-        let text;
-        if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
-          text = "Loading...";
-        }
-        return (
-          <div className="div-table-row">
-            <div className="loadingtext centered bolded">
-                  {text}
+          let text;
+          if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
+            text = "Loading...";
+          }
+          return (
+            <div className="div-table-row">
+              <div className="loadingtext centered bolded">
+                    {text}
+              </div>
             </div>
-          </div>
-        )
+          )
     }
 
     handleInfiniteLoad() {
@@ -53,8 +53,12 @@ class Drinks extends React.Component {
       // cursor will always be at the end of the table --> it would load more drinks.
       // stopLoadingDrinks is true when the last request returned zero drinks.
       if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
-        this.props.dispatch(fetchDrinks(false, this.props.pagesLoaded+1, true));
+        this.props.dispatch(fetchDrinks(false, this.props.pagesLoaded + 1, true, false));
       }
+    }
+
+    executeSortDrinks(field,newSortOrder,datatype) {
+      this.props.dispatch(sortDrinks(field,newSortOrder,datatype,this.props.stopLoadingDrinks));
     }
 
     render() {
@@ -69,7 +73,7 @@ class Drinks extends React.Component {
       const visibleDrinks = getVisibleDrinks(this.props.drinks);
       return(
           <div>
-            <Loader loaded={!this.props.loading} className="loader">
+
               <div className="row">
                 <div className="col-md-12">
                   <Slider min="0" max="10000" step="100" initialMaxDistance={this.props.initialMaxDistance} onChange={this.props.onSliderChange.bind(this)} />
@@ -77,6 +81,7 @@ class Drinks extends React.Component {
               </div>
               <div className="row">
                 <div className="col-md-12">
+                  <Loader loaded={!this.props.loading} className="loader">
                     <div className="row margin-bottom">
                       <div className="col-md-3 col-xs-9">
                         <TableButton toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
@@ -85,10 +90,10 @@ class Drinks extends React.Component {
                         <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                       </div>
                     </div>
-                        <div className= "div-table table table-bordered">
 
+                        <div className= "div-table table">
                           <Infinite elementHeight={80}
-                                    infiniteLoadBeginEdgeOffset={200}
+                                    infiniteLoadBeginEdgeOffset={-200}
                                     onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
                                     loadingSpinnerDelegate={this.elementInfiniteLoad()}
                                     isInfiniteLoading={this.props.isInfiniteLoading}
@@ -96,7 +101,7 @@ class Drinks extends React.Component {
                                     useWindowAsScrollContainer
                                     preloadBatchSize={Infinite.containerHeightScaleFactor(100)}
                                     preloadAdditionalHeight={Infinite.containerHeightScaleFactor(100)}>
-                            <TableHeaders sort={this.props.sortDrinks.bind(this)} />
+                            <TableHeaders sort={this.executeSortDrinks.bind(this)} headers={this.props.headers} />
                             { visibleDrinks.map((drinkData) => {
                                 return (
                                   <DrinkTableRow key={ drinkData.drink._id.$oid }
@@ -105,9 +110,11 @@ class Drinks extends React.Component {
                             })}
                             </Infinite>
                         </div>
+                  </Loader>
                 </div>
+
               </div>
-            </Loader>
+
           </div>
       )
     }
@@ -125,10 +132,10 @@ const mapDispatchToDrinksProps = (dispatch) => (
     ),
     toggleNonStocked: (showNonStocked) => (
       dispatch(showNonStockedChange(showNonStocked))
-    ),
-    sortDrinks: (field,newSortOrder,datatype) => (
-      dispatch(sortDrinks(field,newSortOrder,datatype))
-    ),
+    ),/*
+    sortDrinks: (field,newSortOrder,datatype,stopLoadingDrinks) => (
+      dispatch(sortDrinks(field,newSortOrder,datatype, stopLoadingDrinks))
+    ),*/
     dispatch: dispatch
   }
 );
@@ -143,7 +150,8 @@ const mapStateToDrinksProps = state => (
     shouldUpdateDrinks: state.positionData.shouldUpdateDrinks,
     isInfiniteLoading: state.drinksData.isInfiniteLoading,
     pagesLoaded: state.drinksData.pagesLoaded,
-    stopLoadingDrinks: state.drinksData.stopLoadingDrinks
+    stopLoadingDrinks: state.drinksData.stopLoadingDrinks,
+    headers: state.drinksData.tableHeaders
   }
 )
 

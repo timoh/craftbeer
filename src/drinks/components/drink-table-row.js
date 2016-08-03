@@ -74,7 +74,7 @@ export default class DrinkTableRow extends React.Component {
             </div>
 
             <div className="div-table-col">
-              {this.props.drinkData.score}
+              {this.props.drinkData.review_score}
             </div>
             <div className="div-table-col">
               {this.props.drinkData.drink.size.toFixed(2)}
@@ -99,7 +99,7 @@ export default class DrinkTableRow extends React.Component {
 /*
 MikkoR: removed these on 5.7.2016
 <td>
-  {this.props.drinkData.reviewTitle}
+  {this.props.drinkData.review_title}
 </td>
 <td>
   {this.props.drinkData.drink.best_rev_candidate_score.toFixed(2)}

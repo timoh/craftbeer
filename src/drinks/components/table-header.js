@@ -7,17 +7,11 @@ export default class TableHeader extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      sortOrder: props.header.initialSortOrder
-    };
   }
 
   handleOnClick(){
-    const newSortOrder = this.props.header.field ==="selected" ? true : !this.state.sortOrder;
-    this.setState({
-      sortOrder: newSortOrder
-    });
-    this.props.onClick(this.props.header.field,this.state.sortOrder,this.props.header.type);
+    const newSortOrder = this.props.header.field ==="selected" ? true : !this.props.header.sortOrder;
+    this.props.onClick(this.props.header.field,newSortOrder,this.props.header.type);
   }
 
   render() {
@@ -55,6 +49,7 @@ const mapDispatchToHeaderProps = (dispatch) => (
     handleDeSelectAll: () => (
       dispatch(deSelectAll())
     ),
+
   }
 );
 

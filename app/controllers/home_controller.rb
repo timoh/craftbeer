@@ -21,7 +21,7 @@ class HomeController < ApplicationController
 
       sort_column = "title"
       sort_column = params[:sort_column] if params[:sort_column]
-      sort_order = "desc"
+      sort_order = "asc"
       sort_order = params[:sort_order] if params[:sort_order]
 
       out_response = AlcoDrink.all_with_distance(lat, lng, page, sort_column, sort_order)

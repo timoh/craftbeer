@@ -36,7 +36,7 @@ export function handleArrayUpdate(arrayIndex,originalDrink,updatedDrink,original
   const index = originalDrinks.indexOf(originalDrink);
   if(index!=-1) {
     let arrayToUpdate;
-    if (arrayIndex === 0) {
+    if (arrayIndex === 0 || updatedDrinks === undefined) {
       arrayToUpdate = originalDrinks;
     } else {
       arrayToUpdate = updatedDrinks;
@@ -56,15 +56,9 @@ export function handleSort(field,sortOrder,type) {
   } else if (type=="int") {
     return sortBy(field,sortOrder,parseInt,false);
   } else if (type=="boolean") {
-    return sortBy(field,sortOrder,(a) => a ? 1 : 0);
+    return sortBy(field,sortOrder,(a) => a ? 1 : 0,false);
   } else {
-    let isDrinkField;
-    if (field =="reviewTitle") {
-      isDrinkField = false;
-    } else {
-      isDrinkField = true;
-    }
-    return sortBy(field,sortOrder, (a) => a.toUpperCase(), isDrinkField);
+    return sortBy(field,sortOrder, (a) => a.toUpperCase(), true);
   }
 }
 
@@ -85,6 +79,88 @@ export function sortBy(field,reverse,primer,isDrinkField){
    };
 }
 
+export function getDrinkIndex(state, newDrink) {
+  const objectIds = state.map( (drinkInState) => drinkInState.drink._id.$oid );
+  return objectIds.indexOf(newDrink.drink._id.$oid);
+}
+
 String.prototype.capitalize = function() {
-    return this.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+    return this.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 };
+
+export function getHeaders() {
+  // sortOrder = false on nouseva järjestys, sortOrder = true on laskeva järjestys. vaikuttaa sort-metodin reverse -parametriin.
+  // alkuarvo on käänteinen siksi, että kun linkkiä klikkaa 1. kertaa, niin haluttu järjestys on oikea. Järjestys muuttuu jo ensi klikkauksella.
+  return  [
+    {
+      key: "selected",
+      name: "Show selected on top",
+      field: "selected",
+      sortOrder: false,
+      type: "boolean",
+      className:"div-table-col",
+      secondLink: true,
+      thirdLink: true
+    },
+    {
+      key: "drink_title",
+      name: "Drink title",
+      field: "title",
+      sortOrder: true,
+      type: "string",
+      className:"div-table-col",
+      secondLink: false,
+      thirdLink: false
+    },
+    {
+      key: "review_score",
+      name: "Review score",
+      field: "review_score",
+      sortOrder: false,
+      type: "int",
+      className: "div-table-col",
+      secondLink: false,
+      thirdLink: false
+    },
+    {
+      key: "size",
+      name: "Size (l)",
+      field: "size",
+      sortOrder: true,
+      type: "float",
+      className:"div-table-col",
+      secondLink: false,
+      thirdLink: false
+    },
+    {
+      key: "price",
+      name: "Price (euros)",
+      field: "price",
+      sortOrder: true,
+      type: "float",
+      className:"div-table-col",
+      secondLink: false,
+      thirdLink: false
+    },
+    {
+      key: "max_availability",
+      name: "Max stock (pcs)",
+      field: "maxAvailability",
+      sortOrder: false,
+      type: "int",
+      className:"div-table-col",
+      secondLink: false,
+      thirdLink: false
+    },
+    {
+      key:"no_of_stores_with_availability",
+      name: "# of stores with stock > 0",
+      field: "noOfNearbyStoresWithAvailability",
+      sortOrder: false,
+      type: "int",
+      className:"div-table-col",
+      secondLink: false,
+      thirdLink: false
+    }
+  ];
+}

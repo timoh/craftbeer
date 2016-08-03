@@ -1,34 +1,44 @@
 import update from 'react-addons-update';
 import * as Helpers from '../shared/helpers';
-import { getSelectedDrinks } from '../shared/selectors';
+import { getSelectedDrinks, getVisibleDrinks } from '../shared/selectors';
 
-export function reducer(state = {
-  loading: false,
-  drinks: [],
-  initialMaxDistance: 2000,
-  storesWithSelectedDrinks: {},
-  drinkWithProductInfoShown: {},
-  showNonStocked: false,
-  isInfiniteLoading: false,
-  pagesLoaded: 0,
-  pageLoading: 0,
-  stopLoadingDrinks: false
-}, action) {
+
+function getInitialState() {
+  return {
+    loading: false,
+    drinks: [],
+    initialMaxDistance: 2000,
+    storesWithSelectedDrinks: {},
+    drinkWithProductInfoShown: {},
+    showNonStocked: false,
+    isInfiniteLoading: false,
+    pagesLoaded: 0,
+    pageLoading: 0,
+    stopLoadingDrinks: false,
+    isInitialLoad: false,
+    sortColumn: "title",
+    sortOrder: "asc",
+    tableHeaders: Helpers.getHeaders()
+  };
+}
+
+export function reducer(state = getInitialState(), action) {
   switch (action.type) {
     case 'REQUEST_DRINKS':
       return {
         ...state,
         loading: !action.isInfiniteLoad,
         isInfiniteLoading: action.isInfiniteLoad,
+        isInitialLoad: action.isInitialLoad,
         pageLoading: action.pageLoading
       };
     case 'RECEIVE_DRINKS':
       return {
         ...state,
-        // if the location has changed, it loads the first page and it should clear the previous state.
-        drinks: state.pageLoading == 1 ? action.drinks : [...state.drinks,...action.drinks],
+        drinks: drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading),
         pagesLoaded: state.pageLoading,
         pageLoading: 0,
+        isInitialLoad: false,
         stopLoadingDrinks: action.drinks.length === 0
       };
     case 'ADD_ADDITIONAL_DATA':
@@ -50,8 +60,18 @@ export function reducer(state = {
     case 'SORT':
       return {
         ...state,
-        drinks: sortReducer(state.drinks,action.field,action.newSortOrder,action.datatype)
+        sortColumn: action.field == "selected" ? state.sortColumn : action.field,
+        sortOrder: action.field == "selected" ? state.sortOrder : (action.newSortOrder ? "desc" : "asc"),
+        drinks: sortReducer(state.drinks,action.field,action.newSortOrder,action.datatype),
+        tableHeaders: headersReducer(state.tableHeaders,action.field,action.newSortOrder)
       };
+    case 'CHANGE_SORT':
+        return {
+          ...state,
+          sortColumn: action.field == "selected" ? state.sortColumn : action.field,
+          sortOrder: action.field == "selected" ? state.sortOrder : (action.newSortOrder ? "desc" : "asc"),
+          tableHeaders: headersReducer(state.tableHeaders,action.field,action.newSortOrder)
+        };
     case 'CHECKED_CHANGE':
       const drinksAfterCheckedChange = checkedReducer(state.drinks,action.drinkData);
       return {
@@ -91,6 +111,63 @@ export function reducer(state = {
   }
 }
 
+function drinksReducer(state, newDrinks, initialLoad, page) {
+  if (initialLoad) {
+    newDrinks.map( (newDrink) => newDrink.isNewDrink = true);
+    return newDrinks;
+  } else {
+    let updatedDrinks;
+    state.map(function(drink,arrayIndex) {
+      // initialize isNewDrink to false
+      const drinkToUpdate = update(drink, {$merge: { isNewDrink: false, drinkInNewDrinks: false }});
+      updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drink,drinkToUpdate,state,updatedDrinks);
+    });
+    let newState;
+    if (page > 1) {
+      newState = getVisibleDrinks(updatedDrinks);
+    } else {
+      newState = [];
+    }
+    newDrinks.map( (newDrink) => {
+      const index = Helpers.getDrinkIndex(updatedDrinks, newDrink);
+      if(index != -1) {
+        const existingDrink = updatedDrinks[index];
+        existingDrink.drinkInNewDrinks = true;
+        // when page > 1, then there might be drinks that were previously hidden.
+        existingDrink.visible = true;
+        newState.push(existingDrink);
+      } else {
+        newDrink.isNewDrink = true;
+        newState.push(newDrink);
+      }
+    })
+
+    const drinksNotInNewDrinks = updatedDrinks.filter(d => !d.drinkInNewDrinks);
+
+    drinksNotInNewDrinks.map( (drink) => {
+      const drinkWasVisible = drink.visible;
+      if (page == 1) {
+        drink.visible = false;
+      }
+
+      if (page == 1 || (page > 1 && !drinkWasVisible)) {
+        newState.push(drink);
+      }
+    });
+    return newState;
+  }
+  /*
+  1. initial load --> new state = newDrinks
+  2. infinite load due to scrolling --> new state = visible state + newDrinks + hidden state
+    2.1 if sorting has changed, then there needs to be a check regarding whether the newDrinks are already in state. If they are, then simply make them visible considering the sorting order.
+  3. initial load after the location has changed -> new state = newDrinks (clear previous state)
+  4. sorting:
+    4.1 compare newDrinks to state and keep only unique drinks. put newDrinks first so that sorting order is maintained.
+    4.2 hide the drinks that were previously in state and are not in newDrinks.
+    Otherwise the user has to scroll down the page to get the correct drinks for page 2 while keeping the selected sorting order.
+  */
+}
+
 function changedSelectedForAllReducer(state,newValue) {
   let updatedDrinks;
   state.map(function(drink,arrayIndex) {
@@ -103,18 +180,10 @@ function changedSelectedForAllReducer(state,newValue) {
 function toggleNonStockedReducer(state,showNonStocked) {
   let updatedDrinks;
   state.map(function(drink,arrayIndex) {
-    let visible;
-    if(showNonStocked) {
-      visible = true;
-    } else {
-      visible = drink.stocked ? true : false;
-    }
-    let selected;
-    if (!visible) {
-      selected = false;
-    } else {
-      selected = drink.selected;
-    }
+
+    const visible = showNonStocked ? true : drink.stocked;
+    const selected = !visible ? false : drink.selected;
+
     const updatedDrink = update(drink, {$merge: {visible:visible, selected: selected}});
     updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drink,updatedDrink,state,updatedDrinks);
   });
@@ -124,42 +193,45 @@ function toggleNonStockedReducer(state,showNonStocked) {
 function checkedReducer(state,drinkData) {
   const index = state.indexOf(drinkData);
   const drinkInState = state[index];
-  const currentSelected = drinkInState.selected;
-  const updatedDrink = update(drinkInState,{$merge: {selected:!currentSelected}});
+  const updatedDrink = update(drinkInState,{$merge: {selected:!drinkInState.selected}});
   const updatedDrinks = update(state, { $splice: [[index,1,updatedDrink]] });
   return updatedDrinks;
 }
 
 function additionalDrinksDataReducer(state,maxDistance) {
     let updatedDrinks;
+    let counter = 0;
     state.map(function(drinkData,arrayIndex) {
-      let score;
-      let reviewTitle;
-      if(drinkData.reviews!==undefined && drinkData.reviews!==null) {
-        score=drinkData.reviews.score;
-        reviewTitle= drinkData.reviews.title;
-      } else {
-        score ='';
-        reviewTitle = '';
+      if(drinkData.isNewDrink) {
+        counter++;
+        let review_score;
+        let review_title;
+        if(drinkData.reviews!==undefined && drinkData.reviews!==null) {
+          review_score=drinkData.reviews.score;
+          review_title= drinkData.reviews.title;
+        } else {
+          review_score ='';
+          review_title = '';
+        }
+        const availsAndStoresData = Helpers.updateMatchesDistanceCondition(drinkData.avails,maxDistance);
+        const maxAvailability = Helpers.calculateMaxAvailability(availsAndStoresData[0]);
+        const stocked = Helpers.isStocked(maxAvailability);
+        const updatedDrink = update(drinkData, {$merge: {
+            avails: availsAndStoresData[0],
+            review_score: review_score,
+            review_title: review_title,
+            maxAvailability: maxAvailability,
+            stocked: stocked,
+            visible: true,
+            noOfStoresMatchingDistanceCondition: availsAndStoresData[1].length,
+            noOfNearbyStoresWithAvailability: availsAndStoresData[2].length,
+            nearbyStoresWithAvailability: availsAndStoresData[2],
+            selected: false
+          }});
+        updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,state,updatedDrinks);
       }
-      const availsAndStoresData = Helpers.updateMatchesDistanceCondition(drinkData.avails,maxDistance);
-      const maxAvailability = Helpers.calculateMaxAvailability(availsAndStoresData[0]);
-      const stocked = Helpers.isStocked(maxAvailability);
-      const updatedDrink = update(drinkData, {$merge: {
-          avails: availsAndStoresData[0],
-          score: score,
-          reviewTitle: reviewTitle,
-          maxAvailability: maxAvailability,
-          stocked: stocked,
-          visible: true,
-          noOfStoresMatchingDistanceCondition: availsAndStoresData[1].length,
-          noOfNearbyStoresWithAvailability: availsAndStoresData[2].length,
-          nearbyStoresWithAvailability: availsAndStoresData[2],
-          selected: false
-        }});
-      updatedDrinks = Helpers.handleArrayUpdate(arrayIndex,drinkData,updatedDrink,state,updatedDrinks);
     }.bind(this));
-      return updatedDrinks;
+    return counter == 0 ? state : updatedDrinks;
 }
 
 function maxDistanceChangeReducer(state,newMaxDistance){
@@ -216,4 +288,12 @@ function storesReducer(drinks) {
 
 function sortReducer(state,field,newSortOrder,type){
     return state.slice().sort(Helpers.handleSort(field,newSortOrder,type));
+}
+
+function headersReducer(state,field,newSortOrder) {
+  const index = state.map(h => h.field).indexOf(field);
+  const headerInState = state[index];
+  const updatedHeader = update(headerInState,{$merge: {sortOrder:newSortOrder}});
+  const updatedHeaders = update(state, { $splice: [[index,1,updatedHeader]] });
+  return updatedHeaders;
 }
