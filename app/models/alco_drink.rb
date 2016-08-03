@@ -247,7 +247,7 @@ class AlcoDrink
                                    :distance_in_m => distance_in_m})
                 end
               else
-                puts 'Omitted an avail due to too long distance'
+                # puts 'Omitted an avail due to too long distance'
               end
 
             end
