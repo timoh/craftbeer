@@ -68,9 +68,22 @@ class Drinks extends React.Component {
           <div className="loading">Loading...</div>
         )
       }
+      let spinnerText;
+      if (this.props.loading) {
+        spinnerText = "Loading drinks...";
+      } else if (this.props.isInfiniteLoading) {
+        spinnerText = "Loading more drinks...";
+      }
+      let spinnerTextElement;
+      if (this.props.loading || this.props.isInfiniteLoading) {
+        spinnerTextElement = (
+          <div className="spinnertext">{spinnerText}</div>
+        )
+      }
       return(
           <div>
               {spinner}
+              {spinnerTextElement}
               <div className="row">
                 <div className="col-md-12">
                   <Slider min="0" max="10000" step="100" initialMaxDistance={this.props.initialMaxDistance} onChange={this.props.onSliderChange.bind(this)} />
