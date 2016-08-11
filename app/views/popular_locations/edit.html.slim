@@ -1,0 +1,12 @@
+.page-header
+  = link_to popular_locations_path, class: 'btn btn-default' do
+    span.glyphicon.glyphicon-list-alt
+    |  Back 
+  = link_to @popular_location, class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-info-sign
+    |  Show 
+  h1
+    | Editing 
+    | popular_location
+
+= render 'form'

@@ -5,6 +5,7 @@ import { getLocation } from '../actions';
 import ShowButton from './show-button';
 import LocationText from './location-text';
 import Tappable from 'react-tappable';
+import PopularLocations from './popular';
 
 class Location extends React.Component {
 
@@ -16,7 +17,7 @@ class Location extends React.Component {
     let allowButton;
     if (!this.props.requested) {
       allowButton = (
-        <Tappable component="button" className="btn btn-success btn-lg" onTap={this.props.onAllowButtonClick}>Use browser's location</Tappable>
+        <Tappable component="button" className="btn btn-success btn-lg" onTap={this.props.onAllowButtonClick}>Use browser&#39;s location</Tappable>
       )
     }
     let typeAddressButton;
@@ -57,6 +58,11 @@ class Location extends React.Component {
                 {selectComment}
                 </p>
                 <br/>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-6 margin-bottom">
+                <PopularLocations />
               </div>
             </div>
             <div className="row">

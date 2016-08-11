@@ -13,6 +13,7 @@ namespace :populate do
     puts "Starting to populate product data through API, this might take a while..."
     AlcoDrink.store_all_from_api
     AlcoDrink.populate_cached_review_scores
+    Rake::Task["populate:fulltext_indexes"].invoke
     puts "Alko product data successfully populated!"
   end
 
@@ -49,13 +50,20 @@ namespace :populate do
 
   desc "Get big images from CDN"
   task pics: :environment do
-    begin
-      Dir.mkdir 'public/pics'
-    rescue
-      puts "Could not create public/pics folder!"
-    end
     AlcoDrink.get_all_pics
     puts "All pics fetched"
+  end
+
+  desc "Populate popular location searches"
+  task popular_locations: :environment do
+    PopularLocation.populate
+    puts "Popuplar locations populated!"
+  end
+
+  desc "Populate full text search indexes"
+  task fulltext_indexes: :environment do
+    Rake::Task["db:mongoid:create_indexes"].invoke
+    AlcoDrink.update_ngram_index
   end
 
   desc "Run all setup activities at onece"
@@ -68,6 +76,8 @@ namespace :populate do
       Rake::Task["populate:dedupe_avails"].invoke
       Rake::Task["populate:fuzzymatch"].invoke
       Rake::Task["populate:pics"].invoke
+      Rake::Task["populate:fulltext_indexes"].invoke
+      Rake::Task["populate:popular_locations"].invoke
       puts "Initial setup done, ready to rock and roll!"
   end
 

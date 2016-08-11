@@ -3,6 +3,7 @@ export function reducer(state = {
   loading: false,
   requested: false,
   address: '',
+  popularLocations: [],
   shouldUpdateDrinks: false
 }, action) {
   switch (action.type) {
@@ -26,6 +27,11 @@ export function reducer(state = {
         ...state,
         address: action.address,
         loading: false
+      }
+    case 'RECEIVE_POPULAR_LOCATIONS':
+      return {
+        ...state,
+        popularLocations: action.popularLocations
       }
     case 'INPUT_ADDRESS':
       return {

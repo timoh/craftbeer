@@ -1,0 +1,35 @@
+.page-header
+  = link_to new_popular_location_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    |  New Popular location
+  h1
+    | Listing popular_locations
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover
+    thead
+      tr
+        th
+          | Address
+        th
+          | City
+        th
+          | Coords
+        th
+        th
+        th
+    tbody
+      - @popular_locations.each do | popular_location |
+        tr
+          td
+            = popular_location.address
+          td
+            = popular_location.city
+          td
+            = popular_location.coords
+          td
+            = link_to 'Show', popular_location
+          td
+            = link_to 'Edit', edit_popular_location_path(popular_location) 
+          td
+            = link_to 'Destroy', popular_location, method: :delete, data: { confirm: 'Are you sure?' } 

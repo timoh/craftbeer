@@ -1,5 +1,6 @@
 class AlcoDrink
   include Mongoid::Document
+  include Mongoid::FullTextSearch
   include Mongoid::Timestamps
   include Mongoid::Attributes::Dynamic
 
@@ -23,11 +24,23 @@ class AlcoDrink
 
   before_update :populate_review_score
 
+  fulltext_search_in :title
+
   def populate_review_score
     if self.review
-      self.review_score = self.review.score.to_i # save the score to the parent object
-      self.save! # save and check if validations pass
-      puts "Score updated for #{self.title}: #{self.review_score}"
+      if self.review.score
+        self.review_score = self.review.score.to_i # save the score to the parent object
+        begin
+          self.save! # save and check if validations pass
+        rescue Exception => detail
+          puts "Problem in saving review:"
+          puts detail
+        else
+          puts "Score updated for #{self.title}: #{self.review_score}"
+        end
+      else
+        puts "Review score does not exist, cannot update score!"
+      end
     else
       puts "Review does not exist for #{self.title}"
     end
@@ -190,8 +203,24 @@ class AlcoDrink
     end
   end
 
-  def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="asc") # only those with availability AND maximum 10km range
-    drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
+  def AlcoDrink.with_fulltext(query)
+    results = AlcoDrink.fulltext_search(query)
+
+    drink_ids = Array.new
+    results.each do |drink|
+      drink_ids.push(drink.id.to_s)
+    end
+
+    return AlcoDrink.where(id: { '$in': drink_ids })
+  end
+
+  def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="asc", filter='') # only those with availability AND maximum 10km range
+
+    if filter.length <= 0
+      drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
+    else
+      drinks = AlcoDrink.with_fulltext(filter).where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
+    end
 
     out_response = Array.new
     drinks.includes(:alco_avails).each do |drink|
@@ -218,7 +247,7 @@ class AlcoDrink
                                    :distance_in_m => distance_in_m})
                 end
               else
-                puts 'Omitted an avail due to too long distance'
+                # puts 'Omitted an avail due to too long distance'
               end
 
             end
@@ -233,6 +262,7 @@ class AlcoDrink
       end
     end
 
+    SearchQuery.create(coords: [lat, lng], query: filter)
     return out_response
   end
 

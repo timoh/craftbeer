@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :popular_locations
   get '/' => 'home#index'
   get '/home/index' => 'home#index'
 

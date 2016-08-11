@@ -17,6 +17,9 @@ gem 'puma' # webserver for production use
 gem 'mongoid-geospatial'
 # for geolocation stuff
 
+gem 'mongoid_fulltext'
+# for fulltext search and filtering
+
 gem 'georuby'
 # used for distance calculations
 
