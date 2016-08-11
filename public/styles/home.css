@@ -216,6 +216,9 @@ input.chk-btn:checked ~ label:after {
     text-decoration: none
 }
 
+.underline:hover {
+  text-decoration: underline !important
+}
 
 .fake-link:hover  {
   text-decoration:underline;

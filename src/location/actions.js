@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import { hashHistory } from 'react-router';
 
 export function requestLocation() {
   return {
@@ -102,5 +103,12 @@ export function geocodeAddress() {
       .then(response => response.json())
       .then(json => dispatch(receiveLocation(json.lat, json.lng,false)))
       .catch(err => console.error(err));
+  };
+}
+
+export function searchForPopularLocation(address) {
+  return function(dispatch) {
+    dispatch(inputAddress(address));
+    dispatch(geocodeAddress()).then(() => hashHistory.push('/indexpage'));
   };
 }
