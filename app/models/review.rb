@@ -25,8 +25,14 @@ class Review
     require 'rest-client'
     require 'json'
     url = Review.get_url
-    response = RestClient.get url, {:params => {:api_key => Review.get_token}}
-    return JSON.parse(response)['beers']
+    begin
+      response = RestClient.get url, {:params => {:api_key => Review.get_token}}
+    rescue Exception => detail
+      puts "Get parsehub failed, reason:"
+      puts detail
+    else
+      return JSON.parse(response)['beers']
+    end
   end
 
   def Review.store_parsehub
