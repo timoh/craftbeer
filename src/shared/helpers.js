@@ -84,6 +84,10 @@ export function getDrinkIndex(state, newDrink) {
   return objectIds.indexOf(newDrink.drink._id.$oid);
 }
 
+export function isVisible(showNonStocked,stocked) {
+  return showNonStocked ? true : stocked;
+}
+
 String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 };

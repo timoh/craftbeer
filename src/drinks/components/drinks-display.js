@@ -1,8 +1,7 @@
 import React from 'react';
-import Loader from 'react-loader';
 import DrinkTableRow from './drink-table-row';
 import TableHeaders from './table-headers';
-import TableButton from './table-button';
+import TableButtonDisplay from './table-button';
 import Slider from './slider';
 import SearchButton from './search-button';
 import {connect} from 'react-redux';
@@ -35,24 +34,16 @@ class Drinks extends React.Component {
     }
 
     elementInfiniteLoad() {
-          let text;
-          if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
-            text = "Loading...";
-          }
-          return (
-            <div className="div-table-row">
-              <div className="loadingtext centered bolded">
-                    {text}
-              </div>
-            </div>
-          )
+        return (
+          <div></div>
+        )
     }
 
     handleInfiniteLoad() {
       // if there are no visible drinks, it should not load anything, because if it does, that will result in a never-ending loop.
       // cursor will always be at the end of the table --> it would load more drinks.
       // stopLoadingDrinks is true when the last request returned zero drinks.
-      if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks) {
+      if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks && !this.props.isInfiniteLoading && !this.props.loading) {
         this.props.dispatch(fetchDrinks(false, this.props.pagesLoaded + 1, true, false));
       }
     }
@@ -71,9 +62,15 @@ class Drinks extends React.Component {
       }
       const noOfSelectedDrinks = getSelectedDrinks(this.props.drinks).length;
       const visibleDrinks = getVisibleDrinks(this.props.drinks);
+      let spinner;
+      if (this.props.loading || this.props.isInfiniteLoading) {
+        spinner = (
+          <div className="loading">Loading...</div>
+        )
+      }
       return(
           <div>
-
+              {spinner}
               <div className="row">
                 <div className="col-md-12">
                   <Slider min="0" max="10000" step="100" initialMaxDistance={this.props.initialMaxDistance} onChange={this.props.onSliderChange.bind(this)} />
@@ -81,40 +78,35 @@ class Drinks extends React.Component {
               </div>
               <div className="row">
                 <div className="col-md-12">
-                  <Loader loaded={!this.props.loading} className="loader">
                     <div className="row margin-bottom">
                       <div className="col-md-3 col-xs-9">
-                        <TableButton toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
+                        <TableButtonDisplay toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
                       </div>
                       <div className="col-md-6 col-xs-9">
                         <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                       </div>
                     </div>
-
-                        <div className= "div-table table">
-                          <Infinite elementHeight={80}
-                                    infiniteLoadBeginEdgeOffset={-200}
-                                    onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
-                                    loadingSpinnerDelegate={this.elementInfiniteLoad()}
-                                    isInfiniteLoading={this.props.isInfiniteLoading}
-                                    className="div-table-rows"
-                                    useWindowAsScrollContainer
-                                    preloadBatchSize={Infinite.containerHeightScaleFactor(100)}
-                                    preloadAdditionalHeight={Infinite.containerHeightScaleFactor(100)}>
-                            <TableHeaders sort={this.executeSortDrinks.bind(this)} headers={this.props.headers} />
-                            { visibleDrinks.map((drinkData) => {
-                                return (
-                                  <DrinkTableRow key={ drinkData.drink._id.$oid }
-                                  drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
-                                )
-                            })}
-                            </Infinite>
-                        </div>
-                  </Loader>
+                    <div className= "div-table table">
+                      <Infinite elementHeight={80}
+                                infiniteLoadBeginEdgeOffset={-400}
+                                onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
+                                loadingSpinnerDelegate={this.elementInfiniteLoad()}
+                                isInfiniteLoading={this.props.isInfiniteLoading}
+                                className="div-table-rows"
+                                useWindowAsScrollContainer
+                                preloadBatchSize={Infinite.containerHeightScaleFactor(100)}
+                                preloadAdditionalHeight={Infinite.containerHeightScaleFactor(100)}>
+                        <TableHeaders sort={this.executeSortDrinks.bind(this)} headers={this.props.headers} />
+                        { visibleDrinks.map((drinkData) => {
+                            return (
+                              <DrinkTableRow key={ drinkData.drink._id.$oid }
+                              drinkData={ drinkData } handleChecked = {this.props.handleChecked.bind(this)} />
+                            )
+                        })}
+                        </Infinite>
+                    </div>
                 </div>
-
               </div>
-
           </div>
       )
     }

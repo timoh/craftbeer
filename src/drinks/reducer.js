@@ -35,7 +35,7 @@ export function reducer(state = getInitialState(), action) {
     case 'RECEIVE_DRINKS':
       return {
         ...state,
-        drinks: drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading),
+        drinks: drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading, state.showNonStocked),
         pagesLoaded: state.pageLoading,
         pageLoading: 0,
         isInitialLoad: false,
@@ -46,7 +46,7 @@ export function reducer(state = getInitialState(), action) {
         ...state,
         loading: false,
         isInfiniteLoading: false,
-        drinks: additionalDrinksDataReducer(state.drinks,state.initialMaxDistance)
+        drinks: additionalDrinksDataReducer(state.drinks,state.initialMaxDistance, state.showNonStocked)
       };
     case 'MAX_DISTANCE_CHANGE':
       const drinksAfterDistChange = maxDistanceChangeReducer(state.drinks,action.newMaxDistance);
@@ -111,7 +111,7 @@ export function reducer(state = getInitialState(), action) {
   }
 }
 
-function drinksReducer(state, newDrinks, initialLoad, page) {
+function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked) {
   if (initialLoad) {
     newDrinks.map( (newDrink) => newDrink.isNewDrink = true);
     return newDrinks;
@@ -134,7 +134,8 @@ function drinksReducer(state, newDrinks, initialLoad, page) {
         const existingDrink = updatedDrinks[index];
         existingDrink.drinkInNewDrinks = true;
         // when page > 1, then there might be drinks that were previously hidden.
-        existingDrink.visible = true;
+        existingDrink.visible = Helpers.isVisible(showNonStocked,existingDrink.stocked);
+        existingDrink.hiddenDueToSortingChange = false;
         newState.push(existingDrink);
       } else {
         newDrink.isNewDrink = true;
@@ -148,6 +149,7 @@ function drinksReducer(state, newDrinks, initialLoad, page) {
       const drinkWasVisible = drink.visible;
       if (page == 1) {
         drink.visible = false;
+        drink.hiddenDueToSortingChange = true;
       }
 
       if (page == 1 || (page > 1 && !drinkWasVisible)) {
@@ -181,7 +183,7 @@ function toggleNonStockedReducer(state,showNonStocked) {
   let updatedDrinks;
   state.map(function(drink,arrayIndex) {
 
-    const visible = showNonStocked ? true : drink.stocked;
+    const visible = drink.hiddenDueToSortingChange ? false : Helpers.isVisible(showNonStocked,drink.stocked);
     const selected = !visible ? false : drink.selected;
 
     const updatedDrink = update(drink, {$merge: {visible:visible, selected: selected}});
@@ -198,7 +200,7 @@ function checkedReducer(state,drinkData) {
   return updatedDrinks;
 }
 
-function additionalDrinksDataReducer(state,maxDistance) {
+function additionalDrinksDataReducer(state,maxDistance,showNonStocked) {
     let updatedDrinks;
     let counter = 0;
     state.map(function(drinkData,arrayIndex) {
@@ -222,7 +224,7 @@ function additionalDrinksDataReducer(state,maxDistance) {
             review_title: review_title,
             maxAvailability: maxAvailability,
             stocked: stocked,
-            visible: true,
+            visible: Helpers.isVisible(showNonStocked,stocked),
             noOfStoresMatchingDistanceCondition: availsAndStoresData[1].length,
             noOfNearbyStoresWithAvailability: availsAndStoresData[2].length,
             nearbyStoresWithAvailability: availsAndStoresData[2],
