@@ -204,66 +204,84 @@ class AlcoDrink
   end
 
   def AlcoDrink.with_fulltext(query)
-    results = AlcoDrink.fulltext_search(query)
-
-    drink_ids = Array.new
-    results.each do |drink|
-      drink_ids.push(drink.id.to_s)
+    
+    begin
+      results = AlcoDrink.fulltext_search(query)
+    rescue Exception => details
+      puts "Fulltext search failed! Reason:"
+      puts details
+      return false
+    else
+      if results
+        drink_ids = Array.new
+        results.each do |drink|
+          drink_ids.push(drink.id.to_s)
+        end
+        return AlcoDrink.where(id: { '$in': drink_ids })
+      else
+        return false
+      end
     end
-
-    return AlcoDrink.where(id: { '$in': drink_ids })
+    
   end
 
   def AlcoDrink.all_with_distance(lat, lng, page_number=1, sort_column="title", sort_order="asc", filter='') # only those with availability AND maximum 10km range
 
+    # check whether or not a filter is present to determine whether or not to conduct a fulltext search
     if filter.length <= 0
       drinks = AlcoDrink.where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
     else
       drinks = AlcoDrink.with_fulltext(filter).where(:best_rev_candidate_score.gte => 0.85).order_by([sort_column, sort_order]).page(page_number)
     end
+    
+    # log a search query whether or not it has any results
+    SearchQuery.create(coords: [lat, lng], query: filter)
+    
+    if drinks # check if the results exists
+      out_response = Array.new
+      drinks.includes(:alco_avails).each do |drink|
 
-    out_response = Array.new
-    drinks.includes(:alco_avails).each do |drink|
+        if drink.review
+          drink_max_avail = drink.alco_avails.max(:amount)
 
-      if drink.review
-        drink_max_avail = drink.alco_avails.max(:amount)
+          # only process avails that have stock
+          if drink_max_avail
+            if drink_max_avail > 0
 
-        # only process avails that have stock
-        if drink_max_avail
-          if drink_max_avail > 0
+              avails_a = Array.new
+              drink.alco_avails.includes(:alco_location).each do |avail|
 
-            avails_a = Array.new
-            drink.alco_avails.includes(:alco_location).each do |avail|
+                # calculate distance in meters for location
+                loc = avail.alco_location
+                distance_in_m = loc.get_distance_to_point(lat, lng)
 
-              # calculate distance in meters for location
-              loc = avail.alco_location
-              distance_in_m = loc.get_distance_to_point(lat, lng)
-
-              # only append locations within max 10km range
-              if (distance_in_m <= 10000 and avail.amount)
-                if avail.amount > 0
-                  avails_a.append({:avail => avail,
-                                   :store => avail.alco_location,
-                                   :distance_in_m => distance_in_m})
+                # only append locations within max 10km range
+                if (distance_in_m <= 10000 and avail.amount)
+                  if avail.amount > 0
+                    avails_a.append({:avail => avail,
+                                     :store => avail.alco_location,
+                                     :distance_in_m => distance_in_m})
+                  end
+                else
+                  # puts 'Omitted an avail due to too long distance'
                 end
-              else
-                # puts 'Omitted an avail due to too long distance'
+
               end
 
+              drink_hash = {:drink => drink, :avails => avails_a, :reviews => drink.review}
+              out_response.append(drink_hash)
+
             end
-
-            drink_hash = {:drink => drink, :avails => avails_a, :reviews => drink.review}
-            out_response.append(drink_hash)
-
           end
+
+
         end
-
-
       end
-    end
 
-    SearchQuery.create(coords: [lat, lng], query: filter)
-    return out_response
+      return out_response
+    else
+      return { :no_results => true }
+    end
   end
 
 end
