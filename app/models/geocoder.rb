@@ -76,7 +76,7 @@ class Geocoder
       output = JSON.parse(output)
 
       begin
-        output = output['results'][0]['formatted_address']
+        address = output['results'][0]['formatted_address']
       rescue
         puts "No results!"
         puts output
@@ -87,7 +87,7 @@ class Geocoder
           # returns {:lat, :lng}
 
           AddressQuery.create(query: address, city: Geocoder.get_city(output), result_address: output['results'][0]['formatted_address'], raw_result: output, coords: output['results'][0]['geometry']['location'])
-          return output
+          return address
         rescue
           puts "Geocoding failed!"
         end
