@@ -71,10 +71,11 @@ export function requestDrinks(pageToLoad, isInfiniteLoad, isInitialLoad) {
   };
 }
 
-export function receiveDrinks(json) {
+export function receiveDrinks(json, filtered) {
   return {
     type: 'RECEIVE_DRINKS',
-    drinks: json
+    drinks: json,
+    filtered: filtered
   };
 }
 
@@ -91,8 +92,23 @@ export function showNonStockedChange(showNonStocked) {
   };
 }
 
+export function filterChange(filterText) {
+  return function(dispatch, getState) {
+    dispatch(changeFilter(filterText));
+    const sortColumn = getState().drinksData.sortColumn;
+    const sortOrder = getState().drinksData.sortOrder;
+    dispatch(fetchDrinks(false, 1, false, false, sortColumn, sortOrder, filterText));
+  };
+}
 
-export function fetchDrinks(test, pageToLoad, isInfiniteLoad, isInitialLoad, sortColumn, sortOrder) {
+export function changeFilter(filterText) {
+  return {
+    type: 'CHANGE_FILTER',
+    filterText: filterText
+  };
+}
+
+export function fetchDrinks(test, pageToLoad, isInfiniteLoad, isInitialLoad, sortColumn, sortOrder, filterText) {
   return function (dispatch,getState) {
     dispatch(requestDrinks(pageToLoad, isInfiniteLoad, isInitialLoad));
     const positionData = getState().positionData;
@@ -111,6 +127,11 @@ export function fetchDrinks(test, pageToLoad, isInfiniteLoad, isInitialLoad, sor
       params.sort_column = getState().drinksData.sortColumn;
       params.sort_order = getState().drinksData.sortOrder;
     }
+    let filtered = false;
+    if (filterText !== undefined && filterText !== '') {
+      params.filter = filterText;
+      filtered = true;
+    }
     apiCallAddress = apiCallAddress + jQuery.param( params );
     const request = new Request(apiCallAddress, {
       method: 'GET'
@@ -118,7 +139,7 @@ export function fetchDrinks(test, pageToLoad, isInfiniteLoad, isInitialLoad, sor
     return fetch(request)
       .then(response => response.json())
       .then((json) =>
-        dispatch(receiveDrinks(json))
+        dispatch(receiveDrinks(json, filtered))
       ).then(() => dispatch(addAdditionalDataForDrinks()))
       .then(() => {
           if(isInitialLoad) {

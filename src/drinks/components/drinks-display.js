@@ -2,6 +2,7 @@ import React from 'react';
 import DrinkTableRow from './drink-table-row';
 import TableHeaders from './table-headers';
 import TableButtonDisplay from './table-button';
+import SearchFilterDisplay from './search-filter';
 import Slider from './slider';
 import SearchButton from './search-button';
 import {connect} from 'react-redux';
@@ -92,7 +93,10 @@ class Drinks extends React.Component {
               <div className="row">
                 <div className="col-md-12">
                     <div className="row margin-bottom">
-                      <div className="col-md-3 col-xs-9">
+                      <div className="col-md-3 col-xs-6">
+                        <SearchFilterDisplay />
+                      </div>
+                      <div className="col-md-2 col-xs-6">
                         <TableButtonDisplay toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
                       </div>
                       <div className="col-md-6 col-xs-9">

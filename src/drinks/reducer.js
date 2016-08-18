@@ -18,7 +18,8 @@ function getInitialState() {
     isInitialLoad: false,
     sortColumn: "title",
     sortOrder: "asc",
-    tableHeaders: Helpers.getHeaders()
+    tableHeaders: Helpers.getHeaders(),
+    filterText: ""
   };
 }
 
@@ -39,7 +40,7 @@ export function reducer(state = getInitialState(), action) {
         pagesLoaded: state.pageLoading,
         pageLoading: 0,
         isInitialLoad: false,
-        stopLoadingDrinks: action.drinks.length === 0
+        stopLoadingDrinks: !action.filtered && action.drinks.length === 0
       };
     case 'ADD_ADDITIONAL_DATA':
       return {
@@ -105,6 +106,11 @@ export function reducer(state = getInitialState(), action) {
       return {
         ...state,
         drinkWithProductInfoShown: action.selectedDrink
+      }
+    case 'CHANGE_FILTER':
+      return {
+        ...state,
+        filterText: action.filterText
       }
     default:
       return state;
