@@ -23,13 +23,13 @@ export function showNonStockedChange(showNonStocked) {
   };
 }
 
-export function sortDrinks(field,newSortOrder,datatype,stopLoadingDrinks) {
+export function sortDrinks(field,newSortOrder,datatype,stopLoadingDrinks,filterOn) {
 
-  if (SORTABLE_FIELDS_IN_API.indexOf(field) != -1 && !stopLoadingDrinks) {
+  if (SORTABLE_FIELDS_IN_API.indexOf(field) != -1 && !stopLoadingDrinks && !filterOn) {
     const sortOrder = newSortOrder ? "desc" : "asc";
     return function(dispatch) {
       dispatch(changeSort(field,newSortOrder));
-      dispatch(fetchDrinks(false, 1, false, false, field, sortOrder));
+      dispatch(fetchDrinks(1, false, false, field, sortOrder));
     };
   } else {
     return {
@@ -97,7 +97,7 @@ export function filterChange(filterText) {
     dispatch(changeFilter(filterText));
     const sortColumn = getState().drinksData.sortColumn;
     const sortOrder = getState().drinksData.sortOrder;
-    dispatch(fetchDrinks(false, 1, false, false, sortColumn, sortOrder, filterText));
+    dispatch(fetchDrinks(1, false, false, sortColumn, sortOrder, filterText));
   };
 }
 
@@ -108,12 +108,11 @@ export function changeFilter(filterText) {
   };
 }
 
-export function fetchDrinks(test, pageToLoad, isInfiniteLoad, isInitialLoad, sortColumn, sortOrder, filterText) {
+export function fetchDrinks(pageToLoad, isInfiniteLoad, isInitialLoad, sortColumn, sortOrder, filterText) {
   return function (dispatch,getState) {
     dispatch(requestDrinks(pageToLoad, isInfiniteLoad, isInitialLoad));
     const positionData = getState().positionData;
-    // this is a stupid solution to the problem that in testing you can't use relative urls, but couldn't bother to think of a better one...
-    let apiCallAddress = (test ? 'http://localhost:3000' : '') + '/home/distanced?';
+    let apiCallAddress = '/home/distanced?';
     const params = {
       lat: positionData.position[0],
       lng: positionData.position[1],

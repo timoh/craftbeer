@@ -44,9 +44,9 @@ export function receivePopularLocations(popularLocations) {
   };
 }
 
-export function locationToAddress(test) {
+export function locationToAddress() {
   return function (dispatch,getState) {
-    const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/geocode/backward';
+    const apiCallAddress = '/geocode/backward';
     const position = getState().positionData.position;
     const body = JSON.stringify({
       latitude: position[0],
@@ -65,9 +65,9 @@ export function locationToAddress(test) {
   };
 }
 
-export function getPopularLocations(test) {
+export function getPopularLocations() {
   return function (dispatch) {
-    const apiCallAddress = (test ? 'http://localhost:3000' : '') + '/popular_locations.json';
+    const apiCallAddress = '/popular_locations.json';
     return fetch(apiCallAddress).then(response => response.json()
   ).then(body => dispatch(receivePopularLocations(body))
     ).catch(err => console.error(err));
@@ -79,7 +79,7 @@ export function getLocation() {
     dispatch(requestLocation());
     function onPositionResponse(position) {
       dispatch(receiveLocation(position.coords.latitude,position.coords.longitude,true));
-      dispatch(locationToAddress(false));
+      dispatch(locationToAddress());
     }
     return getPosition(onPositionResponse);
   };
