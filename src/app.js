@@ -7,14 +7,17 @@ import rootReducer from './shared/rootReducer';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
 
-const loggerMiddleware = createLogger();
+let middleware = [thunkMiddleware];
+
+// only log to browser console in development
+if(process.env.NODE_ENV !== 'production') {
+  const loggerMiddleware = createLogger();
+  middleware = [...middleware, loggerMiddleware];
+}
 
 const store = createStore(
   rootReducer,
-  applyMiddleware(
-    thunkMiddleware,
-    loggerMiddleware
-  )
+  applyMiddleware(...middleware)
 );
 
 ReactDOM.render(

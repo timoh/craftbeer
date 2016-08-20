@@ -9,6 +9,7 @@ import watchify from 'watchify';
 import babelify from 'babelify';
 import uglify from 'gulp-uglify';
 import ifElse from 'gulp-if-else';
+import envify from 'envify';
 
 const sync = browserSync.create();
 
@@ -28,9 +29,11 @@ bundler.transform(babelify.configure({
 // On updates recompile
 bundler.on('update', bundle);
 
-//the bundle function
+//the bundle function. Envify is needed so that it's possible to use NODE_ENV in React / Redux code. 
 function bundle(prod) {
-  return bundler.bundle()
+  return bundler
+    .transform(envify)
+    .bundle()
     .on('error', function(error){
       console.error( '\nError: ', error.message, '\n');
       this.emit('end');

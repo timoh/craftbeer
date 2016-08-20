@@ -5,8 +5,8 @@
   "main": "src/app.js",
   "scripts": {
     "test": "ava -v",
-    "start": "gulp watch",
-    "heroku-postbuild": "gulp production-build"
+    "start": "NODE_ENV='development' gulp watch",
+    "heroku-postbuild": "NODE_ENV='production' gulp production-build"
   },
   "author": "Timo Herttua",
   "license": "ISC",
