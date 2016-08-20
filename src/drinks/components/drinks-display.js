@@ -2,6 +2,7 @@ import React from 'react';
 import DrinkTableRow from './drink-table-row';
 import TableHeaders from './table-headers';
 import TableButtonDisplay from './table-button';
+import SearchFilterDisplay from './search-filter';
 import Slider from './slider';
 import SearchButton from './search-button';
 import {connect} from 'react-redux';
@@ -22,7 +23,7 @@ class Drinks extends React.Component {
       if (!this.props.requested) {
           this.props.router.push('/intropage');
       } else if(this.props.shouldUpdateDrinks) {
-          this.props.dispatch(fetchDrinks(false, 1, false, true));
+          this.props.dispatch(fetchDrinks(1, false, true));
       }
     }
 
@@ -43,13 +44,16 @@ class Drinks extends React.Component {
       // if there are no visible drinks, it should not load anything, because if it does, that will result in a never-ending loop.
       // cursor will always be at the end of the table --> it would load more drinks.
       // stopLoadingDrinks is true when the last request returned zero drinks.
-      if (getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks && !this.props.isInfiniteLoading && !this.props.loading) {
-        this.props.dispatch(fetchDrinks(false, this.props.pagesLoaded + 1, true, false));
+      // when filter is on, it should not load more drinks.
+      const shouldInfiniteLoad = getVisibleDrinks(this.props.drinks).length > 0 && !this.props.stopLoadingDrinks && !this.props.isInfiniteLoading && !this.props.loading && !this.props.filterOn
+
+      if (shouldInfiniteLoad) {
+        this.props.dispatch(fetchDrinks(this.props.pagesLoaded + 1, true, false));
       }
     }
 
     executeSortDrinks(field,newSortOrder,datatype) {
-      this.props.dispatch(sortDrinks(field,newSortOrder,datatype,this.props.stopLoadingDrinks));
+      this.props.dispatch(sortDrinks(field,newSortOrder,datatype,this.props.stopLoadingDrinks, this.props.filterOn));
     }
 
     render() {
@@ -92,7 +96,10 @@ class Drinks extends React.Component {
               <div className="row">
                 <div className="col-md-12">
                     <div className="row margin-bottom">
-                      <div className="col-md-3 col-xs-9">
+                      <div className="col-md-3 col-xs-6">
+                        <SearchFilterDisplay />
+                      </div>
+                      <div className="col-md-2 col-xs-6">
                         <TableButtonDisplay toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
                       </div>
                       <div className="col-md-6 col-xs-9">
@@ -156,7 +163,8 @@ const mapStateToDrinksProps = state => (
     isInfiniteLoading: state.drinksData.isInfiniteLoading,
     pagesLoaded: state.drinksData.pagesLoaded,
     stopLoadingDrinks: state.drinksData.stopLoadingDrinks,
-    headers: state.drinksData.tableHeaders
+    headers: state.drinksData.tableHeaders,
+    filterOn: state.drinksData.filterOn
   }
 )
 

@@ -18,7 +18,9 @@ function getInitialState() {
     isInitialLoad: false,
     sortColumn: "title",
     sortOrder: "asc",
-    tableHeaders: Helpers.getHeaders()
+    tableHeaders: Helpers.getHeaders(),
+    filterText: "",
+    filterOn: false
   };
 }
 
@@ -35,11 +37,12 @@ export function reducer(state = getInitialState(), action) {
     case 'RECEIVE_DRINKS':
       return {
         ...state,
-        drinks: drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading, state.showNonStocked),
+        drinks: drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading, state.showNonStocked, action.filtered),
         pagesLoaded: state.pageLoading,
         pageLoading: 0,
         isInitialLoad: false,
-        stopLoadingDrinks: action.drinks.length === 0
+        stopLoadingDrinks: !action.filtered && action.drinks.length === 0,
+        filterOn: action.filtered
       };
     case 'ADD_ADDITIONAL_DATA':
       return {
@@ -106,12 +109,17 @@ export function reducer(state = getInitialState(), action) {
         ...state,
         drinkWithProductInfoShown: action.selectedDrink
       }
+    case 'CHANGE_FILTER':
+      return {
+        ...state,
+        filterText: action.filterText
+      }
     default:
       return state;
   }
 }
 
-function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked) {
+function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked, filtered) {
   if (initialLoad) {
     newDrinks.map( (newDrink) => newDrink.isNewDrink = true);
     return newDrinks;
@@ -150,6 +158,10 @@ function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked) {
       if (page == 1) {
         drink.visible = false;
         drink.hiddenDueToSortingChange = true;
+        if (filtered) {
+          // When filter has been used, other drinks will be hidden so in that case old selections can probably be ignored.
+          drink.selected = false;
+        }
       }
 
       if (page == 1 || (page > 1 && !drinkWasVisible)) {

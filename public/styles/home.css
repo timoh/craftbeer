@@ -166,8 +166,8 @@ input.chk-btn:checked ~ label {
 
 .alert-custom {
   margin-bottom: 0px;
-  padding-bottom: 10px;
-  padding-top: 10px;
+  padding-bottom: 12px;
+  padding-top: 12px;
 }
 
 input.chk-btn:checked ~ label:after {

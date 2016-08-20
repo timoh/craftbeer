@@ -13,7 +13,7 @@
 /log/*
 !/log/.keep
 tmp
-dump
+dumps
 node_modules
 public/pics
 public/pics/*
