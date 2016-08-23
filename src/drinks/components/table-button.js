@@ -15,9 +15,10 @@ class TableButton extends React.Component {
 
   render() {
     const actionText = this.props.showNonStocked ? "Hide" : "Show";
+
     return(
         <div>
-          <Tappable component="button" className="btn btn-info btn-lg margin-on-mobile" onTap={this.handleClick.bind(this)}>{actionText} non-stocked</Tappable>
+          <Tappable component="button" className="btn btn-info btn-large margin-on-mobile btn-sm-on-mobile" onTap={this.handleClick.bind(this)}>{actionText} non-stocked</Tappable>
         </div>
     )
   }

@@ -24,9 +24,10 @@ export default class Menu extends React.Component {
     links.map((link) => {
       link.className = link.url === this.props.currentRoute ? link.className + " active" : link.className;
     });
+    
     return(
         <nav className="navbar navbar-default navbar-fixed-top">
-          <div className="container">
+          <div className="container-custom">
               <div className="navbar-header page-scroll">
                 <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                   <span className="sr-only">Toggle navigation</span>

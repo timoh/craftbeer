@@ -15,7 +15,7 @@ class SearchFilter extends React.Component {
 
     return(
         <div>
-          <input type="text" className="form-control input-lg centered" name="filterInput" defaultValue={this.props.filterText} placeholder={"Search for drinks"} onBlur={onFilterInput} />
+          <input type="text" className="form-control input-lg centered margin-on-mobile" name="filterInput" defaultValue={this.props.filterText} placeholder={"Search for drinks"} onBlur={onFilterInput} />
         </div>
     )
   }

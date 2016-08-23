@@ -92,6 +92,10 @@ String.prototype.capitalize = function() {
     return this.replace(/(?:^|\s)\S/g, (a) => a.toUpperCase());
 };
 
+export function normalScreenWidth() {
+  return window.matchMedia("(min-width: 600px)").matches;
+}
+
 export function getHeaders() {
   // sortOrder = false on nouseva järjestys, sortOrder = true on laskeva järjestys. vaikuttaa sort-metodin reverse -parametriin.
   // alkuarvo on käänteinen siksi, että kun linkkiä klikkaa 1. kertaa, niin haluttu järjestys on oikea. Järjestys muuttuu jo ensi klikkauksella.
@@ -152,7 +156,7 @@ export function getHeaders() {
       field: "maxAvailability",
       sortOrder: false,
       type: "int",
-      className:"div-table-col",
+      className:"div-table-col col-extra",
       secondLink: false,
       thirdLink: false
     },
@@ -162,7 +166,7 @@ export function getHeaders() {
       field: "noOfNearbyStoresWithAvailability",
       sortOrder: false,
       type: "int",
-      className:"div-table-col",
+      className:"div-table-col col-extra",
       secondLink: false,
       thirdLink: false
     }

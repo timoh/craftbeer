@@ -11,6 +11,7 @@ import { fetchDrinks, maxDistanceChange,checkedChange,showNonStockedChange,sortD
 import { selectDrinkFromSelected } from '../../shared/actions';
 import { withRouter } from 'react-router';
 import Infinite from 'react-infinite';
+import { normalScreenWidth } from '../../shared/helpers';
 
 class Drinks extends React.Component {
 
@@ -84,22 +85,31 @@ class Drinks extends React.Component {
           <div className="spinnertext">{spinnerText}</div>
         )
       }
+      let elementHeight;
+      if (normalScreenWidth()) {
+        elementHeight = 80;
+      } else {
+        elementHeight = 92;
+      }
+
+      //TODO fix infiniteLoadBeginEdgeOffset when using mobile on portrait view. Otherwise it works quite OK now.
+
       return(
           <div>
               {spinner}
               {spinnerTextElement}
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-12 col-xs-12">
                   <Slider min="0" max="10000" step="100" initialMaxDistance={this.props.initialMaxDistance} onChange={this.props.onSliderChange.bind(this)} />
                 </div>
               </div>
               <div className="row">
-                <div className="col-md-12">
+                <div className="col-md-12 col-xs-12">
                     <div className="row margin-bottom">
-                      <div className="col-md-3 col-xs-6">
+                      <div className="col-md-3 col-xs-7">
                         <SearchFilterDisplay />
                       </div>
-                      <div className="col-md-2 col-xs-6">
+                      <div className="col-md-2 col-xs-5">
                         <TableButtonDisplay toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
                       </div>
                       <div className="col-md-6 col-xs-9">
@@ -107,7 +117,7 @@ class Drinks extends React.Component {
                       </div>
                     </div>
                     <div className= "div-table table">
-                      <Infinite elementHeight={80}
+                      <Infinite elementHeight={elementHeight}
                                 infiniteLoadBeginEdgeOffset={-400}
                                 onInfiniteLoad={this.handleInfiniteLoad.bind(this)}
                                 loadingSpinnerDelegate={this.elementInfiniteLoad()}

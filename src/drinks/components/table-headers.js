@@ -13,17 +13,17 @@ export default class TableHeaders extends React.Component {
   }
 
   render() {
+
     return(
         <div className="div-table-headers bolded">
               { this.props.headers.map((header) => {
-                  return (
-                    <HeaderDisplay onClick={this.handleOnClick} key={header.key} header={header} />
-                  )
+                    return (
+                      <HeaderDisplay onClick={this.handleOnClick} key={header.key} header={header} />
+                    )
                 }) }
-              <div className="div-table-col">
-                Top 3 nearest stores with stock > 0
-              </div>
-
+                <div className="div-table-col col-extra">
+                  Top 3 nearest stores with stock > 0
+                </div>
         </div>
 
     )

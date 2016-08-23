@@ -1,5 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router';
+import { normalScreenWidth } from '../../shared/helpers';
 
 export default class DrinkTableRow extends React.Component {
 
@@ -55,14 +56,21 @@ export default class DrinkTableRow extends React.Component {
     } else {
       topThreeStoresContent = topThreeStores.map(function(storeInArray){
         const address ="http://www.alko.fi" + storeInArray.store.store_link;
+        let textToDisplay;
+        if (normalScreenWidth()) {
+          textToDisplay = storeInArray.store.loc_name + " (" + (storeInArray.distance_in_m/1000).toFixed(2) + " km, " + storeInArray.avail.amount + " pcs)";
+        } else {
+          textToDisplay = storeInArray.store.loc_name.replace("Helsinki ","").replace("keskusta ", "");
+        }
         return (
           <div key={storeInArray.store._id.$oid}>
-            <a href={address}>{storeInArray.store.loc_name} ({(storeInArray.distance_in_m/1000).toFixed(2)} km, {storeInArray.avail.amount} pcs)</a>
+            <a href={address}>{textToDisplay}</a>
             <br/>
           </div>
         )
       });
     }
+
     return(
         <div className="div-table-row">
             <div className="div-table-col centered">
@@ -82,13 +90,14 @@ export default class DrinkTableRow extends React.Component {
             <div className="div-table-col">
               {this.props.drinkData.drink.price.toFixed(2)} {String.fromCharCode(8364)}
             </div>
-            <div className="div-table-col">
+            
+            <div className="div-table-col col-extra">
               {this.props.drinkData.maxAvailability}
             </div>
-            <div className="div-table-col">
+            <div className="div-table-col col-extra">
             {this.props.drinkData.noOfNearbyStoresWithAvailability}
             </div>
-            <div className="div-table-col topstores">
+            <div className="div-table-col topstores col-extra">
               {topThreeStoresContent}
             </div>
         </div>
