@@ -42,14 +42,14 @@ export default class SearchButton extends React.Component {
         }
         content = (
           <div>
-              <Link to="/storespage" className="btn btn-primary btn-lg search-button">Show {noOfStoresWithSelectedDrinks} Alko {storesText}</Link>
+              <Link to="/storespage" className="btn btn-primary btn-lg search-button btn-large-text">Show {noOfStoresWithSelectedDrinks} Alko {storesText}</Link>
           </div>
         )
       }
     }
 
     return (
-      <div>
+      <div className="search-button-container">
         {content}
       </div>
     )

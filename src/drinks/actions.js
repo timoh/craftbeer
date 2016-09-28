@@ -23,29 +23,36 @@ export function showNonStockedChange(showNonStocked) {
   };
 }
 
-export function sortDrinks(field,newSortOrder,datatype,stopLoadingDrinks,filterOn) {
+export function runSortDrinks(field,newSortOrder,datatype,stopLoadingDrinks,filterOn) {
 
   if (SORTABLE_FIELDS_IN_API.indexOf(field) != -1 && !stopLoadingDrinks && !filterOn) {
     const sortOrder = newSortOrder ? "desc" : "asc";
     return function(dispatch) {
-      dispatch(changeSort(field,newSortOrder));
+      dispatch(changeSort(field,newSortOrder,datatype));
       dispatch(fetchDrinks(1, false, false, field, sortOrder));
     };
   } else {
-    return {
-      type: 'SORT',
-      field: field,
-      newSortOrder: newSortOrder,
-      datatype: datatype
+    return function(dispatch) {
+      dispatch(sortDrinks(field,newSortOrder,datatype));
     };
   }
 }
 
-export function changeSort(field,newSortOrder) {
+export function sortDrinks(field,newSortOrder,datatype) {
+  return {
+    type: 'SORT',
+    field: field,
+    newSortOrder: newSortOrder,
+    datatype: datatype
+  };
+}
+
+export function changeSort(field,newSortOrder,datatype) {
   return {
     type: 'CHANGE_SORT',
     field: field,
-    newSortOrder: newSortOrder
+    newSortOrder: newSortOrder,
+    datatype: datatype
   };
 }
 
@@ -92,19 +99,25 @@ export function showNonStockedChange(showNonStocked) {
   };
 }
 
-export function filterChange(filterText) {
-  return function(dispatch, getState) {
-    dispatch(changeFilter(filterText));
-    const sortColumn = getState().drinksData.sortColumn;
-    const sortOrder = getState().drinksData.sortOrder;
-    dispatch(fetchDrinks(1, false, false, sortColumn, sortOrder, filterText));
-  };
-}
-
 export function changeFilter(filterText) {
   return {
     type: 'CHANGE_FILTER',
     filterText: filterText
+  };
+}
+
+export function clearFilter() {
+  return {
+    type: 'CLEAR_FILTER'
+  };
+}
+
+export function searchForDrinks() {
+  return function(dispatch, getState) {
+    const filterText = getState().drinksData.filterText;
+    const sortColumn = getState().drinksData.apiSortColumn;
+    const sortOrder = getState().drinksData.apiSortOrder;
+    dispatch(fetchDrinks(1, false, false, sortColumn, sortOrder, filterText));
   };
 }
 
@@ -123,8 +136,9 @@ export function fetchDrinks(pageToLoad, isInfiniteLoad, isInitialLoad, sortColum
       params.sort_order = sortOrder;
     } else {
       // previous sort order should be kept. it is set to "title", "asc" by default.
-      params.sort_column = getState().drinksData.sortColumn;
-      params.sort_order = getState().drinksData.sortOrder;
+      // TODO it can't use such field names that API doesn't support!
+      params.sort_column = getState().drinksData.apiSortColumn;
+      params.sort_order = getState().drinksData.apiSortOrder;
     }
     let filtered = false;
     if (filterText !== undefined && filterText !== '') {
@@ -140,7 +154,13 @@ export function fetchDrinks(pageToLoad, isInfiniteLoad, isInitialLoad, sortColum
       .then((json) =>
         dispatch(receiveDrinks(json, filtered))
       ).then(() => dispatch(addAdditionalDataForDrinks()))
-      .then(() => {
+      .then(() =>
+        dispatch(sortDrinks(
+                  getState().drinksData.sortColumn,
+                  getState().drinksData.sortOrder == "desc" ? true : false,
+                  getState().drinksData.sortDataType
+                ))
+      ).then(() => {
           if(isInitialLoad) {
             dispatch(showNonStockedChange(false));
           }

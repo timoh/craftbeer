@@ -1,7 +1,7 @@
 import update from 'react-addons-update';
 import * as Helpers from '../shared/helpers';
 import { getSelectedDrinks, getVisibleDrinks } from '../shared/selectors';
-
+import { SORTABLE_FIELDS_IN_API } from './constants';
 
 function getInitialState() {
   return {
@@ -18,9 +18,12 @@ function getInitialState() {
     isInitialLoad: false,
     sortColumn: "title",
     sortOrder: "asc",
+    apiSortColumn: "title",
+    apiSortOrder: "asc",
     tableHeaders: Helpers.getHeaders(),
     filterText: "",
-    filterOn: false
+    filterOn: false,
+    sortDataType: "string"
   };
 }
 
@@ -35,9 +38,10 @@ export function reducer(state = getInitialState(), action) {
         pageLoading: action.pageLoading
       };
     case 'RECEIVE_DRINKS':
+      const drinksForSort = drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading, state.showNonStocked, action.filtered);
       return {
         ...state,
-        drinks: drinksReducer(state.drinks, action.drinks, state.isInitialLoad, state.pageLoading, state.showNonStocked),
+        drinks: sortReducer(drinksForSort,state.sortColumn,state.sortOrder=="desc" ? true : false,state.sortDataType),
         pagesLoaded: state.pageLoading,
         pageLoading: 0,
         isInitialLoad: false,
@@ -65,6 +69,9 @@ export function reducer(state = getInitialState(), action) {
         ...state,
         sortColumn: action.field == "selected" ? state.sortColumn : action.field,
         sortOrder: action.field == "selected" ? state.sortOrder : (action.newSortOrder ? "desc" : "asc"),
+        apiSortColumn: SORTABLE_FIELDS_IN_API.indexOf(action.field) != -1 ? action.field : state.apiSortColumn,
+        apiSortOrder: SORTABLE_FIELDS_IN_API.indexOf(action.field) != -1 ? (action.newSortOrder ? "desc" : "asc") : state.apiSortOrder,
+        sortDataType: action.datatype,
         drinks: sortReducer(state.drinks,action.field,action.newSortOrder,action.datatype),
         tableHeaders: headersReducer(state.tableHeaders,action.field,action.newSortOrder)
       };
@@ -73,6 +80,9 @@ export function reducer(state = getInitialState(), action) {
           ...state,
           sortColumn: action.field == "selected" ? state.sortColumn : action.field,
           sortOrder: action.field == "selected" ? state.sortOrder : (action.newSortOrder ? "desc" : "asc"),
+          apiSortColumn: SORTABLE_FIELDS_IN_API.indexOf(action.field) != -1 ? action.field : state.apiSortColumn,
+          apiSortOrder: SORTABLE_FIELDS_IN_API.indexOf(action.field) != -1 ? (action.newSortOrder ? "desc" : "asc") : state.apiSortOrder,
+          sortDataType: action.datatype,
           tableHeaders: headersReducer(state.tableHeaders,action.field,action.newSortOrder)
         };
     case 'CHECKED_CHANGE':
@@ -114,12 +124,25 @@ export function reducer(state = getInitialState(), action) {
         ...state,
         filterText: action.filterText
       }
+    case 'CLEAR_FILTER':
+      if (state.filterText.length == 0) {
+        return {
+          ...state
+        }
+      }
+      const sortedDrinks = sortReducer(state.drinks,state.sortColumn,state.sortOrder=="desc" ? true : false,state.sortDataType);
+      return {
+        ...state,
+        drinks: toggleNonStockedReducer(sortedDrinks,state.showNonStocked),
+        filterText: "",
+        filterOn: false
+      }
     default:
       return state;
   }
 }
 
-function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked) {
+function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked, filtered) {
   if (initialLoad) {
     newDrinks.map( (newDrink) => newDrink.isNewDrink = true);
     return newDrinks;
@@ -144,7 +167,10 @@ function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked) {
         // when page > 1, then there might be drinks that were previously hidden.
         existingDrink.visible = Helpers.isVisible(showNonStocked,existingDrink.stocked);
         existingDrink.hiddenDueToSortingChange = false;
-        newState.push(existingDrink);
+        // ugly fix: if filter has been used and page > 1, then existing drinks might be part of visible drinks already. add drink only if it doesn't exist already.
+        if(Helpers.getDrinkIndex(newState,existingDrink) ==-1) {
+          newState.push(existingDrink);
+        }
       } else {
         newDrink.isNewDrink = true;
         newState.push(newDrink);
@@ -157,7 +183,7 @@ function drinksReducer(state, newDrinks, initialLoad, page, showNonStocked) {
       const drinkWasVisible = drink.visible;
       if (page == 1) {
         drink.visible = false;
-        drink.hiddenDueToSortingChange = true;
+        drink.hiddenDueToSortingChange = !filtered ? true : false;
       }
 
       if (page == 1 || (page > 1 && !drinkWasVisible)) {

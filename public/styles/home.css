@@ -30,6 +30,22 @@ body {
   background-color:  #b3b3b3;
 }
 
+.search-button-container {
+  position: fixed;
+  text-align: center;
+  width: 350px;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  margin: auto;
+  z-index: 999;
+  font-size: 18px;
+}
+
+.btn-large-text {
+  font-size: 20px !important
+}
+
 .no-margin-left-right {
   margin-left: 0px;
   margin-right: 0px
@@ -157,6 +173,14 @@ body {
 
 .btn-mid-size {
   width:40%
+}
+
+.padding-right-sm {
+  padding-right: 5px;
+}
+
+.padding-left-sm {
+  padding-left: 5px;
 }
 
 .active-table-row {

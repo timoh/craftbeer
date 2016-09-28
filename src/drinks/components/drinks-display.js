@@ -7,7 +7,7 @@ import Slider from './slider';
 import SearchButton from './search-button';
 import {connect} from 'react-redux';
 import { getSelectedDrinks, getVisibleDrinks } from '../../shared/selectors';
-import { fetchDrinks, maxDistanceChange,checkedChange,showNonStockedChange,sortDrinks} from '../actions';
+import { fetchDrinks, maxDistanceChange,checkedChange,showNonStockedChange,runSortDrinks} from '../actions';
 import { selectDrinkFromSelected } from '../../shared/actions';
 import { withRouter } from 'react-router';
 import Infinite from 'react-infinite';
@@ -53,8 +53,8 @@ class Drinks extends React.Component {
       }
     }
 
-    executeSortDrinks(field,newSortOrder,datatype) {
-      this.props.dispatch(sortDrinks(field,newSortOrder,datatype,this.props.stopLoadingDrinks, this.props.filterOn));
+    dispatchRunSortDrinks(field,newSortOrder,datatype) {
+      this.props.dispatch(runSortDrinks(field,newSortOrder,datatype,this.props.stopLoadingDrinks, this.props.filterOn));
     }
 
     render() {
@@ -106,14 +106,11 @@ class Drinks extends React.Component {
               <div className="row">
                 <div className="col-md-12 col-xs-12">
                     <div className="row margin-bottom">
-                      <div className="col-md-3 col-xs-7">
+                      <div className="col-md-6 col-xs-8">
                         <SearchFilterDisplay />
                       </div>
-                      <div className="col-md-2 col-xs-5">
+                      <div className="col-md-4 col-xs-4">
                         <TableButtonDisplay toggleNonStocked={this.props.toggleNonStocked.bind(this)} />
-                      </div>
-                      <div className="col-md-6 col-xs-9">
-                        <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                       </div>
                     </div>
                     <div className= "div-table table">
@@ -126,7 +123,7 @@ class Drinks extends React.Component {
                                 useWindowAsScrollContainer
                                 preloadBatchSize={Infinite.containerHeightScaleFactor(100)}
                                 preloadAdditionalHeight={Infinite.containerHeightScaleFactor(100)}>
-                        <TableHeaders sort={this.executeSortDrinks.bind(this)} headers={this.props.headers} />
+                        <TableHeaders sort={this.dispatchRunSortDrinks.bind(this)} headers={this.props.headers} />
                         { visibleDrinks.map((drinkData) => {
                             return (
                               <DrinkTableRow key={ drinkData.drink._id.$oid }
@@ -135,6 +132,7 @@ class Drinks extends React.Component {
                         })}
                         </Infinite>
                     </div>
+                    <SearchButton noOfSelectedDrinks = {noOfSelectedDrinks} noOfVisibleDrinks={visibleDrinks.length} noOfStoresWithSelectedDrinks={numberOfStoresWithSelectedDrinks} />
                 </div>
               </div>
           </div>
@@ -155,8 +153,8 @@ const mapDispatchToDrinksProps = (dispatch) => (
     toggleNonStocked: (showNonStocked) => (
       dispatch(showNonStockedChange(showNonStocked))
     ),/*
-    sortDrinks: (field,newSortOrder,datatype,stopLoadingDrinks) => (
-      dispatch(sortDrinks(field,newSortOrder,datatype, stopLoadingDrinks))
+    runSortDrinks: (field,newSortOrder,datatype,stopLoadingDrinks) => (
+      dispatch(runSortDrinks(field,newSortOrder,datatype, stopLoadingDrinks))
     ),*/
     dispatch: dispatch
   }
